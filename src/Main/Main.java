@@ -2,6 +2,12 @@ package Main;
 
 import brachylog.BrachylogParser;
 
+/**
+ * BRACHYLOG
+ * 
+ * @author Julien Cumin
+ *
+ */
 public class Main {
 	
     public static void main(String[] args) {
