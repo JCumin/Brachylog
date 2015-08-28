@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class BrachylogParser {
 	
 	public static void parseFromString(String program, String input, String output) {
 		String compiledProgram = compile(program.toString());
-		run(compiledProgram);
+		run(compiledProgram, input, output);
 	}
 	
 	
@@ -88,7 +89,11 @@ public class BrachylogParser {
 			else {
 				//VARIABLE NAME
 				if(Character.isUpperCase(c)) {
-					prologProgram.append(",\n    " + c + " = " + currentVariable);
+					if(currentVariable.isEmpty()) {
+						currentVariable = String.valueOf(c);
+					} else {
+						prologProgram.append(",\n    " + c + " = " + currentVariable);
+					}
 				} 
 				
 				//BEHEAD
@@ -108,7 +113,7 @@ public class BrachylogParser {
 				//START STRING
 				else if(c == '"') {
 					currentString.append("\"");
-				} 
+				}
 				
 				//INPUT VARIABLE
 				else if(c == '?') {
@@ -119,6 +124,12 @@ public class BrachylogParser {
 				else if(c == '.') {
 					prologProgram.append(",\n    " + Constants.V_OUTPUT + " = " + currentVariable);	
 				}
+				
+				//AND
+				else if(c == '&') {
+					currentVariable = "";
+				}
+
 			}
 			
 		}
@@ -132,10 +143,22 @@ public class BrachylogParser {
 	}
 	
 	
-	private static void run(String program) {
+	private static void run(String program, String input, String output) {
 		if(program != null && !program.equals("")) {
 			System.out.println(program);
+			try {
+				savePrologToFile(program);
+			} catch(Exception e) {
+				System.err.println("Failed to save temporary Prolog file.");
+				return;
+			}
 		}
+	}
+	
+	private static void savePrologToFile(String program) throws Exception {
+		PrintWriter writer = new PrintWriter(Constants.PROLOG_FILE);
+		writer.print(program);
+		writer.close();
 	}
 	
 }

@@ -11,4 +11,7 @@ public abstract class Constants {
 	public static final String V_INPUT 					= "Input";
 	public static final String V_OUTPUT 				= "Output";
 	
+	//FILES
+	public static final String PROLOG_FILE				= "compiled_brachylog.pl";
+	
 }

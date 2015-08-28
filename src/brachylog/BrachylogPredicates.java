@@ -11,10 +11,18 @@ public final class BrachylogPredicates {
 				+ "    reverse(C,D),\n"
 				+ "    string_codes(Y,D)\n"
 				+ "    ;\n"
-				+ "    reverse(X,Y).\n";
+				+ "    reverse(X,Y).\n"
+		
+				+ "\n"
+				+ "reverse(Xs, Ys) :-\n"
+				+ "    reverse(Xs, [], Ys, Ys).\n"
+				+ "reverse([], Ys, Ys, []).\n"
+				+ "reverse([X|Xs], Rs, Ys, [_|Bound]) :-\n"
+				+ "    reverse(Xs, [X|Rs], Ys, Bound).\n";
 		
 		return s;
 	}
+
 	
 	public static String pBehead() {
 		
