@@ -66,6 +66,7 @@ public class BrachylogParser {
 		boolean escapeNextCharacter = false;
 		StringBuilder currentString = new StringBuilder();
 		boolean readingNumber = false;
+		boolean fillNumberInCurrentVariable = false;
 		
 		for(char c : program.toCharArray()) {
 			
@@ -108,16 +109,33 @@ public class BrachylogParser {
 				//NUMBER
 				if(Character.isDigit(c)) {
 					if(!readingNumber) {
-						prologProgram.append(",\n    " + currentVariables.lastElement() + " = " + c);
+						if(currentVariables.lastElement().isEmpty()) {
+							fillNumberInCurrentVariable = true;
+							String s = currentVariables.pop();
+							currentVariables.push(s + c);
+						} else {
+							prologProgram.append(",\n    " + currentVariables.lastElement() + " = " + c);
+						}
 						readingNumber = true;
 					} else {
-						prologProgram.append(c);
+						if(fillNumberInCurrentVariable) {
+							String s = currentVariables.pop();
+							currentVariables.push(s + c);
+						} else {
+							prologProgram.append(c);
+						}
 					}
 				} else {
 					if(readingNumber && c == '.') {
-						prologProgram.append(c);
+						if(fillNumberInCurrentVariable) {
+							String s = currentVariables.pop();
+							currentVariables.push(s + c);
+						} else {
+							prologProgram.append(c);
+						}
 					} else {
 						readingNumber = false;
+						fillNumberInCurrentVariable = false;
 					}
 				}
 				
