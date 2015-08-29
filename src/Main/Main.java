@@ -12,7 +12,7 @@ public class Main {
 	
     public static void main(String[] args) {
     	
-    	String p = "b.";
+    	String p = "r.";
     	String i = "[1,2,3]";
     	String o = "Z";
     	

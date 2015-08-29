@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Stack;
 
 public class BrachylogParser {
 
@@ -58,11 +59,13 @@ public class BrachylogParser {
 
 		prologProgram.append("    1=1");
 		
-		String currentVariable = Constants.V_INPUT;
+		Stack<String> currentVariables = new Stack<String>();
+		currentVariables.push(Constants.V_INPUT);
 		int variableCounter = 0;
 		Map<String, String> predicatesUsed = new HashMap<String, String>();
 		boolean escapeNextCharacter = false;
 		StringBuilder currentString = new StringBuilder();
+		boolean readingNumber = false;
 		
 		for(char c : program.toCharArray()) {
 			
@@ -74,7 +77,12 @@ public class BrachylogParser {
 				} else if(c == '"') {
 					if(!escapeNextCharacter) {
 						currentString.append("\"");
-						prologProgram.append(",\n    " + currentString.toString() + " = " + currentVariable);
+						if(currentVariables.lastElement().isEmpty()) {
+							currentVariables.pop();
+							currentVariables.push(currentString.toString());
+						} else {
+							prologProgram.append(",\n    " + currentString.toString() + " = " + currentVariables.lastElement());
+						}
 						currentString.setLength(0);
 					} else {
 						currentString.append("\"");
@@ -89,25 +97,52 @@ public class BrachylogParser {
 			else {
 				//VARIABLE NAME
 				if(Character.isUpperCase(c)) {
-					if(currentVariable.isEmpty()) {
-						currentVariable = String.valueOf(c);
+					if(currentVariables.lastElement().isEmpty()) {
+						currentVariables.pop();
+						currentVariables.push(String.valueOf(c));
 					} else {
-						prologProgram.append(",\n    " + c + " = " + currentVariable);
+						prologProgram.append(",\n    " + c + " = " + currentVariables.lastElement());
 					}
-				} 
+				}
+				
+				//NUMBER
+				if(Character.isDigit(c)) {
+					if(!readingNumber) {
+						prologProgram.append(",\n    " + currentVariables.lastElement() + " = " + c);
+						readingNumber = true;
+					} else {
+						prologProgram.append(c);
+					}
+				} else {
+					if(readingNumber && c == '.') {
+						prologProgram.append(c);
+					} else {
+						readingNumber = false;
+					}
+				}
 				
 				//BEHEAD
-				else if(c == 'b') {
+				if(c == 'b') {
 					predicatesUsed.put("b", BrachylogPredicates.pBehead());
-					prologProgram.append(",\n    " + Constants.P_BEHEAD + "(" + currentVariable + ", V" + variableCounter + ")");
-					currentVariable = "V" + variableCounter++;
+					prologProgram.append(",\n    " + Constants.P_BEHEAD + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+					currentVariables.pop();
+					currentVariables.push("V" + variableCounter++);
 				} 
+				
+				//LENGTH
+				else if(c == 'l') {
+					predicatesUsed.put("l", BrachylogPredicates.pLength());
+					prologProgram.append(",\n    " + Constants.P_LENGTH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+					currentVariables.pop();
+					currentVariables.push("V" + variableCounter++);
+				}
 				
 				//REVERSE
 				else if(c == 'r') {
 					predicatesUsed.put("r", BrachylogPredicates.pReverse());
-					prologProgram.append(",\n    " + Constants.P_REVERSE + "(" + currentVariable + ", V" + variableCounter + ")");
-					currentVariable = "V" + variableCounter++;
+					prologProgram.append(",\n    " + Constants.P_REVERSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+					currentVariables.pop();
+					currentVariables.push("V" + variableCounter++);
 				} 
 				
 				//START STRING
@@ -115,19 +150,41 @@ public class BrachylogParser {
 					currentString.append("\"");
 				}
 				
+				//
+				
 				//INPUT VARIABLE
 				else if(c == '?') {
-					prologProgram.append(",\n    " + Constants.V_INPUT + " = " + currentVariable);
+					if(currentVariables.lastElement().isEmpty()) {
+						currentVariables.pop();
+						currentVariables.push(String.valueOf(c));
+					} else {
+						prologProgram.append(",\n    " + Constants.V_INPUT + " = " + currentVariables.lastElement());
+					}
 				}
 				
 				//OUTPUT VARIABLE
 				else if(c == '.') {
-					prologProgram.append(",\n    " + Constants.V_OUTPUT + " = " + currentVariable);	
+					if(!readingNumber) {
+						if(currentVariables.lastElement().isEmpty()) {
+							currentVariables.pop();
+							currentVariables.push(String.valueOf(c));
+						} else {
+							prologProgram.append(",\n    " + Constants.V_OUTPUT + " = " + currentVariables.lastElement());		
+						}
+					}
 				}
 				
 				//AND
 				else if(c == '&') {
-					currentVariable = "";
+					currentVariables.pop();
+					currentVariables.push("");
+				}
+				
+				//OR
+				else if(c == ';') {
+					currentVariables.pop();
+					currentVariables.push("");
+					prologProgram.append("\n    ;\n    1=1");
 				}
 
 			}
