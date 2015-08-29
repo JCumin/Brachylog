@@ -110,6 +110,7 @@ public class BrachylogParser {
 					} else if(lastCharIsColon) {
 						String s = currentVariables.pop();
 						currentVariables.push(s + c);
+						lastCharIsColon = false;
 					} else {
 						prologProgram.append(",\n    " + c + " = " + currentVariables.lastElement());
 					}
@@ -200,8 +201,18 @@ public class BrachylogParser {
 				else if(c == '?') {
 					if(currentVariables.lastElement().isEmpty()) {
 						currentVariables.pop();
-						currentVariables.push(String.valueOf(c));
+						currentVariables.push(Constants.V_INPUT);
+					} else if(lastCharIsColon) {
+						String s = currentVariables.pop();
+						currentVariables.push(s + Constants.V_INPUT);
+						lastCharIsColon = false;
 					} else {
+						arrayOpened = false;
+						lastCharIsColon = false;
+						if(currentVariables.lastElement().startsWith("[") && !currentVariables.lastElement().endsWith("]")) {
+							String s = currentVariables.pop();
+							currentVariables.push(s + "]");
+						}
 						prologProgram.append(",\n    " + Constants.V_INPUT + " = " + currentVariables.lastElement());
 					}
 				}
@@ -211,8 +222,18 @@ public class BrachylogParser {
 					if(!readingNumber) {
 						if(currentVariables.lastElement().isEmpty()) {
 							currentVariables.pop();
-							currentVariables.push(String.valueOf(c));
+							currentVariables.push(Constants.V_OUTPUT);
+						} else if(lastCharIsColon) {
+							String s = currentVariables.pop();
+							currentVariables.push(s + Constants.V_OUTPUT);
+							lastCharIsColon = false;
 						} else {
+							arrayOpened = false;
+							lastCharIsColon = false;
+							if(currentVariables.lastElement().startsWith("[") && !currentVariables.lastElement().endsWith("]")) {
+								String s = currentVariables.pop();
+								currentVariables.push(s + "]");
+							}
 							prologProgram.append(",\n    " + Constants.V_OUTPUT + " = " + currentVariables.lastElement());		
 						}
 					}
@@ -237,6 +258,7 @@ public class BrachylogParser {
 				else {
 					
 					arrayOpened = false;
+					lastCharIsColon = false;
 					if(currentVariables.lastElement().startsWith("[") && !currentVariables.lastElement().endsWith("]")) {
 						String s = currentVariables.pop();
 						currentVariables.push(s + "]");
