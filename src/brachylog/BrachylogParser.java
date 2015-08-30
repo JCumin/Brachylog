@@ -69,6 +69,8 @@ public class BrachylogParser {
 		boolean fillNumberInCurrentVariable = false;
 		boolean lastCharIsColon = false;
 		boolean arrayOpened = false;
+		boolean lastCharArithmetic = false;
+		boolean lastCharParenthesis = false;
 		
 		for(char c : program.toCharArray()) {
 			
@@ -120,9 +122,11 @@ public class BrachylogParser {
 				//NUMBER
 				if(Character.isDigit(c)) {
 					if(!readingNumber) {
-						if(currentVariables.lastElement().isEmpty() || lastCharIsColon) {
+						if(currentVariables.lastElement().isEmpty() || lastCharIsColon || lastCharArithmetic || lastCharParenthesis) {
 							fillNumberInCurrentVariable = true;
 							lastCharIsColon = false;
+							lastCharArithmetic = false;
+							lastCharParenthesis = false;
 							String s = currentVariables.pop();
 							currentVariables.push(s + c);
 						} else {
@@ -202,10 +206,11 @@ public class BrachylogParser {
 					if(currentVariables.lastElement().isEmpty()) {
 						currentVariables.pop();
 						currentVariables.push(Constants.V_INPUT);
-					} else if(lastCharIsColon) {
+					} else if(lastCharIsColon || lastCharArithmetic) {
 						String s = currentVariables.pop();
 						currentVariables.push(s + Constants.V_INPUT);
 						lastCharIsColon = false;
+						lastCharArithmetic = false;
 					} else {
 						arrayOpened = false;
 						lastCharIsColon = false;
@@ -223,10 +228,11 @@ public class BrachylogParser {
 						if(currentVariables.lastElement().isEmpty()) {
 							currentVariables.pop();
 							currentVariables.push(Constants.V_OUTPUT);
-						} else if(lastCharIsColon) {
+						} else if(lastCharIsColon || lastCharArithmetic) {
 							String s = currentVariables.pop();
 							currentVariables.push(s + Constants.V_OUTPUT);
 							lastCharIsColon = false;
+							lastCharArithmetic = false;
 						} else {
 							arrayOpened = false;
 							lastCharIsColon = false;
@@ -252,18 +258,57 @@ public class BrachylogParser {
 					prologProgram.append("\n    ;\n    1=1");
 				}
 				
+				//ARITHMETIC
+				else if(c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^') {
+					String s = currentVariables.pop();
+					if(c == '%') {
+						currentVariables.push(s + " mod ");	
+					} else {
+						currentVariables.push(s + " " + c + " ");
+					}
+					lastCharArithmetic = true;
+				}
+				
+				//ARITHMETIC EQUALITY
+				else if(c == '=') {
+					prologProgram.append(",\n    V" + variableCounter + " is " + currentVariables.lastElement());
+					currentVariables.pop();
+					currentVariables.push("V" + variableCounter++);
+				}
+				
+				//PARENTHESIS
+				else if(c == '(') {
+					if(lastCharArithmetic || lastCharIsColon) {
+						currentVariables.push("(");
+					} else {
+						String s = currentVariables.lastElement();
+						currentVariables.pop();
+						currentVariables.push("");
+						currentVariables.push(c + s);
+					}
+					lastCharParenthesis = true;
+				}
+				
+				else if(c == ')') {
+					String s = currentVariables.pop();
+					String s2 = currentVariables.pop();
+					currentVariables.push(s2 + s + c);
+				}
+				
 				//##########
 				//PREDICATES
 				//##########
 				else {
 					
-					arrayOpened = false;
-					lastCharIsColon = false;
-					if(currentVariables.lastElement().startsWith("[") && !currentVariables.lastElement().endsWith("]")) {
-						String s = currentVariables.pop();
-						currentVariables.push(s + "]");
+					if(currentVariables.size() <= 1) {
+						arrayOpened = false;
+						lastCharIsColon = false;
+						if(currentVariables.lastElement().startsWith("[") && !currentVariables.lastElement().endsWith("]")) {
+							String s = currentVariables.pop();
+							currentVariables.push(s + "]");
+						}	
 					}
-					
+
 					//BEHEAD
 					if(c == 'b') {
 						predicatesUsed.put("b", BrachylogPredicates.pBehead());
