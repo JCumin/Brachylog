@@ -70,7 +70,8 @@ public abstract class BrachylogParser {
 		boolean lastCharIsColon = false;
 		boolean arrayOpened = false;
 		boolean lastCharArithmetic = false;
-		boolean lastCharParenthesis = false;
+		boolean lastCharArithmeticParenthesis = false;
+		boolean readingInlineProlog = false;
 		
 		for(char c : program.toCharArray()) {
 			
@@ -102,6 +103,14 @@ public abstract class BrachylogParser {
 				}
 			} 
 			
+			//INLINE PROLOG
+			else if(readingInlineProlog) {
+				if(c == '\'') {
+					readingInlineProlog = false;
+				} else {
+					prologProgram.append(c);	
+				}
+			}
 			
 			else {
 				//VARIABLE NAME
@@ -122,11 +131,11 @@ public abstract class BrachylogParser {
 				//NUMBER
 				if(Character.isDigit(c)) {
 					if(!readingNumber) {
-						if(currentVariables.lastElement().isEmpty() || lastCharIsColon || lastCharArithmetic || lastCharParenthesis) {
+						if(currentVariables.lastElement().isEmpty() || lastCharIsColon || lastCharArithmetic || lastCharArithmeticParenthesis) {
 							fillNumberInCurrentVariable = true;
 							lastCharIsColon = false;
 							lastCharArithmetic = false;
-							lastCharParenthesis = false;
+							lastCharArithmeticParenthesis = false;
 							String s = currentVariables.pop();
 							currentVariables.push(s + c);
 						} else {
@@ -206,11 +215,12 @@ public abstract class BrachylogParser {
 					if(currentVariables.lastElement().isEmpty()) {
 						currentVariables.pop();
 						currentVariables.push(Constants.V_INPUT);
-					} else if(lastCharIsColon || lastCharArithmetic) {
+					} else if(lastCharIsColon || lastCharArithmetic || lastCharArithmeticParenthesis) {
 						String s = currentVariables.pop();
 						currentVariables.push(s + Constants.V_INPUT);
 						lastCharIsColon = false;
 						lastCharArithmetic = false;
+						lastCharArithmeticParenthesis = false;
 					} else {
 						arrayOpened = false;
 						lastCharIsColon = false;
@@ -228,11 +238,12 @@ public abstract class BrachylogParser {
 						if(currentVariables.lastElement().isEmpty()) {
 							currentVariables.pop();
 							currentVariables.push(Constants.V_OUTPUT);
-						} else if(lastCharIsColon || lastCharArithmetic) {
+						} else if(lastCharIsColon || lastCharArithmetic || lastCharArithmeticParenthesis) {
 							String s = currentVariables.pop();
 							currentVariables.push(s + Constants.V_OUTPUT);
 							lastCharIsColon = false;
 							lastCharArithmetic = false;
+							lastCharArithmeticParenthesis = false;
 						} else {
 							arrayOpened = false;
 							lastCharIsColon = false;
@@ -258,6 +269,24 @@ public abstract class BrachylogParser {
 					prologProgram.append("\n    ;\n    1=1");
 				}
 				
+				//CUT
+				else if(c == '!') {
+					prologProgram.append(",\n    !");
+				}
+				
+				//BACKTRACK
+				else if (c == '\\') {
+					prologProgram.append(",\n    0 = 1");
+				}
+				
+				//START INLINE PROLOG
+				else if(c == '\'') {
+					currentVariables.pop();
+					currentVariables.push("");
+					prologProgram.append(",\n    ");
+					readingInlineProlog = true;
+				}
+				
 				//ARITHMETIC
 				else if(c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^') {
 					String s = currentVariables.pop();
@@ -280,19 +309,23 @@ public abstract class BrachylogParser {
 				else if(c == '(') {
 					if(lastCharArithmetic || lastCharIsColon) {
 						currentVariables.push("(");
+						lastCharArithmeticParenthesis = true;
 					} else {
-						String s = currentVariables.lastElement();
-						currentVariables.pop();
-						currentVariables.push("");
-						currentVariables.push(c + s);
+						if(prologProgram.toString().endsWith("(")) {
+							prologProgram.append("(");
+						}
+						prologProgram.append(",\n    ( 1=1");
 					}
-					lastCharParenthesis = true;
 				}
 				
 				else if(c == ')') {
-					String s = currentVariables.pop();
-					String s2 = currentVariables.pop();
-					currentVariables.push(s2 + s + c);
+					if(currentVariables.size() > 1) {
+						String s = currentVariables.pop();
+						String s2 = currentVariables.pop();
+						currentVariables.push(s2 + s + c);	
+					} else {
+						prologProgram.append("\n    )");
+					}
 				}
 				
 				//##########
@@ -321,6 +354,14 @@ public abstract class BrachylogParser {
 					else if(c == 'c') {
 						predicatesUsed.put("c", BrachylogPredicates.pConcatenate());
 						prologProgram.append(",\n    " + Constants.P_CONCATENATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+					}
+					
+					//ENUMERATE
+					else if(c == 'e') {
+						predicatesUsed.put("e", BrachylogPredicates.pEnumerate());
+						prologProgram.append(",\n    " + Constants.P_ENUMERATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 					}

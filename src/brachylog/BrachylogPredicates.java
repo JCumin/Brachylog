@@ -49,7 +49,23 @@ public abstract class BrachylogPredicates {
 				+ "    ;\n"
 				+ "    append(R,A,S)\n"
 				+ "    ),\n"
-				+ "    " + Constants.P_CONCATENATE + "_recur(T,S,Y).";
+				+ "    " + Constants.P_CONCATENATE + "_recur(T,S,Y).\n";
+		
+		return s;
+	}
+	
+	
+	public static String pEnumerate() {
+		
+		String s = "\n"
+				+ Constants.P_ENUMERATE + "([A,B],Y) :-\n"
+				+ "    between(A,B,Y).\n"
+				+ Constants.P_ENUMERATE + "(A,Y) :-\n"
+				+ "    string(A),!,\n"
+				+ "    string_length(A,L),\n"
+				+ "    M is L-1,\n"
+				+ "    between(0,M,I),\n"
+				+ "    sub_string(A,I,1,_,Y).\n";
 		
 		return s;
 	}
