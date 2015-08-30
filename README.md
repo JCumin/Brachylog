@@ -12,10 +12,10 @@ A brachylog program is always constitued of a main predicate which has two argum
 
 For example, the program `bArA`, which uses the variable `A`, the built-in predicate `b` - Behead and the built-in predicate `r` - Reverse, will return `true` if its input minus the first element is a palindrome (i.e. is identical to its reverse), and false otherwise. Here is a breakdown of what's happening:
 
-    b     ยง An implicit variable V0 is unified with Input minus the first element
-     A    ยง Unifies variable A with V0
-      r   ยง An implicit variable V1 is unified with the reverse of A = V0
-       A  ยง Unifies variable A with V1
+    b     ง An implicit variable V0 is unified with Input minus the first element
+     A    ง Unifies variable A with V0
+      r   ง An implicit variable V1 is unified with the reverse of A = V0
+       A  ง Unifies variable A with V1
        
 If the Input minus its first element is not a palindrome, the last unification of `A` with `V1` will fail, and thus the main predicate will return false since it is only constitued of implicit logical *ands*.
 
@@ -72,6 +72,14 @@ Logic *or*
 ### `A b Z` - Behead
 
 True when `Z` is the tail of `A` (i.e. `A` minus the first element). Works on lists, numbers, strings and atoms.
+
+### `A c Z` - Concatenate
+
+True when `Z` is the concatenation of the elements of list `A`. Works on lists of lists, lists of numbers, lists of strings and lists of atoms. All elements of `A` must be of identical type.
+
+### `A h Z` - Head
+
+True when Z is the head of `A` (i.e. the first element). Works on lists, numbers, strings and atoms. 
 
 ### `A l Z` - Length
 
