@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
 
-public class BrachylogParser {
+public abstract class BrachylogParser {
 
 	public static void parseFromFile(String fileName, String input, String output) {
 		
@@ -315,7 +315,23 @@ public class BrachylogParser {
 						prologProgram.append(",\n    " + Constants.P_BEHEAD + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
-					} 
+					}
+					
+					//CONCATENATE
+					else if(c == 'c') {
+						predicatesUsed.put("c", BrachylogPredicates.pConcatenate());
+						prologProgram.append(",\n    " + Constants.P_CONCATENATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+					}
+					
+					//HEAD
+					else if(c == 'h') {
+						predicatesUsed.put("h", BrachylogPredicates.pHead());
+						prologProgram.append(",\n    " + Constants.P_HEAD + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+					}
 					
 					//LENGTH
 					else if(c == 'l') {
@@ -331,7 +347,7 @@ public class BrachylogParser {
 						prologProgram.append(",\n    " + Constants.P_REVERSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
-					}	
+					}
 				}
 
 			}
