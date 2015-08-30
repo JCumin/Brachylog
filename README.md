@@ -67,6 +67,36 @@ Logic *and* is implicit when chaining predicates, variables, etc. in Brachylog. 
 
 Logic *or*
 
+### `!` - Cut
+
+Equivalent to Prolog's Cut.
+
+### `\` - Backtrack
+
+`\` is false and will therefore trigger backtracking, if backtracking is possible.
+
+### `( )` - Parentheses
+
+Equivalent to Prolog's parentheses.
+
+The variable preceding (implicitly or not) the opening parenthesis is implicitly available right after the opening parenthesis.
+
+### `'exemple'` - Inline Prolog
+
+Since Brachylog is still a work in progress, and since there are a lot of different useful built-in predicates in SWI-Prolog that we won't/can't fit into one letter predicates, We provide a way to input SWI-Prolog code directly in a Brachylog program. All code between two single-quotes `'` will not be analyzed as Brachylog code and will be outputted as is. Variables names (i.e. uppercase characters) used in those Prolog blocks are shared with the Brachylog program.
+
+For example, `Y'sum_list(Y,Z)'Z.` will unify the Output with the sum of the elements in the Input.
+
+
+#Arithmetic
+
+There are 6 basic arithmetic operators: `+`, `-`, `*`, `/`, `^` and `%` (addition, subtraction, multiplication, float division, power and modulo).
+
+**Arithmetic expressions are not evaluated automatically**. That is, `5*(3+7)` is not automatically evaluated to `50`. To evaluate arithmetic expressions, one must call the predicate `A = Z` which will attempt to unify `Z` with the evaluation of `A`.
+
+Parentheses can be used, although it can be tricky in some situations. For instance, the program `&(2+3)*5=.`, which unifies the Output with the result of `(2+3)*5` does not actually work, because the parentheses here are considered to be execution control parentheses, and not part of an arithmetic expression. A workaround for this is to rewrite the program as such: `&:(2+3)*5h=.`. Inserting the expression in a list, and then taking the head of the list will give the correctly bracketed expression. Another solution is to simply move parts of the expression so that it does not start with a parenthesis, e.g. `&5*(2+3)=.`. Ultimately, you can avoid parentheses problems in arithmetic expressions as long as any opening parenthesis is preceded by either a colon `:` or an arithmetic operator (`+`, `-`, `*`, `/`, `^` or `%`).
+
+
 #Predicates
 
 ### `A b Z` - Behead
@@ -76,6 +106,12 @@ True when `Z` is the tail of `A` (i.e. `A` minus the first element). Works on li
 ### `A c Z` - Concatenate
 
 True when `Z` is the concatenation of the elements of list `A`. Works on lists of lists, lists of numbers, lists of strings and lists of atoms. All elements of `A` must be of identical type.
+
+### `A e Z` - Enumerate
+
+If `A = [I,J]` where `I` and `J` are two integers, and with `I <= J`, then `Z` will be successively bound to integers between `I` and `J` (those two bounds included). That is, it will first be unified with `I`, and if backtracking occurs and comes back to this predicate, it will unify `Z` with `I + 1`, etc. up to `J`, after which the predicate will fail.
+
+If `A` is a string, the same thing happens except `Z` is successively bound to each character of `A`.
 
 ### `A h Z` - Head
 
