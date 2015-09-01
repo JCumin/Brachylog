@@ -55,13 +55,16 @@ Note that `A l B:42` will first unify `B` with the length of `A`, and then creat
 
 `.` is a reserved variable name representing the output of the current rule. When placed directly after a number, you must add a space ` ` between the two (since `.` is also used as the decimal separator).
 
+### `q` - Empty list
+
+`q` is a reserved variable name representing the empty list `[]`.
 
 
 #Execution control
 
-### `&` - And
+### `,` - And
 
-Logic *and* is implicit when chaining predicates, variables, etc. in Brachylog. `&` purpose is to disable implicit unification, e.g. `A D` unifies D with A, whereas `A & D` does not.
+Logic *and* is implicit when chaining predicates, variables, etc. in Brachylog. `,`'s purpose is to disable implicit unification, e.g. `A D` unifies D with A, whereas `A , D` does not.
 
 ### `;` - Or
 
@@ -97,15 +100,60 @@ There are 6 basic arithmetic operators: `+`, `-`, `*`, `/`, `^` and `%` (additio
 Parentheses can be used, although it can be tricky in some situations. For instance, the program `&(2+3)*5=.`, which unifies the Output with the result of `(2+3)*5` does not actually work, because the parentheses here are considered to be execution control parentheses, and not part of an arithmetic expression. A workaround for this is to rewrite the program as such: `&:(2+3)*5h=.`. Inserting the expression in a list, and then taking the head of the list will give the correctly bracketed expression. Another solution is to simply move parts of the expression so that it does not start with a parenthesis, e.g. `&5*(2+3)=.`. Ultimately, you can avoid parentheses problems in arithmetic expressions as long as any opening parenthesis is preceded by either a colon `:` or an arithmetic operator (`+`, `-`, `*`, `/`, `^` or `%`).
 
 
-#Predicates
+#Predicates and Rules
+
+A Brachylog program starts in the first rule of the predicate `brachylog_main`. New rules for the same predicate can be added using `|`. The Input is implicitly available after `|`. Variables are not shared between rules. Rules are translated to Prolog in the same order they have in Brachylog (therefore Prolog will attempt to unify the leftmost Brachylog rule first).
+For example, the program `q,"Empty".|,"Not empty".` is translated in Prolog as:
+
+    brachylog_main(Input,Output) :-  
+        [] = Input,                  § q
+        Output = "Empty".            §  ,"Empty".
+
+    brachylog_main(Input,Output) :-  §           |
+        Output = "Not empty".        §            ,"Not empty".
+        
+
+Sub-predicates can be defined as well, using `{` to start the definition of one and `}` to end it. When defining a sub-predicate, the current variable to the left of the opening `{` will be used as Input and the variable implicitly available after the closing `}` will be the Output. Multiple rules can be defined inside a Predicate, exactly like in `brachylog_main`. Sub-predicates can be defined inside sub-predicates.
+Sub-predicates have the name `brachylog_subpred_N`, where `N` is an integer. The 0th predicate is `brachylog_main` and subsequent sub-predicates are numbered one after the other, from left to right. Calling a sub-predicate can be done using the built-in predicate *`&` - Call Sub-predicate*, which requires the sub-predicate number.
+For example, the program `q|h{q|(h1;?h0),?b:[1]c&},?b:[0]c&`, which returns true if every sublist of an Input list contains only zeros and ones, and false otherwise, is translated in Prolog as:
+
+    brachylog_main(Input,Output) :-            
+        [] = Input.                            § q
+    
+    brachylog_main(Input,Output) :-            §  |
+        brachylog_head(Input, V0),             §   h
+        brachylog_subpred_1(V0,V1),            §    {...}
+        brachylog_behead(Input, V2),           §         ,?b
+        brachylog_concatenate([V2,[0]], V3),   §            :[0]c
+        brachylog_call_predicate(V3, V4).      §                 &
+    
+    
+    brachylog_subpred_1(Input,Output) :-       § {
+        [] = Input.                               q
+    
+    brachylog_subpred_1(Input,Output) :-       §   |
+        (                                      §    (
+        brachylog_head(Input, V0),             §     h
+        V0 = 1                                 §      1
+        ;                                      §       ;
+        brachylog_head(Input, V1),             §        ?h
+        V1 = 0                                 §          0
+        ),                                     §           )
+        brachylog_behead(Input, V2),           §            ,?b
+        brachylog_concatenate([V2,[1]], V3),   §               :[0]c
+        brachylog_call_predicate(V3, V4).      §                    &
+                                               § }
+
+
+#Built-in Predicates
 
 ### `A b Z` - Behead
 
-True when `Z` is the tail of `A` (i.e. `A` minus the first element). Works on lists, numbers, strings and atoms.
+True when `Z` is the tail of `A` (i.e. `A` minus the first element). Works on lists, numbers, strings.
 
 ### `A c Z` - Concatenate
 
-True when `Z` is the concatenation of the elements of list `A`. Works on lists of lists, lists of numbers, lists of strings and lists of atoms. All elements of `A` must be of identical type.
+True when `Z` is the concatenation of the elements of list `A`. Works on lists of lists, lists of numbers, lists of strings. All elements of `A` must be of identical type.
 
 ### `A e Z` - Enumerate
 
@@ -115,12 +163,16 @@ If `A` is a string, the same thing happens except `Z` is successively bound to e
 
 ### `A h Z` - Head
 
-True when Z is the head of `A` (i.e. the first element). Works on lists, numbers, strings and atoms. 
+True when Z is the head of `A` (i.e. the first element). Works on lists, numbers, strings. 
 
 ### `A l Z` - Length
 
-True when `Z` is the length of `A`. Works on lists, numbers, strings and atoms.
+True when `Z` is the length of `A`. Works on lists, numbers, strings.
 
 ### `A r Z` - Reverse
 
-True if `Z` is `A` reversed. Works ont lists, numbers, strings and atoms.
+True if `Z` is `A` reversed. Works ont lists, numbers, strings.
+
+### `Arg1:...:Argn:I & Z` - Call Sub-predicate
+
+True when `Z` is the Output of the `I`th sub-predicate with Input = `[Arg1:...:Argn]`.
