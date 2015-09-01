@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
@@ -53,14 +55,22 @@ public abstract class BrachylogParser {
 			return null;
 		}
 		
-		StringBuilder prologProgram = new StringBuilder();
 		
-		prologProgram.append(Constants.P_MAIN + "(" + Constants.V_INPUT + "," + Constants.V_OUTPUT + ") :-\n");
-
-		prologProgram.append("    1=1");
+		List<List<StringBuilder>> predicatesRules = new ArrayList<List<StringBuilder>>();
 		
-		Stack<String> currentVariables = new Stack<String>();
-		currentVariables.push(Constants.V_INPUT);
+		predicatesRules.add(new ArrayList<StringBuilder>());
+		int currentPredicateIndex = 0;
+		predicatesRules.get(currentPredicateIndex).add(new StringBuilder());
+		int currentRuleIndex = 0;
+		
+		predicatesRules.get(currentPredicateIndex).get(currentRuleIndex).append(Constants.P_MAIN + "(" + Constants.V_INPUT + "," + Constants.V_OUTPUT + ") :-\n");
+		predicatesRules.get(currentPredicateIndex).get(currentRuleIndex).append("    1=1");
+		
+		List<List<Stack<String>>> predicatesVariables = new ArrayList<List<Stack<String>>>();
+		predicatesVariables.add(new ArrayList<Stack<String>>());
+		predicatesVariables.get(currentPredicateIndex).add(new Stack<String>());
+		
+		predicatesVariables.get(currentPredicateIndex).get(currentRuleIndex).push(Constants.V_INPUT);
 		int variableCounter = 0;
 		Map<String, String> predicatesUsed = new HashMap<String, String>();
 		boolean escapeNextCharacter = false;
@@ -74,6 +84,9 @@ public abstract class BrachylogParser {
 		boolean readingInlineProlog = false;
 		
 		for(char c : program.toCharArray()) {
+			
+			StringBuilder currentRule = predicatesRules.get(currentPredicateIndex).get(currentRuleIndex);
+			Stack<String> currentVariables = predicatesVariables.get(currentPredicateIndex).get(currentRuleIndex);
 			
 			//READING STRING
 			if(currentString.length() > 0) {
@@ -91,7 +104,7 @@ public abstract class BrachylogParser {
 							currentVariables.push(s + currentString.toString());
 							lastCharIsColon = false;
 						} else {
-							prologProgram.append(",\n    " + currentString.toString() + " = " + currentVariables.lastElement());
+							currentRule.append(",\n    " + currentString.toString() + " = " + currentVariables.lastElement());
 						}
 						currentString.setLength(0);
 					} else {
@@ -108,7 +121,7 @@ public abstract class BrachylogParser {
 				if(c == '\'') {
 					readingInlineProlog = false;
 				} else {
-					prologProgram.append(c);	
+					currentRule.append(c);	
 				}
 			}
 			
@@ -123,7 +136,7 @@ public abstract class BrachylogParser {
 						currentVariables.push(s + c);
 						lastCharIsColon = false;
 					} else {
-						prologProgram.append(",\n    " + c + " = " + currentVariables.lastElement());
+						currentRule.append(",\n    " + c + " = " + currentVariables.lastElement());
 					}
 					continue;
 				}
@@ -139,7 +152,7 @@ public abstract class BrachylogParser {
 							String s = currentVariables.pop();
 							currentVariables.push(s + c);
 						} else {
-							prologProgram.append(",\n    " + currentVariables.lastElement() + " = " + c);
+							currentRule.append(",\n    " + currentVariables.lastElement() + " = " + c);
 						}
 						readingNumber = true;
 					} else {
@@ -147,7 +160,7 @@ public abstract class BrachylogParser {
 							String s = currentVariables.pop();
 							currentVariables.push(s + c);
 						} else {
-							prologProgram.append(c);
+							currentRule.append(c);
 						}
 					}
 					continue;
@@ -157,7 +170,7 @@ public abstract class BrachylogParser {
 							String s = currentVariables.pop();
 							currentVariables.push(s + c);
 						} else {
-							prologProgram.append(c);
+							currentRule.append(c);
 						}
 						continue;
 					} else {
@@ -228,7 +241,7 @@ public abstract class BrachylogParser {
 							String s = currentVariables.pop();
 							currentVariables.push(s + "]");
 						}
-						prologProgram.append(",\n    " + Constants.V_INPUT + " = " + currentVariables.lastElement());
+						currentRule.append(",\n    " + Constants.V_INPUT + " = " + currentVariables.lastElement());
 					}
 				}
 				
@@ -251,13 +264,13 @@ public abstract class BrachylogParser {
 								String s = currentVariables.pop();
 								currentVariables.push(s + "]");
 							}
-							prologProgram.append(",\n    " + Constants.V_OUTPUT + " = " + currentVariables.lastElement());		
+							currentRule.append(",\n    " + Constants.V_OUTPUT + " = " + currentVariables.lastElement());		
 						}
 					}
 				}
 				
 				//AND
-				else if(c == '&') {
+				else if(c == ',') {
 					currentVariables.pop();
 					currentVariables.push("");
 				}
@@ -266,24 +279,24 @@ public abstract class BrachylogParser {
 				else if(c == ';') {
 					currentVariables.pop();
 					currentVariables.push("");
-					prologProgram.append("\n    ;\n    1=1");
+					currentRule.append("\n    ;\n    1=1");
 				}
 				
 				//CUT
 				else if(c == '!') {
-					prologProgram.append(",\n    !");
+					currentRule.append(",\n    !");
 				}
 				
 				//BACKTRACK
 				else if (c == '\\') {
-					prologProgram.append(",\n    0 = 1");
+					currentRule.append(",\n    0 = 1");
 				}
 				
 				//START INLINE PROLOG
 				else if(c == '\'') {
 					currentVariables.pop();
 					currentVariables.push("");
-					prologProgram.append(",\n    ");
+					currentRule.append(",\n    ");
 					readingInlineProlog = true;
 				}
 				
@@ -300,33 +313,67 @@ public abstract class BrachylogParser {
 				
 				//ARITHMETIC EQUALITY
 				else if(c == '=') {
-					prologProgram.append(",\n    V" + variableCounter + " is " + currentVariables.lastElement());
+					currentRule.append(",\n    V" + variableCounter + " is " + currentVariables.lastElement());
 					currentVariables.pop();
 					currentVariables.push("V" + variableCounter++);
 				}
 				
-				//PARENTHESIS
+				//OPEN PARENTHESIS
 				else if(c == '(') {
 					if(lastCharArithmetic || lastCharIsColon) {
 						currentVariables.push("(");
 						lastCharArithmeticParenthesis = true;
 					} else {
-						if(prologProgram.toString().endsWith("(")) {
-							prologProgram.append("(");
+						if(currentRule.toString().endsWith("(")) {
+							currentRule.append("(");
 						}
-						prologProgram.append(",\n    ( 1=1");
+						currentRule.append(",\n    ( 1=1");
 					}
 				}
 				
+				//CLOSE PARENTHESIS
 				else if(c == ')') {
 					if(currentVariables.size() > 1) {
 						String s = currentVariables.pop();
 						String s2 = currentVariables.pop();
 						currentVariables.push(s2 + s + c);	
 					} else {
-						prologProgram.append("\n    )");
+						currentRule.append("\n    )");
 					}
 				}
+				
+				//START PREDICATE
+				else if(c == '{') {
+					
+				}
+				
+				//END PREDICATE
+				else if(c =='}') {
+					
+				}
+				
+				//START NEW RULE
+				else if(c == '|') {
+					currentRule.append(".\n");
+					
+					StringBuilder newRule = new StringBuilder();
+					Stack<String> newVariables = new Stack<String>();
+					predicatesRules.get(currentPredicateIndex).add(newRule);
+					predicatesVariables.get(currentPredicateIndex).add(newVariables);
+					
+					currentRuleIndex = predicatesRules.get(currentPredicateIndex).size() - 1;
+					String predicateName;
+					if(currentPredicateIndex == 0) {
+						predicateName = Constants.P_MAIN;
+					} else {
+						predicateName = Constants.P_SUBPREDICATE + currentPredicateIndex;
+					}
+					newRule.append(predicateName + "(" + Constants.V_INPUT + "," + Constants.V_OUTPUT + ") :-\n");
+					newRule.append("    1=1");
+					
+					newVariables.push(Constants.V_INPUT);
+				}
+				
 				
 				//##########
 				//PREDICATES
@@ -345,7 +392,7 @@ public abstract class BrachylogParser {
 					//BEHEAD
 					if(c == 'b') {
 						predicatesUsed.put("b", BrachylogPredicates.pBehead());
-						prologProgram.append(",\n    " + Constants.P_BEHEAD + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentRule.append(",\n    " + Constants.P_BEHEAD + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 					}
@@ -353,7 +400,7 @@ public abstract class BrachylogParser {
 					//CONCATENATE
 					else if(c == 'c') {
 						predicatesUsed.put("c", BrachylogPredicates.pConcatenate());
-						prologProgram.append(",\n    " + Constants.P_CONCATENATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentRule.append(",\n    " + Constants.P_CONCATENATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 					}
@@ -361,7 +408,7 @@ public abstract class BrachylogParser {
 					//ENUMERATE
 					else if(c == 'e') {
 						predicatesUsed.put("e", BrachylogPredicates.pEnumerate());
-						prologProgram.append(",\n    " + Constants.P_ENUMERATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentRule.append(",\n    " + Constants.P_ENUMERATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 					}
@@ -369,7 +416,7 @@ public abstract class BrachylogParser {
 					//HEAD
 					else if(c == 'h') {
 						predicatesUsed.put("h", BrachylogPredicates.pHead());
-						prologProgram.append(",\n    " + Constants.P_HEAD + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentRule.append(",\n    " + Constants.P_HEAD + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 					}
@@ -377,7 +424,7 @@ public abstract class BrachylogParser {
 					//LENGTH
 					else if(c == 'l') {
 						predicatesUsed.put("l", BrachylogPredicates.pLength());
-						prologProgram.append(",\n    " + Constants.P_LENGTH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentRule.append(",\n    " + Constants.P_LENGTH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 					}
@@ -385,7 +432,7 @@ public abstract class BrachylogParser {
 					//REVERSE
 					else if(c == 'r') {
 						predicatesUsed.put("r", BrachylogPredicates.pReverse());
-						prologProgram.append(",\n    " + Constants.P_REVERSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentRule.append(",\n    " + Constants.P_REVERSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 					}
@@ -394,8 +441,16 @@ public abstract class BrachylogParser {
 			}
 			
 		}
-		prologProgram.append(".\n");
+		predicatesRules.get(currentPredicateIndex).get(currentRuleIndex).append(".\n");
 		
+		StringBuilder prologProgram = new StringBuilder();
+		
+		for(List<StringBuilder> l : predicatesRules) {
+			for(StringBuilder s : l) {
+				prologProgram.append(s.toString() + "\n");
+			}
+			prologProgram.append("\n");
+		}
 		for(Entry<String, String> e : predicatesUsed.entrySet()) {
 			prologProgram.append(e.getValue());
 		}
