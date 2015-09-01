@@ -12,10 +12,10 @@ A brachylog program is always constitued of a main predicate which has two argum
 
 For example, the program `bArA`, which uses the variable `A`, the built-in predicate `b` - Behead and the built-in predicate `r` - Reverse, will return `true` if its input minus the first element is a palindrome (i.e. is identical to its reverse), and false otherwise. Here is a breakdown of what's happening:
 
-    b     ง An implicit variable V0 is unified with Input minus the first element
-     A    ง Unifies variable A with V0
-      r   ง An implicit variable V1 is unified with the reverse of A = V0
-       A  ง Unifies variable A with V1
+    b     ยง An implicit variable V0 is unified with Input minus the first element
+     A    ยง Unifies variable A with V0
+      r   ยง An implicit variable V1 is unified with the reverse of A = V0
+       A  ยง Unifies variable A with V1
        
 If the Input minus its first element is not a palindrome, the last unification of `A` with `V1` will fail, and thus the main predicate will return false since it is only constitued of implicit logical *ands*.
 
@@ -106,11 +106,11 @@ A Brachylog program starts in the first rule of the predicate `brachylog_main`. 
 For example, the program `q,"Empty".|,"Not empty".` is translated in Prolog as:
 
     brachylog_main(Input,Output) :-  
-        [] = Input,                  ง q
-        Output = "Empty".            ง  ,"Empty".
+        [] = Input,                  % q
+        Output = "Empty".            %  ,"Empty".
 
-    brachylog_main(Input,Output) :-  ง           |
-        Output = "Not empty".        ง            ,"Not empty".
+    brachylog_main(Input,Output) :-  %           |
+        Output = "Not empty".        %            ,"Not empty".
         
 
 Sub-predicates can be defined as well, using `{` to start the definition of one and `}` to end it. When defining a sub-predicate, the current variable to the left of the opening `{` will be used as Input and the variable implicitly available after the closing `}` will be the Output. Multiple rules can be defined inside a Predicate, exactly like in `brachylog_main`. Sub-predicates can be defined inside sub-predicates.
@@ -118,31 +118,31 @@ Sub-predicates have the name `brachylog_subpred_N`, where `N` is an integer. The
 For example, the program `q|h{q|(h1;?h0),?b:[1]c&},?b:[0]c&`, which returns true if every sublist of an Input list contains only zeros and ones, and false otherwise, is translated in Prolog as:
 
     brachylog_main(Input,Output) :-            
-        [] = Input.                            ง q
+        [] = Input.                            % q
     
-    brachylog_main(Input,Output) :-            ง  |
-        brachylog_head(Input, V0),             ง   h
-        brachylog_subpred_1(V0,V1),            ง    {...}
-        brachylog_behead(Input, V2),           ง         ,?b
-        brachylog_concatenate([V2,[0]], V3),   ง            :[0]c
-        brachylog_call_predicate(V3, V4).      ง                 &
+    brachylog_main(Input,Output) :-            %  |
+        brachylog_head(Input, V0),             %   h
+        brachylog_subpred_1(V0,V1),            %    {...}
+        brachylog_behead(Input, V2),           %         ,?b
+        brachylog_concatenate([V2,[0]], V3),   %            :[0]c
+        brachylog_call_predicate(V3, V4).      %                 &
     
     
-    brachylog_subpred_1(Input,Output) :-       ง {
+    brachylog_subpred_1(Input,Output) :-       % {
         [] = Input.                               q
     
-    brachylog_subpred_1(Input,Output) :-       ง   |
-        (                                      ง    (
-        brachylog_head(Input, V0),             ง     h
-        V0 = 1                                 ง      1
-        ;                                      ง       ;
-        brachylog_head(Input, V1),             ง        ?h
-        V1 = 0                                 ง          0
-        ),                                     ง           )
-        brachylog_behead(Input, V2),           ง            ,?b
-        brachylog_concatenate([V2,[1]], V3),   ง               :[0]c
-        brachylog_call_predicate(V3, V4).      ง                    &
-                                               ง }
+    brachylog_subpred_1(Input,Output) :-       %   |
+        (                                      %    (
+        brachylog_head(Input, V0),             %     h
+        V0 = 1                                 %      1
+        ;                                      %       ;
+        brachylog_head(Input, V1),             %        ?h
+        V1 = 0                                 %          0
+        ),                                     %           )
+        brachylog_behead(Input, V2),           %            ,?b
+        brachylog_concatenate([V2,[1]], V3),   %               :[0]c
+        brachylog_call_predicate(V3, V4).      %                    &
+                                               % }
 
 
 #Built-in Predicates
