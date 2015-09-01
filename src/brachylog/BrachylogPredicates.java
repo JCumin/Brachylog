@@ -128,4 +128,18 @@ public abstract class BrachylogPredicates {
 		return s;
 	}
 	
+	public static String pCallPredicate() {
+		
+		String s = "\n"
+				+ Constants.P_CALLPREDICATE + "(X,Y) :-\n"
+				+ "    reverse(X,R),"
+				+ "    R = [N|RArgs],\n"
+				+ "    number(N),\n"
+				+ "    reverse(RArgs, Args),\n"
+				+ "    atom_concat(" + Constants.P_SUBPREDICATE + ",N,Name),\n"
+				+ "    call(Name,Args,Y).\n";
+				
+		return s;
+	}
+	
 }

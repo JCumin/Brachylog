@@ -69,9 +69,14 @@ public abstract class BrachylogParser {
 		List<List<Stack<String>>> predicatesVariables = new ArrayList<List<Stack<String>>>();
 		predicatesVariables.add(new ArrayList<Stack<String>>());
 		predicatesVariables.get(currentPredicateIndex).add(new Stack<String>());
-		
 		predicatesVariables.get(currentPredicateIndex).get(currentRuleIndex).push(Constants.V_INPUT);
-		int variableCounter = 0;
+		
+		List<List<Integer>> variableCounters = new ArrayList<List<Integer>>();
+		variableCounters.add(new ArrayList<Integer>());
+		variableCounters.get(currentPredicateIndex).add(0);
+		
+		Stack<int[]> callingRule = new Stack<int[]>();
+
 		Map<String, String> predicatesUsed = new HashMap<String, String>();
 		boolean escapeNextCharacter = false;
 		StringBuilder currentString = new StringBuilder();
@@ -87,6 +92,7 @@ public abstract class BrachylogParser {
 			
 			StringBuilder currentRule = predicatesRules.get(currentPredicateIndex).get(currentRuleIndex);
 			Stack<String> currentVariables = predicatesVariables.get(currentPredicateIndex).get(currentRuleIndex);
+			int variableCounter = variableCounters.get(currentPredicateIndex).get(currentRuleIndex);
 			
 			//READING STRING
 			if(currentString.length() > 0) {
@@ -219,6 +225,8 @@ public abstract class BrachylogParser {
 					String s = currentVariables.pop();
 					if(s.replace("[", "").length() - s.replace("]", "").length() == 1) {
 						arrayOpened = false;
+					} else {
+						arrayOpened = true;
 					}
 					currentVariables.push(s + "]");
 				}
@@ -237,7 +245,7 @@ public abstract class BrachylogParser {
 					} else {
 						arrayOpened = false;
 						lastCharIsColon = false;
-						if(currentVariables.lastElement().startsWith("[") && !currentVariables.lastElement().endsWith("]")) {
+						if(arrayOpened) {
 							String s = currentVariables.pop();
 							currentVariables.push(s + "]");
 						}
@@ -260,11 +268,35 @@ public abstract class BrachylogParser {
 						} else {
 							arrayOpened = false;
 							lastCharIsColon = false;
-							if(currentVariables.lastElement().startsWith("[") && !currentVariables.lastElement().endsWith("]")) {
+							if(arrayOpened) {
 								String s = currentVariables.pop();
 								currentVariables.push(s + "]");
 							}
 							currentRule.append(",\n    " + Constants.V_OUTPUT + " = " + currentVariables.lastElement());		
+						}
+					}
+				}
+				
+				//OUTPUT VARIABLE
+				else if(c == 'q') {
+					if(!readingNumber) {
+						if(currentVariables.lastElement().isEmpty()) {
+							currentVariables.pop();
+							currentVariables.push("[]");
+						} else if(lastCharIsColon || lastCharArithmetic || lastCharArithmeticParenthesis) {
+							String s = currentVariables.pop();
+							currentVariables.push(s + "[]");
+							lastCharIsColon = false;
+							lastCharArithmetic = false;
+							lastCharArithmeticParenthesis = false;
+						} else {
+							arrayOpened = false;
+							lastCharIsColon = false;
+							if(arrayOpened) {
+								String s = currentVariables.pop();
+								currentVariables.push(s + "]");
+							}
+							currentRule.append(",\n    " + "[]" + " = " + currentVariables.lastElement());		
 						}
 					}
 				}
@@ -316,6 +348,7 @@ public abstract class BrachylogParser {
 					currentRule.append(",\n    V" + variableCounter + " is " + currentVariables.lastElement());
 					currentVariables.pop();
 					currentVariables.push("V" + variableCounter++);
+					variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 				}
 				
 				//OPEN PARENTHESIS
@@ -344,22 +377,77 @@ public abstract class BrachylogParser {
 				
 				//START PREDICATE
 				else if(c == '{') {
+					if(currentVariables.size() <= 1) {
+						lastCharIsColon = false;
+						if(arrayOpened) {
+							String s = currentVariables.pop();
+							currentVariables.push(s + "]");
+							arrayOpened = false;
+						}	
+					}
 					
+					String predicateName = Constants.P_SUBPREDICATE + predicatesRules.size();
+					currentRule.append(",\n    " + predicateName + "(" + currentVariables.lastElement() + ",V" + variableCounter + ")");
+					currentVariables.pop();
+					currentVariables.push("V" + variableCounter++);
+					variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					
+					callingRule.push(new int[] {currentPredicateIndex, currentRuleIndex});
+					StringBuilder newRule = new StringBuilder();
+					Stack<String> newVariables = new Stack<String>();
+					List<StringBuilder> newPredicate = new ArrayList<StringBuilder>();
+					List<Stack<String>> newPredVars = new ArrayList<Stack<String>>();
+					List<Integer> newVarCounter = new ArrayList<Integer>();
+					newPredicate.add(newRule);
+					newPredVars.add(newVariables);
+					variableCounters.add(newVarCounter);
+					predicatesRules.add(newPredicate);
+					predicatesVariables.add(newPredVars);
+					
+					currentPredicateIndex = predicatesRules.size() - 1;
+					newVarCounter.add(0);
+					currentRuleIndex = 0;
+					newRule.append(predicateName + "(" + Constants.V_INPUT + "," + Constants.V_OUTPUT + ") :-\n");
+					newRule.append("    1=1");
+					
+					newVariables.push(Constants.V_INPUT);
 				}
 				
 				//END PREDICATE
 				else if(c =='}') {
+					if(currentVariables.size() <= 1) {
+						lastCharIsColon = false;
+						if(arrayOpened) {
+							String s = currentVariables.pop();
+							currentVariables.push(s + "]");
+							arrayOpened = false;
+						}	
+					}
 					
+					currentRule.append(".\n");
+					int[] prevRule = callingRule.pop();
+					currentPredicateIndex = prevRule[0];
+					currentRuleIndex = prevRule[1];
 				}
 				
 				//START NEW RULE
 				else if(c == '|') {
+					if(currentVariables.size() <= 1) {
+						lastCharIsColon = false;
+						if(arrayOpened) {
+							String s = currentVariables.pop();
+							currentVariables.push(s + "]");
+							arrayOpened = false;
+						}	
+					}
+					
 					currentRule.append(".\n");
 					
 					StringBuilder newRule = new StringBuilder();
 					Stack<String> newVariables = new Stack<String>();
 					predicatesRules.get(currentPredicateIndex).add(newRule);
 					predicatesVariables.get(currentPredicateIndex).add(newVariables);
+					variableCounters.get(currentPredicateIndex).add(0);
 					
 					currentRuleIndex = predicatesRules.get(currentPredicateIndex).size() - 1;
 					String predicateName;
@@ -381,11 +469,11 @@ public abstract class BrachylogParser {
 				else {
 					
 					if(currentVariables.size() <= 1) {
-						arrayOpened = false;
 						lastCharIsColon = false;
-						if(currentVariables.lastElement().startsWith("[") && !currentVariables.lastElement().endsWith("]")) {
+						if(arrayOpened) {
 							String s = currentVariables.pop();
 							currentVariables.push(s + "]");
+							arrayOpened = false;
 						}	
 					}
 
@@ -395,6 +483,7 @@ public abstract class BrachylogParser {
 						currentRule.append(",\n    " + Constants.P_BEHEAD + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 					
 					//CONCATENATE
@@ -403,6 +492,7 @@ public abstract class BrachylogParser {
 						currentRule.append(",\n    " + Constants.P_CONCATENATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 					
 					//ENUMERATE
@@ -411,6 +501,7 @@ public abstract class BrachylogParser {
 						currentRule.append(",\n    " + Constants.P_ENUMERATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 					
 					//HEAD
@@ -419,6 +510,7 @@ public abstract class BrachylogParser {
 						currentRule.append(",\n    " + Constants.P_HEAD + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 					
 					//LENGTH
@@ -427,6 +519,7 @@ public abstract class BrachylogParser {
 						currentRule.append(",\n    " + Constants.P_LENGTH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 					
 					//REVERSE
@@ -435,11 +528,20 @@ public abstract class BrachylogParser {
 						currentRule.append(",\n    " + Constants.P_REVERSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					}
+					
+					//CALL PREDICATE
+					else if(c == '&') {
+						predicatesUsed.put("&", BrachylogPredicates.pCallPredicate());
+						currentRule.append(",\n    " + Constants.P_CALLPREDICATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 				}
 
 			}
-			
 		}
 		predicatesRules.get(currentPredicateIndex).get(currentRuleIndex).append(".\n");
 		

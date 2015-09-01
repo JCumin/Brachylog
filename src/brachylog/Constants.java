@@ -12,6 +12,7 @@ public abstract class Constants {
 	public static final String P_HEAD					= "brachylog_head";
 	public static final String P_LENGTH					= "brachylog_length";
 	public static final String P_REVERSE 				= "brachylog_reverse";
+	public static final String P_CALLPREDICATE			= "brachylog_call_predicate";
 
 
 	//VARIABLES
