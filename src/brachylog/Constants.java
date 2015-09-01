@@ -4,6 +4,7 @@ public abstract class Constants {
 	
 	//PREDICATES
 	public static final String P_MAIN					= "brachylog_main";
+	public static final String P_SUBPREDICATE			= "brachylog_subpred_";
 	
 	public static final String P_BEHEAD 				= "brachylog_behead";
 	public static final String P_CONCATENATE			= "brachylog_concatenate";
