@@ -141,8 +141,7 @@ For example, the program `q|h{q|(h1;?h0),?b:[1]c&},?b:[0]c&`, which returns true
         ),                                     %           )
         brachylog_behead(Input, V2),           %            ,?b
         brachylog_concatenate([V2,[1]], V3),   %               :[0]c
-        brachylog_call_predicate(V3, V4).      %                    &
-                                               % }
+        brachylog_call_predicate(V3, V4).      %                    &}
 
 
 #Built-in Predicates
@@ -171,7 +170,7 @@ True when `Z` is the length of `A`. Works on lists, numbers, strings.
 
 ### `A r Z` - Reverse
 
-True if `Z` is `A` reversed. Works ont lists, numbers, strings.
+True if `Z` is `A` reversed. Works on lists, numbers, strings.
 
 ### `Arg1:...:Argn:I & Z` - Call Sub-predicate
 
