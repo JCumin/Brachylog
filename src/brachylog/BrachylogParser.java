@@ -10,10 +10,17 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
+
+import jpl.Atom;
+import jpl.Compound;
+import jpl.Query;
+import jpl.Term;
+import jpl.Variable;
 
 public abstract class BrachylogParser {
 
@@ -101,7 +108,7 @@ public abstract class BrachylogParser {
 					currentString.append("\\");
 				} else if(c == '"') {
 					if(!escapeNextCharacter) {
-						currentString.append("\"");
+						currentString.append("'");
 						if(currentVariables.lastElement().isEmpty()) {
 							currentVariables.pop();
 							currentVariables.push(currentString.toString());
@@ -187,7 +194,7 @@ public abstract class BrachylogParser {
 				
 				//START STRING
 				if(c == '"') {
-					currentString.append("\"");
+					currentString.append("'");
 				}
 				
 				//START ARGS
@@ -563,13 +570,62 @@ public abstract class BrachylogParser {
 	
 	private static void run(String program, String input, String output) {
 		if(program != null && !program.equals("")) {
-			System.out.println(program);
 			try {
 				savePrologToFile(program);
 			} catch(Exception e) {
 				System.err.println("Failed to save temporary Prolog file.");
 				return;
 			}
+			
+		    Query consultQuery = new Query("consult", new Term[] {new Atom(Constants.PROLOG_FILE)});
+		    if(consultQuery.hasSolution()) {
+		    	Term inputTerm;
+		    	Term outputTerm;
+		    	if(input.matches("[A-Z]+") || input.matches("_")) {
+		    		inputTerm = new Variable(input);
+		    	} else {
+		    		inputTerm = new Atom(input);
+		    	}
+		    	if(output.matches("[A-Z]+") || output.matches("_")) {
+		    		outputTerm = new Variable(output);
+		    	} else {
+		    		outputTerm = new Atom(output);
+		    	}
+		    	
+		    	Query mainQuery = new Query(new Compound(Constants.P_MAIN, new Term[] {inputTerm, outputTerm}));
+		    	boolean noNewSolution = true;
+		    	while(mainQuery.hasMoreSolutions()) {
+		    		Hashtable<String, Term> bindings = mainQuery.nextSolution();
+		    		if(bindings.entrySet().size() == 0) {
+		    			System.out.println("True.");
+		    		} else {
+			    		for(Map.Entry<String, Term> t : bindings.entrySet()) {
+			    			System.out.println(t.getKey() + " = " + t.getValue());
+			    		}	
+		    		}
+		    		BufferedReader consoleIn = new BufferedReader(new InputStreamReader(System.in));
+		    		String choice = "";
+					try {
+						choice = consoleIn.readLine();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+		    		if(choice.contains(";")) {
+		    			continue;
+		    		} else {
+		    			noNewSolution = false;
+		    			break;
+		    		}
+		    	}
+		    	if(noNewSolution) {
+		    		System.out.println("False.");
+		    	}
+		    	
+		    	System.out.println("\n--- END ---");
+		    	
+		    } else {
+		    	System.out.println("Could not open file " + Constants.PROLOG_FILE);
+		    }
 		}
 	}
 	
