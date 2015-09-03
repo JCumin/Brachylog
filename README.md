@@ -33,9 +33,9 @@ The equivalent Prolog program, without the implicit variables, is:
 
 Any uppercase letter is a variable identifier.
 
-### `"Exemple"` - Strings
+### `'Exemple'` - Strings
 
-Strings are opened and closed with double quotes `"`. `\` will escape the following character.
+Strings are opened and closed with single quotes `'`. `\` will escape the following character.
 
 ### `12345.67890` - Numbers
 
@@ -44,7 +44,7 @@ Numbers consist of characters `0` to `9`. Floats are written with a period `.` a
 ### `A:B:[C:D]:E` -Lists
 
 Lists' elements are chained with a colon `:`. Sublists can be added using an opening square bracket `[` and a closing square bracket `]`. Brackets are optional for the base list, e.g. `A:[B]:C` and `[A:[B]:C]` are the same. One can create a list with the current variable, e.g. `A l:42` will create the list `[L:42]` where `L` is the length of `A`.
-Note that `A l B:42` will first unify `B` with the length of `A`, and then create the list `[B:42]`. The empty list is `q`. You cannot put spaces around `[`,`]` or `:`.
+Note that `A l B:42` will first unify `B` with the length of `A`, and then create the list `[B:42]`. The empty list is `q`. You cannot put spaces around `[`,`]` or `:`. A list starting with a sublist as first element must start with a colon, e.g. `,:[1:2]:3` and not `,[1:2]:3`.
 
 ### `?` - Input
 
@@ -84,11 +84,11 @@ Equivalent to Prolog's parentheses.
 
 The variable preceding (implicitly or not) the opening parenthesis is implicitly available right after the opening parenthesis.
 
-### `'exemple'` - Inline Prolog
+### `` `exemple` `` - Inline Prolog
 
-Since Brachylog is still a work in progress, and since there are a lot of different useful built-in predicates in SWI-Prolog that we won't/can't fit into one letter predicates, We provide a way to input SWI-Prolog code directly in a Brachylog program. All code between two single-quotes `'` will not be analyzed as Brachylog code and will be outputted as is. Variables names (i.e. uppercase characters) used in those Prolog blocks are shared with the Brachylog program.
+Since Brachylog is still a work in progress, and since there are a lot of different useful built-in predicates in SWI-Prolog that we won't/can't fit into one letter predicates, We provide a way to input SWI-Prolog code directly in a Brachylog program. All code between two back-quotes `` ` `` will not be analyzed as Brachylog code and will be outputted as is. Variables names (i.e. uppercase characters) used in those Prolog blocks are shared with the Brachylog program.
 
-For example, `Y'sum_list(Y,Z)'Z.` will unify the Output with the sum of the elements in the Input.
+For example, `` Y`sum_list(Y,Z)`Z.`` will unify the Output with the sum of the elements in the Input.
 
 
 #Arithmetic
@@ -168,9 +168,17 @@ True when Z is the head of `A` (i.e. the first element). Works on lists, numbers
 
 True when `Z` is the length of `A`. Works on lists, numbers, strings.
 
+### `A p Z` - Permute
+
+True if `Z` is a permutation of `A`. Works on lists, numbers (permutation of digits) and strings (permutation of characters). Backtracking on this predicate will iterate over all possible permutations.
+
 ### `A r Z` - Reverse
 
 True if `Z` is `A` reversed. Works on lists, numbers, strings.
+
+### `A s Z` - Sort
+
+True if `Z` is `A` sorted. Works on lists, numbers, strings.
 
 ### `Arg1:...:Argn:I & Z` - Call Sub-predicate
 
