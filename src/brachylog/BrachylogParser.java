@@ -20,7 +20,6 @@ import jpl.Atom;
 import jpl.Compound;
 import jpl.Query;
 import jpl.Term;
-import jpl.Variable;
 
 public abstract class BrachylogParser {
 
@@ -106,9 +105,9 @@ public abstract class BrachylogParser {
 				if(c == '\\') {
 					escapeNextCharacter = true;
 					currentString.append("\\");
-				} else if(c == '"') {
+				} else if(c == '\'') {
 					if(!escapeNextCharacter) {
-						currentString.append("'");
+						currentString.append(c);
 						if(currentVariables.lastElement().isEmpty()) {
 							currentVariables.pop();
 							currentVariables.push(currentString.toString());
@@ -121,7 +120,7 @@ public abstract class BrachylogParser {
 						}
 						currentString.setLength(0);
 					} else {
-						currentString.append("\"");
+						currentString.append(c);
 						escapeNextCharacter = false;
 					}
 				} else {
@@ -131,7 +130,7 @@ public abstract class BrachylogParser {
 			
 			//INLINE PROLOG
 			else if(readingInlineProlog) {
-				if(c == '\'') {
+				if(c == '`') {
 					readingInlineProlog = false;
 				} else {
 					currentRule.append(c);	
@@ -193,8 +192,8 @@ public abstract class BrachylogParser {
 				}
 				
 				//START STRING
-				if(c == '"') {
-					currentString.append("'");
+				if(c == '\'') {
+					currentString.append(c);
 				}
 				
 				//START ARGS
@@ -332,7 +331,7 @@ public abstract class BrachylogParser {
 				}
 				
 				//START INLINE PROLOG
-				else if(c == '\'') {
+				else if(c == '`') {
 					currentVariables.pop();
 					currentVariables.push("");
 					currentRule.append(",\n    ");
@@ -529,10 +528,28 @@ public abstract class BrachylogParser {
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 					
+					//PERMUTE
+					else if(c == 'p') {
+						predicatesUsed.put("p", BrachylogPredicates.pPermute());
+						currentRule.append(",\n    " + Constants.P_PERMUTE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					}
+					
 					//REVERSE
 					else if(c == 'r') {
 						predicatesUsed.put("r", BrachylogPredicates.pReverse());
 						currentRule.append(",\n    " + Constants.P_REVERSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					}
+					
+					//SORT
+					else if(c == 's') {
+						predicatesUsed.put("p", BrachylogPredicates.pSort());
+						currentRule.append(",\n    " + Constants.P_SORT + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
@@ -579,19 +596,9 @@ public abstract class BrachylogParser {
 			
 		    Query consultQuery = new Query("consult", new Term[] {new Atom(Constants.PROLOG_FILE)});
 		    if(consultQuery.hasSolution()) {
-		    	Term inputTerm;
-		    	Term outputTerm;
-		    	if(input.matches("[A-Z]+") || input.matches("_")) {
-		    		inputTerm = new Variable(input);
-		    	} else {
-		    		inputTerm = new Atom(input);
-		    	}
-		    	if(output.matches("[A-Z]+") || output.matches("_")) {
-		    		outputTerm = new Variable(output);
-		    	} else {
-		    		outputTerm = new Atom(output);
-		    	}
-		    	
+		    	Term inputTerm = parseArg(input);
+		    	Term outputTerm = parseArg(output);
+
 		    	Query mainQuery = new Query(new Compound(Constants.P_MAIN, new Term[] {inputTerm, outputTerm}));
 		    	boolean noNewSolution = true;
 		    	while(mainQuery.hasMoreSolutions()) {
@@ -628,6 +635,30 @@ public abstract class BrachylogParser {
 		    }
 		}
 	}
+	
+	
+	private static Term parseArg(String arg) {
+		Term term;
+		String[] argSplit = arg.split(":");
+		
+		if(argSplit.length == 1) {
+			term = jpl.Util.textToTerm(arg);
+		} else {
+			StringBuilder changedArg = new StringBuilder();
+			changedArg.append("[");
+			for(String s : argSplit) {
+				if(!s.equals("")) {
+					changedArg.append(s);
+					changedArg.append(",");
+				}
+			}
+			changedArg.deleteCharAt(changedArg.length() - 1);
+			changedArg.append("]");
+			term = jpl.Util.textToTerm(changedArg.toString());
+		}
+    	return term;
+	}
+	
 	
 	private static void savePrologToFile(String program) throws Exception {
 		PrintWriter writer = new PrintWriter(Constants.PROLOG_FILE);

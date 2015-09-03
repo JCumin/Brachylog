@@ -104,6 +104,30 @@ public abstract class BrachylogPredicates {
 		return s;
 	}
 	
+	public static String pPermute() {
+
+		String s = "\n"
+				+ Constants.P_PERMUTE + "(X,Y) :-\n"
+				+ "    string(X),!,\n"
+				+ "    string_codes(X,C),\n"
+				+ "    permutation(C,D),\n"
+				+ "    string_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    number(X),!,\n"
+				+ "    number_codes(X,C),\n"
+				+ "    permutation(C,D),\n"
+				+ "    number_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    atom(X),!,\n"
+				+ "    atom_codes(X,C),\n"
+				+ "    permutation(C,D),\n"
+				+ "    atom_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    permutation(X,Y).\n";
+
+		return s;
+	}
+	
 	
 	public static String pReverse() {
 		
@@ -127,6 +151,32 @@ public abstract class BrachylogPredicates {
 				+ "    reverse(X,Y).\n";
 		return s;
 	}
+	
+
+	public static String pSort() {
+
+		String s = "\n"
+				+ Constants.P_SORT + "(X,Y) :-\n"
+				+ "    string(X),!,\n"
+				+ "    string_codes(X,C),\n"
+				+ "    msort(C,D),\n"
+				+ "    string_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    number(X),!,\n"
+				+ "    number_codes(X,C),\n"
+				+ "    msort(C,D),\n"
+				+ "    number_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    atom(X),!,\n"
+				+ "    atom_codes(X,C),\n"
+				+ "    msort(C,D),\n"
+				+ "    atom_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    msort(X,Y).\n";
+
+		return s;
+	}
+	
 	
 	public static String pCallPredicate() {
 		

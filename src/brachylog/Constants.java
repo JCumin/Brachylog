@@ -11,13 +11,16 @@ public abstract class Constants {
 	public static final String P_ENUMERATE				= "brachylog_enumerate";
 	public static final String P_HEAD					= "brachylog_head";
 	public static final String P_LENGTH					= "brachylog_length";
+	public static final String P_PERMUTE				= "brachylog_permute";
 	public static final String P_REVERSE 				= "brachylog_reverse";
+	public static final String P_SORT					= "brachylog_sort";
 	public static final String P_CALLPREDICATE			= "brachylog_call_predicate";
 
 
 	//VARIABLES
 	public static final String V_INPUT 					= "Input";
 	public static final String V_OUTPUT 				= "Output";
+	
 	
 	//FILES
 	public static final String PROLOG_FILE				= "compiled_brachylog.pl";
