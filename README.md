@@ -44,7 +44,7 @@ Numbers consist of characters `0` to `9`. Floats are written with a period `.` a
 ### `A:B:[C:D]:E` -Lists
 
 Lists' elements are chained with a colon `:`. Sublists can be added using an opening square bracket `[` and a closing square bracket `]`. Brackets are optional for the base list, e.g. `A:[B]:C` and `[A:[B]:C]` are the same. One can create a list with the current variable, e.g. `A l:42` will create the list `[L:42]` where `L` is the length of `A`.
-Note that `A l B:42` will first unify `B` with the length of `A`, and then create the list `[B:42]`. The empty list is `[]`. You cannot put spaces around `[`,`]` or `:`.
+Note that `A l B:42` will first unify `B` with the length of `A`, and then create the list `[B:42]`. The empty list is `q`. You cannot put spaces around `[`,`]` or `:`.
 
 ### `?` - Input
 
@@ -97,7 +97,7 @@ There are 6 basic arithmetic operators: `+`, `-`, `*`, `/`, `^` and `%` (additio
 
 **Arithmetic expressions are not evaluated automatically**. That is, `5*(3+7)` is not automatically evaluated to `50`. To evaluate arithmetic expressions, one must call the predicate `A = Z` which will attempt to unify `Z` with the evaluation of `A`.
 
-Parentheses can be used, although it can be tricky in some situations. For instance, the program `&(2+3)*5=.`, which unifies the Output with the result of `(2+3)*5` does not actually work, because the parentheses here are considered to be execution control parentheses, and not part of an arithmetic expression. A workaround for this is to rewrite the program as such: `&:(2+3)*5h=.`. Inserting the expression in a list, and then taking the head of the list will give the correctly bracketed expression. Another solution is to simply move parts of the expression so that it does not start with a parenthesis, e.g. `&5*(2+3)=.`. Ultimately, you can avoid parentheses problems in arithmetic expressions as long as any opening parenthesis is preceded by either a colon `:` or an arithmetic operator (`+`, `-`, `*`, `/`, `^` or `%`).
+Parentheses can be used, although it can be tricky in some situations. For instance, the program `,(2+3)*5=.`, which unifies the Output with the result of `(2+3)*5` does not actually work, because the parentheses here are considered to be execution control parentheses, and not part of an arithmetic expression. A workaround for this is to rewrite the program as such: `,:(2+3)*5h=.`. Inserting the expression in a list, and then taking the head of the list will give the correctly bracketed expression. Another solution is to simply move parts of the expression so that it does not start with a parenthesis, e.g. `&5*(2+3)=.`. Ultimately, you can avoid parentheses problems in arithmetic expressions as long as any opening parenthesis is preceded by either a colon `:` or an arithmetic operator (`+`, `-`, `*`, `/`, `^` or `%`).
 
 
 #Predicates and Rules
