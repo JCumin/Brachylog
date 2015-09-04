@@ -33,9 +33,9 @@ The equivalent Prolog program, without the implicit variables, is:
 
 Any uppercase letter is a variable identifier.
 
-### `'Exemple'` - Strings
+### `"Exemple"` - Strings
 
-Strings are opened and closed with single quotes `'`. `\` will escape the following character.
+Strings are opened and closed with double quotes `"`. `\` will escape the following character.
 
 ### `12345.67890` - Numbers
 
@@ -156,7 +156,7 @@ True when `Z` is the concatenation of the elements of list `A`. Works on lists o
 
 ### `A e Z` - Enumerate
 
-If `A = [I,J]` where `I` and `J` are two integers, and with `I <= J`, then `Z` will be successively bound to integers between `I` and `J` (those two bounds included). That is, it will first be unified with `I`, and if backtracking occurs and comes back to this predicate, it will unify `Z` with `I + 1`, etc. up to `J`, after which the predicate will fail.
+If `A = [I:J]` where `I` and `J` are two integers, and with `I <= J`, then `Z` will be successively bound to integers between `I` and `J` (those two bounds included). That is, it will first be unified with `I`, and if backtracking occurs and comes back to this predicate, it will unify `Z` with `I + 1`, etc. up to `J`, after which the predicate will fail.
 
 If `A` is a string, the same thing happens except `Z` is successively bound to each character of `A`.
 
@@ -167,6 +167,14 @@ True when Z is the head of `A` (i.e. the first element). Works on lists, numbers
 ### `A l Z` - Length
 
 True when `Z` is the length of `A`. Works on lists, numbers, strings.
+
+### `A m Z` - Member
+
+If `A = [L:I]`, true if `Z` is the element of `L` at index `I` (0-based).
+
+If `A = [L:I:R]`, true if `Z` is the element of `L` at index `I` (0-based) and if `R` is the list `L` minus the element at index `I`.
+
+Works only on lists for the moment.
 
 ### `A p Z` - Permute
 
@@ -179,6 +187,16 @@ True if `Z` is `A` reversed. Works on lists, numbers, strings.
 ### `A s Z` - Sort
 
 True if `Z` is `A` sorted. Works on lists, numbers, strings.
+
+### `A w Z` - Write
+
+If `A = [List:Format]`, where `List` is a list and `Format` is a string, this predicate is equivalent to the SWI-Prolog predicate [`format/2`](http://www.swi-prolog.org/pldoc/man?predicate=format/2), i.e. `format(Format,List)`, which will print to `STDOUT` the elements of `A` according to the format of `Format`. `Z` is then unified with `List`.
+
+Otherwise (i.e. `A` is a number or a "normal" list or a string), `A` is printed to `STDOUT` using SWI-Prolog predicate [write/1](http://www.swi-prolog.org/pldoc/doc_for?object=write/1). `Z` is then unified with `A`.
+
+### `[A:Elem] x Z` - Xterminate
+
+True if `Z` is `A` minus all elements of `A` that unify with `Elem` (so it essentially deletes all occurrences of `Elem` from `A`). Works on lists, numbers (deletes digits) and strings (deletes characters).
 
 ### `Arg1:...:Argn:I & Z` - Call Sub-predicate
 
