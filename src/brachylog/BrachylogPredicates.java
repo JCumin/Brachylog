@@ -104,6 +104,23 @@ public abstract class BrachylogPredicates {
 		return s;
 	}
 	
+	
+	public static String pMember() {
+
+        String s = "\n"
+                + Constants.P_MEMBER + "(X,Y) :-\n"
+                + "    X = [List,Index],!,\n"
+                + "    Y = Element,\n"
+                + "    nth0(Index,List,Element)\n"
+                + "    ;\n"
+                + "    X = [List,Index,Rest],!,\n"
+                + "    Y = Element,\n"
+                + "    nth0(Index,List,Element,Rest).\n";
+                        
+        return s;
+	}
+	
+	
 	public static String pPermute() {
 
 		String s = "\n"
@@ -175,6 +192,56 @@ public abstract class BrachylogPredicates {
 				+ "    msort(X,Y).\n";
 
 		return s;
+	}
+	
+	
+	public static String pWrite() {
+
+        String s = "\n"
+                + Constants.P_WRITE + "(X,Y) :-\n"
+                + "    X = [List,Format],\n"
+                + "    is_list(List),\n"
+                + "    string(Format),!,\n"
+                + "    format(Format,List),\n"
+                + "    flush_output,\n"
+                + "    Y = List\n"
+                + "    ;\n"
+                + "    write(X),\n"
+                + "    flush_output,\n"
+                + "    Y = X.\n";
+        
+        return s;
+	}
+	
+	
+	public static String pXterminate() {
+
+        String s = "\n"
+                + Constants.P_XTERMINATE + "(X,Y) :-\n"
+                + "    X = [List,Elem],\n"
+                + "    (\n"
+                + "    string(List),!,\n"
+                + "    string_codes(List,C),\n"
+                + "    string_codes(Elem,[F|[]]),\n"
+                + "    delete(C,F,D),\n"
+                + "    string_codes(Y,D)\n"
+                + "    ;\n"
+                + "    number(List),!,\n"
+                + "    number_codes(List,C),\n"
+                + "    number_codes(Elem,[F|[]]),\n"
+                + "    delete(C,F,D),\n"
+                + "    number_codes(Y,D)\n"
+                + "    ;\n"
+                + "    atom(List),!,\n"
+                + "    atom_codes(List,C),\n"
+                + "    atom_codes(Elem,[F|[]]),\n"
+                + "    delete(C,F,D),\n"
+                + "    atom_codes(Y,D)\n"
+                + "    ;\n"
+                + "    delete(List,Elem,Y)\n"
+                + "    ).\n";
+
+        return s;
 	}
 	
 	
