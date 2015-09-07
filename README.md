@@ -198,6 +198,6 @@ Otherwise (i.e. `A` is a number or a "normal" list or a string), `A` is printed 
 
 True if `Z` is `A` minus all elements of `A` that unify with `Elem` (so it essentially deletes all occurrences of `Elem` from `A`). Works on lists, numbers (deletes digits) and strings (deletes characters).
 
-### `Arg1:...:Argn:I & Z` - Call Sub-predicate
+### `[Arg1:...:Argn:I] & Z` - Call Sub-predicate
 
 True when `Z` is the Output of the `I`th sub-predicate with Input = `[Arg1:...:Argn]`.
