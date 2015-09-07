@@ -102,7 +102,7 @@ Parentheses can be used, although it can be tricky in some situations. For insta
 
 #Predicates and Rules
 
-A Brachylog program starts in the first rule of the predicate `brachylog_main`. New rules for the same predicate can be added using `|`. The Input is implicitly available after `|`. Variables are not shared between rules. Rules are translated to Prolog in the same order they have in Brachylog (therefore Prolog will attempt to unify the leftmost Brachylog rule first).
+A Brachylog program starts in the first rule of the predicate `brachylog_main`. New rules for the same predicate can be added using `|`. The Input is implicitly available after `|`. Variables are not shared between rules. Rules are translated to Prolog in the same order they appear in Brachylog (therefore Prolog will attempt to unify the leftmost Brachylog rule first).
 For example, the program `q,"Empty".|,"Not empty".` is translated in Prolog as:
 
     brachylog_main(Input,Output) :-  
