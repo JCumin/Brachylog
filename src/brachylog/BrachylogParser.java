@@ -122,7 +122,11 @@ public abstract class BrachylogParser {
 						escapeNextCharacter = false;
 					}
 				} else {
-					currentString.append(c);
+					if(c == '\n') {
+						currentString.append("\\").append("n");
+					} else {
+						currentString.append(c);	
+					}
 				}
 			} 
 			
@@ -596,6 +600,10 @@ public abstract class BrachylogParser {
 		
 		StringBuilder prologProgram = new StringBuilder();
 		
+		//Deactivates singleton variabels warnings (that we get on all the unused implicit variables)
+		prologProgram.append(":- style_check(-singleton).\n\n");
+		
+		//Concatenate all rules of all predicates one after the other
 		for(List<StringBuilder> l : predicatesRules) {
 			for(StringBuilder s : l) {
 				prologProgram.append(s.toString() + "\n");
@@ -636,6 +644,8 @@ public abstract class BrachylogParser {
 				    			System.out.println(t.getKey() + " = " + t.getValue());
 			    			}
 			    		}	
+		    		} else {
+		    			System.err.println("\nTrue.");
 		    		}
 		    		if(mainQuery.hasMoreSolutions()) {
 			    		BufferedReader consoleIn = new BufferedReader(new InputStreamReader(System.in));
@@ -657,7 +667,7 @@ public abstract class BrachylogParser {
 		    		}
 		    	}
 		    	if(noNewSolution) {
-		    		System.out.println("False.");
+		    		System.err.println("\nFalse.");
 		    	}
 		    	
 		    } else {
@@ -683,7 +693,7 @@ public abstract class BrachylogParser {
 				}
 			}
 			changedArg.deleteCharAt(changedArg.length() - 1);
-			changedArg.append("]");
+			changedArg.append("]");	
 			term = org.jpl7.Util.textToTerm(changedArg.toString());
 		}
     	return term;
