@@ -152,6 +152,10 @@ True when `Z` is the tail of `A` (i.e. `A` minus the first element). Works on li
 
 True when `Z` is the concatenation of the elements of list `A`. Works on lists of lists, lists of numbers, lists of strings. All elements of `A` must be of identical type.
 
+### `A d Z` - Duplicates
+
+True when `Z` is `A` with only the left-most copy of each distinct element (therefore `Z` does not contain any duplicates). Works on lists, numbers, strings.
+
 ### `A e Z` - Enumerate
 
 If `A = [I:J]` where `I` and `J` are two integers, and with `I <= J`, then `Z` will be successively bound to integers between `I` and `J` (those two bounds included). That is, it will first be unified with `I`, and if backtracking occurs and comes back to this predicate, it will unify `Z` with `I + 1`, etc. up to `J`, after which the predicate will fail.
@@ -174,6 +178,10 @@ If `A = [L:I:R]`, true if `Z` is the element of `L` at index `I` (0-based) and i
 
 Works on lists, numbers (WIP, the decimal dot is considered to be an element of the number), strings.
 
+### `A o Z` - Order
+
+True if `Z` is `A` sorted in increasing order. Works on lists, numbers, strings.
+
 ### `A p Z` - Permute
 
 True if `Z` is a permutation of `A`. Works on lists, numbers (permutation of digits) and strings (permutation of characters). Backtracking on this predicate will iterate over all possible permutations.
@@ -181,10 +189,6 @@ True if `Z` is a permutation of `A`. Works on lists, numbers (permutation of dig
 ### `A r Z` - Reverse
 
 True if `Z` is `A` reversed. Works on lists, numbers, strings.
-
-### `A s Z` - Sort
-
-True if `Z` is `A` sorted. Works on lists, numbers, strings.
 
 ### `A w Z` - Write
 
