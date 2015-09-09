@@ -395,10 +395,12 @@ public abstract class BrachylogParser {
 					}
 					
 					String predicateName = Constants.P_SUBPREDICATE + predicatesRules.size();
-					currentRule.append(",\n    " + predicateName + "(" + currentVariables.lastElement() + ",V" + variableCounter + ")");
-					currentVariables.pop();
-					currentVariables.push("V" + variableCounter++);
-					variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					if(!currentVariables.lastElement().equals("")) {
+						currentRule.append(",\n    " + predicateName + "(" + currentVariables.lastElement() + ",V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);	
+					}
 					
 					callingRule.push(new int[] {currentPredicateIndex, currentRuleIndex});
 					StringBuilder newRule = new StringBuilder();
@@ -516,6 +518,15 @@ public abstract class BrachylogParser {
 					else if(c == 'e') {
 						predicatesUsed.put("e", BrachylogPredicates.pEnumerate());
 						currentRule.append(",\n    " + Constants.P_ENUMERATE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					}
+					
+					//FINDALL
+					else if(c == 'f') {
+						predicatesUsed.put("f", BrachylogPredicates.pFindAll());
+						currentRule.append(",\n    " + Constants.P_FINDALL + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
