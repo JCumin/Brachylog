@@ -103,6 +103,7 @@ Parentheses can be used, although it can be tricky in some situations. For insta
 #Predicates and Rules
 
 A Brachylog program starts in the first rule of the predicate `brachylog_main`. New rules for the same predicate can be added using `|`. The Input is implicitly available after `|`. Variables are not shared between rules. Rules are translated to Prolog in the same order they appear in Brachylog (therefore Prolog will attempt to unify the leftmost Brachylog rule first).
+
 For example, the program `q,"Empty".|,"Not empty".` is translated in Prolog as:
 
     brachylog_main(Input,Output) :-  
@@ -113,8 +114,9 @@ For example, the program `q,"Empty".|,"Not empty".` is translated in Prolog as:
         Output = "Not empty".        %            ,"Not empty".
         
 
-Sub-predicates can be defined as well, using `{` to start the definition of one and `}` to end it. When defining a sub-predicate, the current variable to the left of the opening `{` will be used as Input and the variable implicitly available after the closing `}` will be the Output. Multiple rules can be defined inside a Predicate, exactly like in `brachylog_main`. Sub-predicates can be defined inside sub-predicates.
+Sub-predicates can be defined as well, using `{` to start the definition of one and `}` to end it. When defining a sub-predicate, the current variable to the left of the opening `{` will be used as Input and the variable implicitly available after the closing `}` will be the Output (To avoid calling the predicate where it is defined, simply append a `,` - And before the opening brace). Multiple rules can be defined inside a Predicate, exactly like in `brachylog_main`. Sub-predicates can be defined inside sub-predicates.
 Sub-predicates have the name `brachylog_subpred_N`, where `N` is an integer. The 0th predicate is `brachylog_main` and subsequent sub-predicates are numbered one after the other, from left to right. Calling a sub-predicate can be done using the built-in predicate *`&` - Call Sub-predicate*, which requires the sub-predicate number.
+
 For example, the program `q|h{q|(h1;?h0),?b:1&},?b:0&`, which returns true if every sublist of an Input list contains only zeros and ones, and false otherwise, is translated in Prolog as:
 
     brachylog_main(Input,Output) :-            
@@ -161,6 +163,18 @@ True when `Z` is `A` with only the left-most copy of each distinct element (ther
 If `A = [I:J]` where `I` and `J` are two integers, and with `I <= J`, then `Z` will be successively bound to integers between `I` and `J` (those two bounds included). That is, it will first be unified with `I`, and if backtracking occurs and comes back to this predicate, it will unify `Z` with `I + 1`, etc. up to `J`, after which the predicate will fail.
 
 If `A` is a string, the same thing happens except `Z` is successively bound to each character of `A`.
+
+### `A f Z` - Findall
+
+True if `Z` is a list of all possible variable bindings for which the `A`th sub-predicate will succeed given one of them as Input.
+
+For example, `,{,"golf":Im?}1f.` will ouput a list of all characters of the string `"golf"`:
+
+    ,                 § Prevents Input to be used as Input of the next predicate declaration
+     {                § Defines predicate 1
+      ,"golf":I       § Creates a list that contains the string "golf" and the variable I
+               m?}    § Unifies Input with the I-th character of "golf"
+                  1f. § Finds all Inputs of predicate 1 for which it succeeds (that is, every character of "golf")
 
 ### `A h Z` - Head
 
