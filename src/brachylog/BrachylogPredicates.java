@@ -94,6 +94,15 @@ public abstract class BrachylogPredicates {
 	}
 	
 	
+	public static String pFindAll() {
+		String s = "\n"
+				+ Constants.P_FINDALL + "(X,Y) :-\n"
+				+ "    findall(A," + Constants.P_CALLPREDICATE + "([A,X],_), Y).\n";
+		
+		return s;
+	}
+	
+	
 	public static String pHead() {
 		
 		String s = "\n"
