@@ -172,7 +172,7 @@ If `A = [L:I]`, true if `Z` is the element of `L` at index `I` (0-based).
 
 If `A = [L:I:R]`, true if `Z` is the element of `L` at index `I` (0-based) and if `R` is the list `L` minus the element at index `I`.
 
-Works only on lists for the moment.
+Works on lists, numbers (WIP, the decimal dot is considered to be an element of the number), strings.
 
 ### `A p Z` - Permute
 
