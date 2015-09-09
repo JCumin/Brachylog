@@ -109,16 +109,40 @@ public abstract class BrachylogPredicates {
 
         String s = "\n"
                 + Constants.P_MEMBER + "(X,Y) :-\n"
+                + "    X = [String,Index],\n"
+                + "    string(String),!,\n"
+                + "    string_codes(String,CString),\n"
+                + "    nth0(Index,CString,C),\n"
+                + "    string_codes(Y,[C]),\n"
+                + "    ;\n"
+                + "    X = [String,Index,Rest],\n"
+                + "    string(String),!,\n"
+                + "    string_codes(String,CString),\n"
+                + "    nth0(Index,CString,C,CRest),\n"
+                + "    string_codes(Rest,CRest),\n"
+                + "    string_codes(Y,[C])\n"
+                + "    ;\n"
+                + "    X = [Number,Index],\n"
+                + "    number(Number),!,\n"
+                + "    number_codes(Number,CNumber),\n"
+                + "    nth0(Index,CNumber,C),\n"
+                + "    number_codes(Y,[C]),\n"
+                + "    ;\n"
+                + "    X = [Number,Index,Rest],\n"
+                + "    number(Number),!,\n"
+                + "    number_codes(Number,CNumber),\n"
+                + "    nth0(Index,CNumber,C,CRest),\n"
+                + "    string_codes(Rest,CRest),\n"
+                + "    string_codes(Y,[C])\n"
+                + "    ;\n"
                 + "    X = [List,Index],!,\n"
-                + "    Y = Element,\n"
-                + "    nth0(Index,List,Element)\n"
+                + "    nth0(Index,List,Y)\n"
                 + "    ;\n"
                 + "    X = [List,Index,Rest],!,\n"
-                + "    Y = Element,\n"
-                + "    nth0(Index,List,Element,Rest).\n";
+                + "    nth0(Index,List,Y,Rest).\n";
                         
         return s;
-	}
+    }
 	
 	
 	public static String pPermute() {
