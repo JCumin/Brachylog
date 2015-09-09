@@ -6,7 +6,7 @@ Uses SWI-Prolog as Prolog engine.
 
 #Program structure
 
-*(We assume that the reader has basic knowledge of Prolog in the following)*
+*(We assume that the reader has basic knowledge of Prolog in the following. We will use `§` to denote comments in Brachylog code, although this character is not actually recognized by the Brachylog parser as a comment.)*
 
 A brachylog program is always constitued of a main predicate which has two arguments called Input and Output. In general, every predicate in Brachylog (built-ins included) have one Input and one Output argument. The program is entirely written on one line, and things get processed left to right. Predicates call will use the variable immediatly to the left of the predicate as Input and the variable immediatly to the right of the predicate as Output. Implicit variables are used when chaining predicates. Logical *and* and Unification are mostly implicit in programs as well. 
 
