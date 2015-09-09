@@ -54,6 +54,29 @@ public abstract class BrachylogPredicates {
 		return s;
 	}
 	
+	public static String pDuplicates() {
+		
+		String s = "\n"
+				+ Constants.P_DUPLICATES + "(X,Y) :-\n"
+				+ "    string(X),!,\n"
+				+ "    string_codes(X,C),\n"
+				+ "    list_to_set(C,S),\n"
+				+ "    string_codes(Y,S)\n"
+				+ "    ;\n"
+				+ "    number(X),!,\n"
+				+ "    number_codes(X,C),\n"
+				+ "    list_to_set(C,S),\n"
+				+ "    number_codes(Y,S)\n"
+				+ "    ;\n"
+				+ "    atom(X),!,\n"
+				+ "    atom_codes(X,C),\n"
+				+ "    list_to_set(C,S),\n"
+				+ "    atom_codes(Y,S)\n"
+				+ "    ;"
+				+ "    list_to_set(X,Y).\n";
+		
+		return s;
+	}
 	
 	public static String pEnumerate() {
 		
@@ -145,6 +168,31 @@ public abstract class BrachylogPredicates {
     }
 	
 	
+	public static String pOrder() {
+
+		String s = "\n"
+				+ Constants.P_ORDER + "(X,Y) :-\n"
+				+ "    string(X),!,\n"
+				+ "    string_codes(X,C),\n"
+				+ "    msort(C,D),\n"
+				+ "    string_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    number(X),!,\n"
+				+ "    number_codes(X,C),\n"
+				+ "    msort(C,D),\n"
+				+ "    number_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    atom(X),!,\n"
+				+ "    atom_codes(X,C),\n"
+				+ "    msort(C,D),\n"
+				+ "    atom_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    msort(X,Y).\n";
+
+		return s;
+	}
+	
+	
 	public static String pPermute() {
 
 		String s = "\n"
@@ -190,31 +238,6 @@ public abstract class BrachylogPredicates {
 				+ "    atom_codes(Y,H)\n"
 				+ "    ;\n"
 				+ "    reverse(X,Y).\n";
-		return s;
-	}
-	
-
-	public static String pSort() {
-
-		String s = "\n"
-				+ Constants.P_SORT + "(X,Y) :-\n"
-				+ "    string(X),!,\n"
-				+ "    string_codes(X,C),\n"
-				+ "    msort(C,D),\n"
-				+ "    string_codes(Y,D)\n"
-				+ "    ;\n"
-				+ "    number(X),!,\n"
-				+ "    number_codes(X,C),\n"
-				+ "    msort(C,D),\n"
-				+ "    number_codes(Y,D)\n"
-				+ "    ;\n"
-				+ "    atom(X),!,\n"
-				+ "    atom_codes(X,C),\n"
-				+ "    msort(C,D),\n"
-				+ "    atom_codes(Y,D)\n"
-				+ "    ;\n"
-				+ "    msort(X,Y).\n";
-
 		return s;
 	}
 	
