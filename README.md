@@ -170,9 +170,9 @@ True if `Z` is a list of all possible variable bindings for which the `A`th sub-
 
 For example, `,{,"golf":Im?}1f.` will ouput a list of all characters of the string `"golf"`:
 
-    ,                 § Prevents Input to be used as Input of the next predicate declaration
+    ,                 § Prevents immediate call of the next predicate definition
      {                § Defines predicate 1
-      ,"golf":I       § Creates a list that contains the string "golf" and the variable I
+      ,"golf":I       § Creates a list that contains the string "golf" and the unbounded variable I
                m?}    § Unifies Input with the I-th character of "golf"
                   1f. § Finds all Inputs of predicate 1 for which it succeeds (that is, every character of "golf")
 
