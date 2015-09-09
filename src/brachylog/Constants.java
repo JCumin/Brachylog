@@ -8,13 +8,14 @@ public abstract class Constants {
 	
 	public static final String P_BEHEAD 				= "brachylog_behead";
 	public static final String P_CONCATENATE			= "brachylog_concatenate";
+	public static final String P_DUPLICATES				= "brachylog_duplicates";
 	public static final String P_ENUMERATE				= "brachylog_enumerate";
 	public static final String P_HEAD					= "brachylog_head";
 	public static final String P_LENGTH					= "brachylog_length";
 	public static final String P_MEMBER					= "brachylog_member";
+	public static final String P_ORDER					= "brachylog_order";
 	public static final String P_PERMUTE				= "brachylog_permute";
 	public static final String P_REVERSE 				= "brachylog_reverse";
-	public static final String P_SORT					= "brachylog_sort";
 	public static final String P_WRITE					= "brachylog_write";
 	public static final String P_XTERMINATE				= "brachylog_xterminate";
 	public static final String P_CALLPREDICATE			= "brachylog_call_predicate";
