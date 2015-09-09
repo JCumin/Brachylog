@@ -353,10 +353,7 @@ public abstract class BrachylogParser {
 				
 				//ARITHMETIC EQUALITY
 				else if(c == '=') {
-					if(currentVariables.lastElement().contains(".") || currentVariables.lastElement().contains("/")) {
-						currentRule.append(",\n    ");
-					}
-					currentRule.append(",\n    V" + variableCounter + " #= " + currentVariables.lastElement());
+					currentRule.append(",\n    V" + variableCounter + " is " + currentVariables.lastElement());
 					currentVariables.pop();
 					currentVariables.push("V" + variableCounter++);
 					variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
@@ -614,7 +611,6 @@ public abstract class BrachylogParser {
 		
 		//Deactivates singleton variabels warnings (that we get on all the unused implicit variables)
 		prologProgram.append(":- style_check(-singleton).\n");
-		prologProgram.append(":- use_module(library(clpfd)).\n");
 		prologProgram.append("\n");
 		
 		//Concatenate all rules of all predicates one after the other
