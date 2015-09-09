@@ -115,7 +115,7 @@ For example, the program `q,"Empty".|,"Not empty".` is translated in Prolog as:
 
 Sub-predicates can be defined as well, using `{` to start the definition of one and `}` to end it. When defining a sub-predicate, the current variable to the left of the opening `{` will be used as Input and the variable implicitly available after the closing `}` will be the Output. Multiple rules can be defined inside a Predicate, exactly like in `brachylog_main`. Sub-predicates can be defined inside sub-predicates.
 Sub-predicates have the name `brachylog_subpred_N`, where `N` is an integer. The 0th predicate is `brachylog_main` and subsequent sub-predicates are numbered one after the other, from left to right. Calling a sub-predicate can be done using the built-in predicate *`&` - Call Sub-predicate*, which requires the sub-predicate number.
-For example, the program `q|h{q|(h1;?h0),?b:[1]c&},?b:[0]c&`, which returns true if every sublist of an Input list contains only zeros and ones, and false otherwise, is translated in Prolog as:
+For example, the program `q|h{q|(h1;?h0),?b:1&},?b:0&`, which returns true if every sublist of an Input list contains only zeros and ones, and false otherwise, is translated in Prolog as:
 
     brachylog_main(Input,Output) :-            
         [] = Input.                            % q
@@ -124,8 +124,7 @@ For example, the program `q|h{q|(h1;?h0),?b:[1]c&},?b:[0]c&`, which returns true
         brachylog_head(Input, V0),             %   h
         brachylog_subpred_1(V0,V1),            %    {...}
         brachylog_behead(Input, V2),           %         ,?b
-        brachylog_concatenate([V2,[0]], V3),   %            :[0]c
-        brachylog_call_predicate(V3, V4).      %                 &
+        brachylog_call_predicate([V2,0], V3).  %            :0&
     
     
     brachylog_subpred_1(Input,Output) :-       % {
@@ -140,8 +139,7 @@ For example, the program `q|h{q|(h1;?h0),?b:[1]c&},?b:[0]c&`, which returns true
         V1 = 0                                 %          0
         ),                                     %           )
         brachylog_behead(Input, V2),           %            ,?b
-        brachylog_concatenate([V2,[1]], V3),   %               :[0]c
-        brachylog_call_predicate(V3, V4).      %                    &}
+        brachylog_call_predicate([V2,1], V3).  %               :1&}
 
 
 #Built-in Predicates
@@ -200,4 +198,8 @@ True if `Z` is `A` minus all elements of `A` that unify with `Elem` (so it essen
 
 ### `[Arg1:...:Argn:I] & Z` - Call Sub-predicate
 
-True when `Z` is the Output of the `I`th sub-predicate with Input = `[Arg1:...:Argn]`.
+True when `Z` is the Output of the `I`th sub-predicate with Input = `[Arg1:...:Argn]`. If there is only one argument (e.g. `Arg:I & Z`), then the predicate is called with Input = `Arg` and not `[Arg]`.
+
+### `A = Z` - Equals
+
+True if `A` is an arithmetic expression that evaluates to `Z`.
