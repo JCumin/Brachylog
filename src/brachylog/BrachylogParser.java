@@ -353,7 +353,10 @@ public abstract class BrachylogParser {
 				
 				//ARITHMETIC EQUALITY
 				else if(c == '=') {
-					currentRule.append(",\n    V" + variableCounter + " is " + currentVariables.lastElement());
+					if(currentVariables.lastElement().contains(".") || currentVariables.lastElement().contains("/")) {
+						currentRule.append(",\n    ");
+					}
+					currentRule.append(",\n    V" + variableCounter + " #= " + currentVariables.lastElement());
 					currentVariables.pop();
 					currentVariables.push("V" + variableCounter++);
 					variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
@@ -503,6 +506,15 @@ public abstract class BrachylogParser {
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 					
+					//DUPLICATES
+					else if(c == 'd') {
+						predicatesUsed.put("d", BrachylogPredicates.pDuplicates());
+						currentRule.append(",\n    " + Constants.P_DUPLICATES + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					}
+					
 					//ENUMERATE
 					else if(c == 'e') {
 						predicatesUsed.put("e", BrachylogPredicates.pEnumerate());
@@ -539,6 +551,15 @@ public abstract class BrachylogParser {
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 					
+					//SORT
+					else if(c == 'o') {
+						predicatesUsed.put("o", BrachylogPredicates.pOrder());
+						currentRule.append(",\n    " + Constants.P_ORDER + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					}
+					
 					//PERMUTE
 					else if(c == 'p') {
 						predicatesUsed.put("p", BrachylogPredicates.pPermute());
@@ -552,15 +573,6 @@ public abstract class BrachylogParser {
 					else if(c == 'r') {
 						predicatesUsed.put("r", BrachylogPredicates.pReverse());
 						currentRule.append(",\n    " + Constants.P_REVERSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
-						currentVariables.pop();
-						currentVariables.push("V" + variableCounter++);
-						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
-					}
-					
-					//SORT
-					else if(c == 's') {
-						predicatesUsed.put("p", BrachylogPredicates.pSort());
-						currentRule.append(",\n    " + Constants.P_SORT + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
@@ -601,7 +613,9 @@ public abstract class BrachylogParser {
 		StringBuilder prologProgram = new StringBuilder();
 		
 		//Deactivates singleton variabels warnings (that we get on all the unused implicit variables)
-		prologProgram.append(":- style_check(-singleton).\n\n");
+		prologProgram.append(":- style_check(-singleton).\n");
+		prologProgram.append(":- use_module(library(clpfd)).\n");
+		prologProgram.append("\n");
 		
 		//Concatenate all rules of all predicates one after the other
 		for(List<StringBuilder> l : predicatesRules) {
