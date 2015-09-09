@@ -259,7 +259,12 @@ public abstract class BrachylogPredicates {
 				+ "    ;\n"
 				+ "    atom_concat(" + Constants.P_SUBPREDICATE + ",N,Name)\n"
 				+ "    ),\n"
-				+ "    call(Name,Args,Y).\n";
+				+ "    (\n"
+				+ "    Args = [UniqueArg],!,\n"
+				+ "    call(Name,UniqueArg,Y)\n"
+				+ "    ;\n"
+				+ "    call(Name,Args,Y)\n"
+				+ "    ).\n";
 				
 		return s;
 	}
