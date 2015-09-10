@@ -106,7 +106,7 @@ Note that using it on built-in predicates is usually not effective because of im
         \+ V0 is 2,  % ,2'=
         V0 = 3.      %     3
 
-As seen above, `2'=3` gets interpreted as "Prove that 2 cannot be equal to a non-unified variable `V0`, and then prove that 3 can be unified with `V0`". The first one is obviously wrong, which is why this programs returns `False.` and not `True.` as one would expect.
+As seen above, `2'=3` gets interpreted as "Prove that 2 cannot be equal to a non-unified variable `V0`, and then prove that 3 can be unified with `V0`". The first one is obviously wrong, which is why this program returns `False.` and not `True.` as one would expect.
 
 To get the desired result, one can either use parentheses: `,'(2=3)`, or predicate decalaration: `'{,2=3}`.
 
