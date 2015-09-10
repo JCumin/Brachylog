@@ -4,13 +4,13 @@ A Prolog-based Code Golf programming language
 Currently in development.
 Uses SWI-Prolog as Prolog engine.
 
-#How to use
+##How to use
 
 Get the whole repository. It contains an Eclipse project for the Brachylog interpreter. You have to add the variable `PATH` with value `${project_loc:Brachylog}/lib` in the environment tab of the run configuration for the interpreter to fully work. **You need to have SWI-Prolog installed on your computer** (version 7 at least). The Brachylog code, the input and the output are set in the class `Main` for the moment.
 
 If you have troubles getting the interpreter to work on a simple Brachylog program (e.g. `,"This works!"w`), it most likely comes from the JPL libraries used to call SWI-Prolog from the Java program (Check that you correctly set the `PATH` variable). A file `compiled_brachylog.pl` is generated at the root of the project when you run the application, which contains the Prolog equivalent of your Brachylog code. You can consult this in a normal SWI-Prolog interpreter and run `brachylog_main(Input,Output).` to get the result of yout Brachylog program, as an alternative to having the result in the Java application.
 
-#Program structure
+##Program structure
 
 *(We assume that the reader has basic knowledge of Prolog in the following. We will use `§` to denote comments in Brachylog code, although this character is not actually recognized by the Brachylog parser as a comment.)*
 
@@ -33,7 +33,7 @@ The equivalent Prolog program, without the implicit variables, is:
 
 --------------------------------------
 
-#Types and Variables
+##Types and Variables
 
 ### `[A-Z]` - Variables
 
@@ -66,7 +66,7 @@ Note that `A l B:42` will first unify `B` with the length of `A`, and then creat
 `q` is a reserved variable name representing the empty list `[]`.
 
 
-#Execution control
+##Execution control
 
 ### `,` - And
 
@@ -110,7 +110,7 @@ As seen above, `2'=3` gets interpreted as "Prove that 2 cannot be equal to a non
 
 To get the desired result, one can either use parentheses: `,'(2=3)`, or predicate decalaration: `'{,2=3}`.
 
-#Arithmetic
+##Arithmetic
 
 There are 6 basic arithmetic operators: `+`, `-`, `*`, `/`, `^` and `%` (addition, subtraction, multiplication, float division, power and modulo).
 
@@ -119,7 +119,7 @@ There are 6 basic arithmetic operators: `+`, `-`, `*`, `/`, `^` and `%` (additio
 Parentheses can be used, although it can be tricky in some situations. For instance, the program `,(2+3)*5=.`, which unifies the Output with the result of `(2+3)*5` does not actually work, because the parentheses here are considered to be execution control parentheses, and not part of an arithmetic expression. A workaround for this is to rewrite the program as such: `,:(2+3)*5h=.`. Inserting the expression in a list, and then taking the head of the list will give the correctly bracketed expression. Another solution is to simply move parts of the expression so that it does not start with a parenthesis, e.g. `,5*(2+3)=.`. Ultimately, you can avoid parentheses problems in arithmetic expressions as long as any opening parenthesis is preceded by either a colon `:` or an arithmetic operator (`+`, `-`, `*`, `/`, `^` or `%`).
 
 
-#Predicates and Rules
+##Predicates and Rules
 
 A Brachylog program starts in the first rule of the predicate `brachylog_main`. New rules for the same predicate can be added using `|`. The Input is implicitly available after `|`. Variables are not shared between rules. Rules are translated to Prolog in the same order they appear in Brachylog (therefore Prolog will attempt to unify the leftmost Brachylog rule first).
 
@@ -163,7 +163,7 @@ For example, the program `q|h{q|(h1;?h0),?b:1&},?b:0&`, which returns true if ev
         brachylog_call_predicate([V2,1], V3).  %               :1&}
 
 
-#Built-in Predicates
+##Built-in Predicates
 
 ### `A b Z` - Behead
 
