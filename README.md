@@ -16,7 +16,7 @@ If you have troubles getting the interpreter to work on a simple Brachylog progr
 
 A brachylog program is always constitued of a main predicate which has two arguments called Input and Output. In general, every predicate in Brachylog (built-ins included) have one Input and one Output argument. The program is entirely written on one line, and things get processed left to right. Predicates call will use the variable immediatly to the left of the predicate as Input and the variable immediatly to the right of the predicate as Output. Implicit variables are used when chaining predicates. Logical *and* and Unification are mostly implicit in programs as well. 
 
-For example, the program `bArA`, which uses the variable `A`, the built-in predicate `b` - Behead and the built-in predicate `r` - Reverse, will return `true` if its input minus the first element is a palindrome (i.e. is identical to its reverse), and false otherwise. Here is a breakdown of what's happening:
+For example, the program `bArA`, which uses the variable `A`, the built-in predicate `b` - Behead and the built-in predicate `r` - Reverse, will return `True.` if its input minus the first element is a palindrome (i.e. is identical to its reverse), and `False.` otherwise. Here is a breakdown of what's happening:
 
     b     § An implicit variable V0 is unified with Input minus the first element
      A    § Unifies variable A with V0
