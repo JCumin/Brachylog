@@ -4,6 +4,12 @@ A Prolog-based Code Golf programming language
 Currently in development.
 Uses SWI-Prolog as Prolog engine.
 
+#How to use
+
+Get the whole repository. It contains an Eclipse project for the Brachylog interpreter. You have to add the variable `PATH` with value `${project_loc:Brachylog}/lib` in the environment tab of the run configuration for the interpreter to fully work. **You need to have SWI-Prolog installed on your computer** (version 7 at least). The Brachylog code, the input and the output are set in the class `Main` for the moment.
+
+If you have troubles getting the interpreter to work on a simple Brachylog program (e.g. `,"This works!"w`), it most likely comes from the JPL libraries used to call SWI-Prolog from the Java program (Check that you correctly set the `PATH` variable). A file `compiled_brachylog.pl` is generated at the root of the project when you run the application, which contains the Prolog equivalent of your Brachylog code. You can consult this in a normal SWI-Prolog interpreter and run `brachylog_main(Input,Output).` to get the result of yout Brachylog program, as an alternative to having the result in the Java application.
+
 #Program structure
 
 *(We assume that the reader has basic knowledge of Prolog in the following. We will use `§` to denote comments in Brachylog code, although this character is not actually recognized by the Brachylog parser as a comment.)*
@@ -90,6 +96,19 @@ Since Brachylog is still a work in progress, and since there are a lot of differ
 
 For example, `` Y`sum_list(Y,Z)`Z.`` will unify the Output with the sum of the elements in the Input.
 
+### `'` - Not provable
+
+True if the following predicate (a built-in, or predicates contained in parentheses, or a predicate definition) cannot be proven. This is equivalent to Prolog's `\+` operator.
+
+Note that using it on built-in predicates is usually not effective because of implicit variables. For example, the program `,2'=3`, which should output `True.` (because 2 cannot be proven to be equal to 3), actually outputs `False.`. This is how this code is translated to Prolog, which shows the implicit variable :
+
+    brachylog_main(Input,Output) :-
+        \+ V0 is 2,  % ,2'=
+        V0 = 3.      %     3
+
+As seen above, `2'=3` gets interpreted as "Prove that 2 cannot be equal to a non-unified variable `V0`, and then prove that 3 can be unified with `V0`". The first one is obviously wrong, which is why this programs returns `False.` and not `True.` as one would expect.
+
+To get the desired result, one can either use parentheses: `,'(2=3)`, or predicate decalaration: `'{,2=3}`.
 
 #Arithmetic
 
