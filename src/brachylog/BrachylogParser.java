@@ -348,7 +348,7 @@ public abstract class BrachylogParser {
 				}
 				
 				else if(c == '\'') {
-					negateNextPredicate = " \\+ ";
+					negateNextPredicate = "\\+ ";
 					continue;
 				}
 				
