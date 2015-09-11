@@ -147,7 +147,7 @@ public abstract class BrachylogParser {
 					if(currentVariables.lastElement().isEmpty()) {
 						currentVariables.pop();
 						currentVariables.push(String.valueOf(c));
-					} else if(lastCharIsColon) {
+					} else if(lastCharIsColon || lastCharArithmetic || lastCharArithmeticParenthesis) {
 						String s = currentVariables.pop();
 						currentVariables.push(s + c);
 						lastCharIsColon = false;
@@ -348,7 +348,7 @@ public abstract class BrachylogParser {
 				}
 				
 				else if(c == '\'') {
-					negateNextPredicate = "\\+ ";
+					negateNextPredicate = " \\+ ";
 					continue;
 				}
 				
@@ -370,6 +370,8 @@ public abstract class BrachylogParser {
 					currentVariables.push("V" + variableCounter++);
 					variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					negateNextPredicate = "";
+					lastCharArithmetic = false;
+					lastCharArithmeticParenthesis = false;
 				}
 				
 				//OPEN PARENTHESIS
