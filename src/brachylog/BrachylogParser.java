@@ -59,6 +59,8 @@ public abstract class BrachylogParser {
 			return null;
 		}
 		
+		//Add an extra meaningless space tomake sure the last predicate is properly called (greater/less for example)
+		program = program + " ";
 		
 		List<List<StringBuilder>> predicatesRules = new ArrayList<List<StringBuilder>>();
 		
@@ -92,6 +94,7 @@ public abstract class BrachylogParser {
 		boolean lastCharArithmeticParenthesis = false;
 		boolean readingInlineProlog = false;
 		String negateNextPredicate = "";
+		char previousChar = ' ';
 		
 		for(char c : program.toCharArray()) {
 			
@@ -142,6 +145,22 @@ public abstract class BrachylogParser {
 			}
 			
 			else {
+				if(c != '=' && (previousChar == '>' || previousChar == '<')) {
+					if(previousChar == '<') {
+						predicatesUsed.put("<=", BrachylogPredicates.pLess());
+						currentRule.append(",\n    " + negateNextPredicate + Constants.P_LESS + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					} else if(previousChar == '>') {
+						predicatesUsed.put(">=", BrachylogPredicates.pGreater());
+						currentRule.append(",\n    " + negateNextPredicate + Constants.P_GREATER + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					}
+				}
+				
 				//VARIABLE NAME
 				if(Character.isUpperCase(c)) {
 					if(currentVariables.lastElement().isEmpty()) {
@@ -363,17 +382,6 @@ public abstract class BrachylogParser {
 					lastCharArithmetic = true;
 				}
 				
-				//ARITHMETIC EQUALITY
-				else if(c == '=') {
-					currentRule.append(",\n    " + negateNextPredicate + "V" + variableCounter + " is " + currentVariables.lastElement());
-					currentVariables.pop();
-					currentVariables.push("V" + variableCounter++);
-					variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
-					negateNextPredicate = "";
-					lastCharArithmetic = false;
-					lastCharArithmeticParenthesis = false;
-				}
-				
 				//OPEN PARENTHESIS
 				else if(c == '(') {
 					if(lastCharArithmetic || lastCharIsColon) {
@@ -496,6 +504,8 @@ public abstract class BrachylogParser {
 				//##########
 				else {
 					
+					lastCharArithmetic = false;
+					lastCharArithmeticParenthesis = false;
 					if(currentVariables.size() <= 1) {
 						lastCharIsColon = false;
 						if(arrayOpened) {
@@ -631,9 +641,32 @@ public abstract class BrachylogParser {
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 					
+					//ARITHMETIC EQUALITY OR COMPARISONS
+					else if(c == '=') {
+						if(previousChar == '<') {
+							predicatesUsed.put("<=", BrachylogPredicates.pLessEqual());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.P_LESSEQUAL + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						} else if(previousChar == '>') {
+							predicatesUsed.put(">=", BrachylogPredicates.pGreaterEqual());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.P_GREATEREQUAL + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						} else {
+							currentRule.append(",\n    " + negateNextPredicate + "V" + variableCounter + " is " + currentVariables.lastElement());
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
 					negateNextPredicate = "";
 				}
 			}
+			previousChar = c;
 		}
 		predicatesRules.get(currentPredicateIndex).get(currentRuleIndex).append(".\n");
 		

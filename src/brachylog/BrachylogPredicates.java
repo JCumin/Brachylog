@@ -325,4 +325,60 @@ public abstract class BrachylogPredicates {
 		return s;
 	}
 	
+	
+	public static String pLess() {
+		
+		String s = "\n"
+				+ Constants.P_LESS + "([A,B],Y) :-\n"
+				+ "    (string(A) ; atom(A) ; is_list(A)),!,\n"
+				+ "    A @< B,\n"
+				+ "    Y = A\n"
+				+ "    ;\n"
+				+ "    A < B,\n"
+				+ "    Y = A.\n";
+		
+		return s;
+	}
+	
+	public static String pGreater() {
+		
+		String s = "\n"
+				+ Constants.P_GREATER + "([A,B],Y) :-\n"
+				+ "    (string(A) ; atom(A) ; is_list(A)),!,\n"
+				+ "    A @> B,\n"
+				+ "    Y = A\n"
+				+ "    ;\n"
+				+ "    A > B,\n"
+				+ "    Y = A.\n";
+		
+		return s;
+	}
+	
+	public static String pLessEqual() {
+		
+		String s = "\n"
+				+ Constants.P_LESSEQUAL + "([A,B],Y) :-\n"
+				+ "    (string(A) ; atom(A) ; is_list(A)),!,\n"
+				+ "    A @=< B,\n"
+				+ "    Y = A\n"
+				+ "    ;\n"
+				+ "    A =< B,\n"
+				+ "    Y = A.\n";
+		
+		return s;
+	}
+	
+	public static String pGreaterEqual() {
+		
+		String s = "\n"
+				+ Constants.P_GREATEREQUAL + "([A,B],Y) :-\n"
+				+ "    (string(A) ; atom(A) ; is_list(A)),!,\n"
+				+ "    A @>= B,\n"
+				+ "    Y = A\n"
+				+ "    ;\n"
+				+ "    A >= B,\n"
+				+ "    Y = A.\n";
+		
+		return s;
+	}
 }
