@@ -96,7 +96,13 @@ public abstract class BrachylogParser {
 		String negateNextPredicate = "";
 		char previousChar = ' ';
 		
-		for(char c : program.toCharArray()) {
+		for(int i = 0 ; i < program.length() ; i++) {
+			
+			
+			char c = program.toCharArray()[i];
+			if(i > 0) {
+				previousChar = program.toCharArray()[i - 1];
+			}
 			
 			StringBuilder currentRule = predicatesRules.get(currentPredicateIndex).get(currentRuleIndex);
 			Stack<String> currentVariables = predicatesVariables.get(currentPredicateIndex).get(currentRuleIndex);
@@ -666,7 +672,6 @@ public abstract class BrachylogParser {
 					negateNextPredicate = "";
 				}
 			}
-			previousChar = c;
 		}
 		predicatesRules.get(currentPredicateIndex).get(currentRuleIndex).append(".\n");
 		
