@@ -12,7 +12,7 @@ public abstract class BrachylogPredicates {
 				+ "    ;\n"
 				+ "    number(X),!,\n"
 				+ "    number_codes(X,[_|T]),\n"
-				+ "    number_codes(Y,T)\n"
+				+ "    catch(number_codes(Y,T),_,Y=[])\n"
 				+ "    ;\n"
 				+ "    atom(X),!,\n"
 				+ "    atom_codes(X,[_|T]),\n"
@@ -251,6 +251,35 @@ public abstract class BrachylogPredicates {
 	}
 	
 	
+	public static String pSubset() {
+		String s = "\n"
+				+ Constants.P_SUBSET + "(X,Y) :-\n"
+				+ "    string(X),!,\n"
+				+ "    string_codes(X,C),\n"
+				+ "    brachylog_subset_recur(C,D),\n"
+				+ "    string_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    number(X),!,\n"
+				+ "    number_codes(X,C),\n"
+				+ "    brachylog_subset_recur(C,D),\n"
+				+ "    catch(number_codes(Y,D),_,fail)\n"
+				+ "    ;\n"
+				+ "    atom(X),!,\n"
+				+ "    atom_codes(X,C),\n"
+				+ "    brachylog_subset_recur(C,D),\n"
+				+ "    atom_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    brachylog_subset_recur(X,Y).\n"
+				+ Constants.P_SUBSET + "_recur([],[]).\n"
+				+ Constants.P_SUBSET + "_recur([H|T],[H|T2]) :-\n"
+				+ "    " + Constants.P_SUBSET + "_recur(T,T2).\n"
+				+ Constants.P_SUBSET + "_recur([_|T],T2) :-\n"
+				+ "    " + Constants.P_SUBSET + "_recur(T,T2).\n";
+		
+		return s;
+	}
+	
+	
 	public static String pWrite() {
 
         String s = "\n"
@@ -286,7 +315,7 @@ public abstract class BrachylogPredicates {
                 + "    number_codes(List,C),\n"
                 + "    number_codes(Elem,[F|[]]),\n"
                 + "    delete(C,F,D),\n"
-                + "    number_codes(Y,D)\n"
+                + "    catch(number_codes(Y,D),_,fail)\n"
                 + "    ;\n"
                 + "    atom(List),!,\n"
                 + "    atom_codes(List,C),\n"
