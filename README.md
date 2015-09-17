@@ -225,6 +225,10 @@ True if `Z` is a permutation of `A`. Works on lists, numbers (permutation of dig
 
 True if `Z` is `A` reversed. Works on lists, numbers, strings.
 
+### `A s Z` - Subset
+
+True if `Z` is a subset of `A` (ordering of the elements matters). Works on lists, numbers, strings.
+
 ### `A w Z` - Write
 
 If `A = [List:Format]`, where `List` is a list and `Format` is a string, this predicate is equivalent to the SWI-Prolog predicate [`format/2`](http://www.swi-prolog.org/pldoc/man?predicate=format/2), i.e. `format(Format,List)`, which will print to `STDOUT` the elements of `A` according to the format of `Format`. `Z` is then unified with `List`.
