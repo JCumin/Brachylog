@@ -147,18 +147,19 @@ public abstract class BrachylogParser {
 			else {
 				if(c != '=' && (previousChar == '>' || previousChar == '<')) {
 					if(previousChar == '<') {
-						predicatesUsed.put("<=", BrachylogPredicates.pLess());
+						predicatesUsed.put("<", BrachylogPredicates.pLess());
 						currentRule.append(",\n    " + negateNextPredicate + Constants.P_LESS + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					} else if(previousChar == '>') {
-						predicatesUsed.put(">=", BrachylogPredicates.pGreater());
+						predicatesUsed.put(">", BrachylogPredicates.pGreater());
 						currentRule.append(",\n    " + negateNextPredicate + Constants.P_GREATER + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
+					previousChar = ' ';
 				}
 				
 				//VARIABLE NAME
