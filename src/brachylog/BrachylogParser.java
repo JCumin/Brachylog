@@ -615,6 +615,15 @@ public abstract class BrachylogParser {
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
 					
+					//SUBSET
+					else if(c == 's') {
+						predicatesUsed.put("s", BrachylogPredicates.pSubset());
+						currentRule.append(",\n    " + negateNextPredicate + Constants.P_SUBSET + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					}
+					
 					//WRITE
 					else if(c == 'w') {
 						predicatesUsed.put("w", BrachylogPredicates.pWrite());
