@@ -17,6 +17,7 @@ public abstract class Constants {
 	public static final String P_ORDER					= "brachylog_order";
 	public static final String P_PERMUTE				= "brachylog_permute";
 	public static final String P_REVERSE 				= "brachylog_reverse";
+	public static final String P_SUBSET					= "brachylog_subset";
 	public static final String P_WRITE					= "brachylog_write";
 	public static final String P_XTERMINATE				= "brachylog_xterminate";
 	public static final String P_CALLPREDICATE			= "brachylog_call_predicate";
