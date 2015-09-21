@@ -246,7 +246,8 @@ public abstract class BrachylogParser {
 					} else if(arrayOpened || lastCharIsColon) {
 						currentVariables.push(s + "[");
 					} else {
-						currentVariables.push("[" + s + ",");
+						currentVariables.push(s);
+						currentVariables.push("[");
 						arrayOpened = true;
 					}
 					lastCharIsColon = true;
@@ -255,8 +256,12 @@ public abstract class BrachylogParser {
 				//END ARRAY
 				else if(c == ']') {
 					String s = currentVariables.pop();
-					if(s.replace("[", "").length() - s.replace("]", "").length() == 1) {
+					if(s.replace("]", "").length() - s.replace("[", "").length() == 1) {
 						arrayOpened = false;
+						if(currentVariables.size() > 0) {
+							String previous = currentVariables.pop();
+							currentRule.append(",\n    " + negateNextPredicate + s + "] = " + previous);
+						}
 					} else {
 						arrayOpened = true;
 					}
@@ -713,7 +718,7 @@ public abstract class BrachylogParser {
 		    if((Query.allSolutions("consult('" + Constants.PROLOG_FILE + "')")).length > 0) {
 		    	Term inputTerm = parseArg(input);
 		    	Term outputTerm = parseArg(output);
-
+		    	
 		    	Query mainQuery = new Query(Constants.P_MAIN, new Term[] {inputTerm, outputTerm});
 		    	boolean noNewSolution = true;
 		    	while(mainQuery.hasMoreSolutions()) {
