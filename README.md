@@ -51,8 +51,10 @@ Numbers consist of characters `0` to `9`. Floats are written with a period `.` a
 
 ### `A:B:[C:D]:E` - Lists
 
-Lists' elements are chained with a colon `:`. Sublists can be added using an opening square bracket `[` and a closing square bracket `]`. Brackets are optional for the base list, e.g. `A:[B]:C` and `[A:[B]:C]` are the same. One can create a list with the current variable, e.g. `A l:42` will create the list `[L:42]` where `L` is the length of `A`.
-Note that `A l B:42` will first unify `B` with the length of `A`, and then create the list `[B:42]`. The empty list is `q`. You cannot put spaces around `[`,`]` or `:`. A list starting with a sublist as first element must start with a colon, e.g. `,:[1:2]:3` and not `,[1:2]:3`.
+Lists' elements are chained with a colon `:`. Sublists can be added using an opening square bracket `[` and a closing square bracket `]`. Brackets are not used for the base list. One can create a list with the current variable, e.g. `A l:42` will create the list `[L:42]` where `L` is the length of `A`.
+Note that `A l B:42` will first unify `B` with the length of `A`, and then create the list `[B:42]`. The empty list is `q`. You cannot put spaces around `[`,`]` or `:`. A list starting with a sublist as first element must start with a colon, e.g. `,:[1:2]:3` and not `,[1:2]:3` (Don't forget the comma to not add the previous variable, implicit or not, to the list)
+
+A list that starts directly with a bracket will be unified with the previous variable, e.g. `[1:2:3]` will unify the Input with the list `1:2:3`, whereas `1:2:3` would unify the input with `1` and then construct the list `1:2:3`.
 
 ### `?` - Input
 
