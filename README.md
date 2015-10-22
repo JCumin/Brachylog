@@ -264,3 +264,22 @@ True if `A` is less than or equal to `B`, unifies `Z` with `A` if that is the ca
 ### `[A:B] >= Z` - Greater/Equal
 
 True if `A` is greater than or equal to `B`, unifies `Z` with `A` if that is the case. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
+
+
+#Examples
+
+### Primality checking
+
+The following Brachylog code will check if the Input is a prime number:
+
+    :1>'(-1=:2reI,?%I=0)
+
+Here is a breakdown of what it does:
+
+    :1>                     § Input must be strictly greater than 1
+       '(              )    § Return True if what's inside the parentheses cannot be proven
+         -1=                § Unify an implicit variable with input - 1
+            :2              § Create a list containing input - 1 and 2
+              r             § Unify an implicit variable with the reverse of the previous list
+               eI           § Unify I with a number between 2 and input - 1
+                 ,?%I=0     § True if 0 can be unified with the remainder of input divided by I
