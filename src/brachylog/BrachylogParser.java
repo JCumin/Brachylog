@@ -560,6 +560,7 @@ public abstract class BrachylogParser {
 					//FINDALL
 					else if(c == 'f') {
 						predicatesUsed.put("f", BrachylogPredicates.pFindAll());
+						predicatesUsed.put("&", BrachylogPredicates.pCallPredicate());
 						currentRule.append(",\n    " + negateNextPredicate + Constants.P_FINDALL + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
