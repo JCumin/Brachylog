@@ -189,15 +189,20 @@ If `A` is a string, the same thing happens except `Z` is successively bound to e
 
 ### `A f Z` - Findall
 
-True if `Z` is a list of all possible variable bindings for which the `A`th sub-predicate will succeed given one of them as Input.
+If `A = I`, true if `Z` is a list of all possible variable bindings for which the `I`th sub-predicate will succeed given one of them as Input.
 
-For example, `,{,"golf":Im?}1f.` will ouput a list of all characters of the string `"golf"`:
+If `A = [Arg:I]`, true if `Z` is a list of all possible bindings for which the `I`th sub-predicate will succeed given one of them as Input and `Arg` as output.
 
-    ,                 § Prevents immediate call of the next predicate definition
-     {                § Defines predicate 1
-      ,"golf":I       § Creates a list that contains the string "golf" and the unbounded variable I
-               m?}    § Unifies Input with the I-th character of "golf"
-                  1f. § Finds all Inputs of predicate 1 for which it succeeds (that is, every character of "golf")
+If `A = [Arg1:...:Argn:I]`, true if `Z` is a list of all possible bindings for which the `I`th sub-predicate will succeed given one of them as Input and `[Arg1:...:Argn]` as output.
+
+For example, `,{,.:Im?}?:1f.` will ouput a list of all characters of an input string, or all digits of an input number:
+
+    ,              § Prevents immediate call of the next predicate definition
+     {             § Defines predicate 1
+      ,.:I         § Creates a list that contains the output and the unbounded variable I
+          m?}      § Unifies Input with the I-th element of the output
+             ?:1f. § Finds all Inputs of predicate 1 for which it succeeds
+                   § with the input of the main predicate as output
 
 ### `A h Z` - Head
 
