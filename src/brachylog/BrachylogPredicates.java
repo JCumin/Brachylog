@@ -97,6 +97,15 @@ public abstract class BrachylogPredicates {
 	public static String pFindAll() {
 		String s = "\n"
 				+ Constants.P_FINDALL + "(X,Y) :-\n"
+				+ "    reverse(X,R),\n"
+				+ "    R = [PredIndex|Args],\n"
+				+ "    (\n"
+				+ "    Args = [Arg],\n"
+				+ "    findall(A," + Constants.P_CALLPREDICATE + "([A,PredIndex],Arg),Y)\n"
+				+ "    ;\n"
+				+ "    findall(A," + Constants.P_CALLPREDICATE + "([A,PredIndex],Args),Y)\n"
+				+ "    )\n"
+				+ "    ;\n"
 				+ "    findall(A," + Constants.P_CALLPREDICATE + "([A,X],_), Y).\n";
 		
 		return s;
