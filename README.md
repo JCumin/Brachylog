@@ -288,3 +288,10 @@ Here is a breakdown of what it does:
               r             § Unify an implicit variable with the reverse of the previous list
                eI           § Unify I with a number between 2 and input - 1
                  ,?%I=0     § True if 0 can be unified with the remainder of input divided by I
+
+
+### Quine
+
+A quine is a program that outputs its own source code. Here is a Brachylog program that does this:
+
+    ,",~c~s~cS:[34:S:34]rw"S:[34:S:34]rw
