@@ -105,8 +105,13 @@ public abstract class BrachylogParser {
 			//READING STRING
 			if(currentString.length() > 0) {
 				if(c == '\\') {
-					escapeNextCharacter = true;
-					currentString.append("\\");
+					if(escapeNextCharacter) {
+						currentString.append("\\");
+						escapeNextCharacter = false;
+					} else {
+						escapeNextCharacter = true;
+						currentString.append("\\");
+					}
 				} else if(c == '"') {
 					if(!escapeNextCharacter) {
 						currentString.append(c);
