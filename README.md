@@ -10,6 +10,8 @@ Get the whole repository. It contains an Eclipse project for the Brachylog inter
 
 If you have troubles getting the interpreter to work on a simple Brachylog program (e.g. `,"This works!"w`), it most likely comes from the JPL libraries used to call SWI-Prolog from the Java program (Check that you correctly set the `PATH` variable). A file `compiled_brachylog.pl` is generated at the root of the project when you run the application, which contains the Prolog equivalent of your Brachylog code. You can consult this in a normal SWI-Prolog interpreter and run `brachylog_main(Input,Output).` to get the result of yout Brachylog program, as an alternative to having the result in the Java application.
 
+Using strings as i/o directly in the Java application doesn't work properly because for some reason the JPL library transforms strings to atoms when parsing prolog text... (strings works properly inside the Brachylog code though). Use the SWI-Prolog interpreter for string inputs/outputs for the moment.
+
 ##Program structure
 
 *(We assume that the reader has basic knowledge of Prolog in the following. We will use `§` to denote comments in Brachylog code, although this character is not actually recognized by the Brachylog parser as a comment.)*
@@ -49,8 +51,10 @@ Numbers consist of characters `0` to `9`. Floats are written with a period `.` a
 
 ### `A:B:[C:D]:E` - Lists
 
-Lists' elements are chained with a colon `:`. Sublists can be added using an opening square bracket `[` and a closing square bracket `]`. Brackets are optional for the base list, e.g. `A:[B]:C` and `[A:[B]:C]` are the same. One can create a list with the current variable, e.g. `A l:42` will create the list `[L:42]` where `L` is the length of `A`.
-Note that `A l B:42` will first unify `B` with the length of `A`, and then create the list `[B:42]`. The empty list is `q`. You cannot put spaces around `[`,`]` or `:`. A list starting with a sublist as first element must start with a colon, e.g. `,:[1:2]:3` and not `,[1:2]:3`.
+Lists' elements are chained with a colon `:`. Sublists can be added using an opening square bracket `[` and a closing square bracket `]`. Brackets are not used for the base list. One can create a list with the current variable, e.g. `A l:42` will create the list `[L:42]` where `L` is the length of `A`.
+Note that `A l B:42` will first unify `B` with the length of `A`, and then create the list `[B:42]`. The empty list is `q`. You cannot put spaces around `[`,`]` or `:`. A list starting with a sublist as first element must start with a colon, e.g. `,:[1:2]:3` and not `,[1:2]:3` (Don't forget the comma to not add the previous variable, implicit or not, to the list)
+
+A list that starts directly with a bracket will be unified with the previous variable, e.g. `[1:2:3]` will unify the Input with the list `1:2:3`, whereas `1:2:3` would unify the input with `1` and then construct the list `1:2:3`.
 
 ### `?` - Input
 
@@ -185,15 +189,20 @@ If `A` is a string, the same thing happens except `Z` is successively bound to e
 
 ### `A f Z` - Findall
 
-True if `Z` is a list of all possible variable bindings for which the `A`th sub-predicate will succeed given one of them as Input.
+If `A = I`, true if `Z` is a list of all possible variable bindings for which the `I`th sub-predicate will succeed given one of them as Input.
 
-For example, `,{,"golf":Im?}1f.` will ouput a list of all characters of the string `"golf"`:
+If `A = [Arg:I]`, true if `Z` is a list of all possible bindings for which the `I`th sub-predicate will succeed given one of them as Input and `Arg` as output.
 
-    ,                 § Prevents immediate call of the next predicate definition
-     {                § Defines predicate 1
-      ,"golf":I       § Creates a list that contains the string "golf" and the unbounded variable I
-               m?}    § Unifies Input with the I-th character of "golf"
-                  1f. § Finds all Inputs of predicate 1 for which it succeeds (that is, every character of "golf")
+If `A = [Arg1:...:Argn:I]`, true if `Z` is a list of all possible bindings for which the `I`th sub-predicate will succeed given one of them as Input and `[Arg1:...:Argn]` as output.
+
+For example, `,{,.:Im?}?:1f.` will ouput a list of all characters of an input string, or all digits of an input number:
+
+    ,              § Prevents immediate call of the next predicate definition
+     {             § Defines predicate 1
+      ,.:I         § Creates a list that contains the output and the unbounded variable I
+          m?}      § Unifies Input with the I-th element of the output
+             ?:1f. § Finds all Inputs of predicate 1 for which it succeeds
+                   § with the input of the main predicate as output
 
 ### `A h Z` - Head
 
@@ -223,6 +232,10 @@ True if `Z` is a permutation of `A`. Works on lists, numbers (permutation of dig
 
 True if `Z` is `A` reversed. Works on lists, numbers, strings.
 
+### `A s Z` - Subset
+
+True if `Z` is a subset of `A` (ordering of the elements matters). Works on lists, numbers, strings.
+
 ### `A w Z` - Write
 
 If `A = [List:Format]`, where `List` is a list and `Format` is a string, this predicate is equivalent to the SWI-Prolog predicate [`format/2`](http://www.swi-prolog.org/pldoc/man?predicate=format/2), i.e. `format(Format,List)`, which will print to `STDOUT` the elements of `A` according to the format of `Format`. `Z` is then unified with `List`.
@@ -243,16 +256,42 @@ True if `A` is an arithmetic expression that evaluates to `Z`.
 
 ### `[A:B] < Z` - Less
 
-True if `A` is less than `B`. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
+True if `A` is less than `B`, unifies `Z` with `A` if that is the case. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
 
 ### `[A:B] > Z` - Greater
 
-True if `A` is greater than `B`. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
+True if `A` is greater than `B`, unifies `Z` with `A` if that is the case. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
 
 ### `[A:B] <= Z` - Less/Equal
 
-True if `A` is less than or equal to `B`. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
+True if `A` is less than or equal to `B`, unifies `Z` with `A` if that is the case. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
 
 ### `[A:B] >= Z` - Greater/Equal
 
-True if `A` is greater than or equal to `B`. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
+True if `A` is greater than or equal to `B`, unifies `Z` with `A` if that is the case. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
+
+
+#Examples
+
+### Primality checking
+
+The following Brachylog code will check if the Input is a prime number:
+
+    :1>'(-1=:2reI,?%I=0)
+
+Here is a breakdown of what it does:
+
+    :1>                     § Input must be strictly greater than 1
+       '(              )    § Return True if what's inside the parentheses cannot be proven
+         -1=                § Unify an implicit variable with input - 1
+            :2              § Create a list containing input - 1 and 2
+              r             § Unify an implicit variable with the reverse of the previous list
+               eI           § Unify I with a number between 2 and input - 1
+                 ,?%I=0     § True if 0 can be unified with the remainder of input divided by I
+
+
+### Quine
+
+A quine is a program that outputs its own source code. Here is a Brachylog program that does this:
+
+    ,",~c~s~cS:[34:S:34]rw"S:[34:S:34]rw

@@ -111,8 +111,13 @@ public abstract class BrachylogParser {
 			//READING STRING
 			if(currentString.length() > 0) {
 				if(c == '\\') {
-					escapeNextCharacter = true;
-					currentString.append("\\");
+					if(escapeNextCharacter) {
+						currentString.append("\\");
+						escapeNextCharacter = false;
+					} else {
+						escapeNextCharacter = true;
+						currentString.append("\\");
+					}
 				} else if(c == '"') {
 					if(!escapeNextCharacter) {
 						currentString.append(c);
@@ -153,18 +158,19 @@ public abstract class BrachylogParser {
 			else {
 				if(c != '=' && (previousChar == '>' || previousChar == '<')) {
 					if(previousChar == '<') {
-						predicatesUsed.put("<=", BrachylogPredicates.pLess());
+						predicatesUsed.put("<", BrachylogPredicates.pLess());
 						currentRule.append(",\n    " + negateNextPredicate + Constants.P_LESS + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					} else if(previousChar == '>') {
-						predicatesUsed.put(">=", BrachylogPredicates.pGreater());
+						predicatesUsed.put(">", BrachylogPredicates.pGreater());
 						currentRule.append(",\n    " + negateNextPredicate + Constants.P_GREATER + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					}
+					previousChar = ' ';
 				}
 				
 				//VARIABLE NAME
@@ -251,7 +257,8 @@ public abstract class BrachylogParser {
 					} else if(arrayOpened || lastCharIsColon) {
 						currentVariables.push(s + "[");
 					} else {
-						currentVariables.push("[" + s + ",");
+						currentVariables.push(s);
+						currentVariables.push("[");
 						arrayOpened = true;
 					}
 					lastCharIsColon = true;
@@ -260,8 +267,12 @@ public abstract class BrachylogParser {
 				//END ARRAY
 				else if(c == ']') {
 					String s = currentVariables.pop();
-					if(s.replace("[", "").length() - s.replace("]", "").length() == 1) {
+					if(s.replace("]", "").length() - s.replace("[", "").length() == 1) {
 						arrayOpened = false;
+						if(currentVariables.size() > 0) {
+							String previous = currentVariables.pop();
+							currentRule.append(",\n    " + negateNextPredicate + s + "] = " + previous);
+						}
 					} else {
 						arrayOpened = true;
 					}
@@ -560,6 +571,7 @@ public abstract class BrachylogParser {
 					//FINDALL
 					else if(c == 'f') {
 						predicatesUsed.put("f", BrachylogPredicates.pFindAll());
+						predicatesUsed.put("&", BrachylogPredicates.pCallPredicate());
 						currentRule.append(",\n    " + negateNextPredicate + Constants.P_FINDALL + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
@@ -615,6 +627,15 @@ public abstract class BrachylogParser {
 					else if(c == 'r') {
 						predicatesUsed.put("r", BrachylogPredicates.pReverse());
 						currentRule.append(",\n    " + negateNextPredicate + Constants.P_REVERSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+						currentVariables.pop();
+						currentVariables.push("V" + variableCounter++);
+						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					}
+					
+					//SUBSET
+					else if(c == 's') {
+						predicatesUsed.put("s", BrachylogPredicates.pSubset());
+						currentRule.append(",\n    " + negateNextPredicate + Constants.P_SUBSET + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
@@ -708,7 +729,7 @@ public abstract class BrachylogParser {
 		    if((Query.allSolutions("consult('" + Constants.PROLOG_FILE + "')")).length > 0) {
 		    	Term inputTerm = parseArg(input);
 		    	Term outputTerm = parseArg(output);
-
+		    	
 		    	Query mainQuery = new Query(Constants.P_MAIN, new Term[] {inputTerm, outputTerm});
 		    	boolean noNewSolution = true;
 		    	while(mainQuery.hasMoreSolutions()) {
