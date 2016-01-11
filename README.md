@@ -102,7 +102,7 @@ For example, `` Y`sum_list(Y,Z)`Z.`` will unify the Output with the sum of the e
 
 ### `'` - Not provable
 
-True if the following predicate (a built-in, or predicates contained in parentheses, or a predicate definition) cannot be proven. This is equivalent to Prolog's `\+` operator.
+True if the following predicate (a built-in, or predicates contained in parentheses, or a predicate definition) cannot be proven. This is equivalent to Prolog's `\+` predicate.
 
 Note that using it on built-in predicates is usually not effective because of implicit variables. For example, the program `,2'=3`, which should output `True.` (because 2 cannot be proven to be equal to 3), actually outputs `False.`. This is how this code is translated to Prolog, which shows the implicit variable :
 
@@ -112,7 +112,7 @@ Note that using it on built-in predicates is usually not effective because of im
 
 As seen above, `2'=3` gets interpreted as "Prove that 2 cannot be equal to a non-unified variable `V0`, and then prove that 3 can be unified with `V0`". The first one is obviously wrong, which is why this program returns `False.` and not `True.` as one would expect.
 
-To get the desired result, one can either use parentheses: `,'(2=3)`, or predicate decalaration: `'{,2=3}`.
+To get the desired result, one can either use parentheses: `,'(2=3)`, or predicate decalaration: `'{,2=3}`. In this particular instance, you can also use `,2'3`, which is translated to Prolog as `\+ 2 = 3`.
 
 ##Arithmetic
 
