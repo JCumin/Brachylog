@@ -288,6 +288,26 @@ All the variables start with `@`, followed by an uppercase letter.
 
 `@A` is the string `"abcdefghijklmnopqrstuvwxyz"`.
 
+### `@H` - Hello, World!
+
+`@H` is the string `"Hello, World!"`.
+
+### `@N` - New line
+
+`@N` is the string `"\n"`.
+
+### `@Q` - Quine
+
+`@Q` is the string `"@Qw"`. Therefore the program `@Qw` is a quine (that is, it prints its own source code).
+
+### `@S` - Space
+
+`@S` is the string `" "`.
+
+### `@T` - Tab
+
+`@T` is the string `"\t"`.
+
 ### `@Z` - Reverse Alphabet
 
 `@Z` is the string `"zyxwvutsrqponmlkjihgfedcba"`.
