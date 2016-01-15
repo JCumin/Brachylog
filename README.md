@@ -167,7 +167,13 @@ For example, the program `q|h{q|(h1;?h0),?b:1&},?b:0&`, which returns true if ev
         brachylog_call_predicate([V2,1], V3).  %               :1&}
 
 
-##Built-in Predicates
+#Built-in Predicates
+
+##Basic predicates
+
+The following predicates are standard predicates that are useful for a lot of different things.
+
+All those predicates are one-letter long
 
 ### `A b Z` - Behead
 
