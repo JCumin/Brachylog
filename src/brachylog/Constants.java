@@ -27,6 +27,11 @@ public abstract class Constants {
 	public static final String P_GREATEREQUAL			= "brachylog_greaterequal";
 
 
+	public static final String PA_LOWERCASE				= "brachylog_alphabet_lowercase";
+	public static final String PA_UPPERCASE				= "brachylog_alphabet_uppercase";
+
+
+
 	//VARIABLES
 	public static final String V_INPUT 					= "Input";
 	public static final String V_OUTPUT 				= "Output";
