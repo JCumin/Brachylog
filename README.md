@@ -284,7 +284,11 @@ All those predicates start with `@`, followed by one letter.
 
 ### `A @l Z` - Lowercase
 
+True if `Z` is the string `A` with each uppercase letter lowercased, and where other symbols stay the same.
+
 ### `A @u Z` - Uppercase
+
+True if `Z` is the string `A` with each lowercase letter uppercased, and where other symbols stay the same.
 
 #Examples
 
