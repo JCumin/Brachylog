@@ -276,6 +276,15 @@ True if `A` is less than or equal to `B`, unifies `Z` with `A` if that is the ca
 
 True if `A` is greater than or equal to `B`, unifies `Z` with `A` if that is the case. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
 
+##Alphabet predicates
+
+Those predicates are used to manipulate strings.
+
+All those predicates start with `@`, followed by one letter.
+
+### `A @l Z` - Lowercase
+
+### `A @u Z` - Uppercase
 
 #Examples
 
