@@ -172,15 +172,20 @@ public abstract class BrachylogParser {
 				
 				//VARIABLE NAME
 				if(Character.isUpperCase(c)) {
+					String variableName = String.valueOf(c);
+					if(previousChar == '@') {
+						variableName = BrachylogAlphabetVariables.getValueForName(c);
+						previousChar = ' ';
+					}
 					if(currentVariables.lastElement().isEmpty()) {
 						currentVariables.pop();
-						currentVariables.push(String.valueOf(c));
+						currentVariables.push(variableName);
 					} else if(lastCharIsColon || lastCharArithmetic || lastCharArithmeticParenthesis) {
 						String s = currentVariables.pop();
-						currentVariables.push(s + c);
+						currentVariables.push(s + variableName);
 						lastCharIsColon = false;
 					} else {
-						currentRule.append(",\n    " + negateNextPredicate + c + " = " + currentVariables.lastElement());
+						currentRule.append(",\n    " + negateNextPredicate + variableName + " = " + currentVariables.lastElement());
 						negateNextPredicate = "";
 					}
 					continue;
