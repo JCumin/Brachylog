@@ -167,13 +167,13 @@ For example, the program `q|h{q|(h1;?h0),?b:1&},?b:0&`, which returns true if ev
         brachylog_call_predicate([V2,1], V3).  %               :1&}
 
 
-#Built-in Predicates
+#Built-in Predicates and Variables
 
 ##Basic predicates
 
 The following predicates are standard predicates that are useful for a lot of different things.
 
-All those predicates are one-letter long
+All those predicates are one lowercase letter.
 
 ### `A b Z` - Behead
 
@@ -276,11 +276,21 @@ True if `A` is less than or equal to `B`, unifies `Z` with `A` if that is the ca
 
 True if `A` is greater than or equal to `B`, unifies `Z` with `A` if that is the case. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
 
-##Alphabet predicates
+##Alphabet predicates and variables
 
-Those predicates are used to manipulate strings.
+Those predicates and variables are used to manipulate strings.
 
-All those predicates start with `@`, followed by one letter.
+All those predicates start with `@`, followed by a lowercase letter.
+
+All the variables start with `@`, followed by an uppercase letter.
+
+### `@A` - Alphabet
+
+`@A` is the string `"abcdefghijklmnopqrstuvwxyz"`.
+
+### `@Z` - Reverse Alphabet
+
+`@Z` is the string `"zyxwvutsrqponmlkjihgfedcba"`.
 
 ### `A @l Z` - Lowercase
 
