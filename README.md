@@ -10,7 +10,9 @@ Get the whole repository. It contains an Eclipse project for the Brachylog inter
 
 If you have troubles getting the interpreter to work on a simple Brachylog program (e.g. `,"This works!"w`), it most likely comes from the JPL libraries used to call SWI-Prolog from the Java program (Check that you correctly set the `PATH` variable). A file `compiled_brachylog.pl` is generated at the root of the project when you run the application, which contains the Prolog equivalent of your Brachylog code. You can consult this in a normal SWI-Prolog interpreter and run `brachylog_main(Input,Output).` to get the result of yout Brachylog program, as an alternative to having the result in the Java application.
 
-Using strings as i/o directly in the Java application doesn't work properly because for some reason the JPL library transforms strings to atoms when parsing prolog text... (strings works properly inside the Brachylog code though). Use the SWI-Prolog interpreter for string inputs/outputs for the moment.
+Using strings as i/o directly in the Java application doesn't work properly because for some reason the JPL library transforms strings to atoms when parsing prolog text... (strings works properly inside the Brachylog code though).
+
+**I would recommend using the SWI-Prolog interpreter to call the predicate `brachylog_main(Input, Output).` for the moment**
 
 ##Program structure
 
@@ -344,3 +346,7 @@ Here is a breakdown of what it does:
 A quine is a program that outputs its own source code. Here is a Brachylog program that does this:
 
     ,",~c~s~cS:[34:S:34]rw"S:[34:S:34]rw
+    
+Alternatively, this program is also a quine, which uses the built-in variable `@Q` - Quine:
+
+    @Qw
