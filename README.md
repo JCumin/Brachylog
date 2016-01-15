@@ -173,7 +173,7 @@ For example, the program `q|h{q|(h1;?h0),?b:1&},?b:0&`, which returns true if ev
 
 The following predicates are standard predicates that are useful for a lot of different things.
 
-All those predicates are one lowercase letter.
+All those predicates are one character long.
 
 ### `A b Z` - Behead
 
