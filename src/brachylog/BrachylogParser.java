@@ -96,8 +96,10 @@ public abstract class BrachylogParser {
 		String negateNextPredicate = "";
 		char previousChar = ' ';
 		
-		for(char c : program.toCharArray()) {
-			
+		for(int charIndex = 0 ; charIndex < program.toCharArray().length ; charIndex++) {
+
+			char c = program.toCharArray()[charIndex];
+
 			StringBuilder currentRule = predicatesRules.get(currentPredicateIndex).get(currentRuleIndex);
 			Stack<String> currentVariables = predicatesVariables.get(currentPredicateIndex).get(currentRuleIndex);
 			int variableCounter = variableCounters.get(currentPredicateIndex).get(currentRuleIndex);
@@ -150,6 +152,7 @@ public abstract class BrachylogParser {
 			}
 			
 			else {
+
 				if(c != '=' && (previousChar == '>' || previousChar == '<')) {
 					if(previousChar == '<') {
 						predicatesUsed.put("<", BrachylogPredicates.pLess());
@@ -583,11 +586,19 @@ public abstract class BrachylogParser {
 					
 					//LENGTH
 					else if(c == 'l') {
-						predicatesUsed.put("l", BrachylogPredicates.pLength());
-						currentRule.append(",\n    " + negateNextPredicate + Constants.P_LENGTH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
-						currentVariables.pop();
-						currentVariables.push("V" + variableCounter++);
-						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						if(previousChar == '@') {
+							predicatesUsed.put("@l", BrachylogAlphabetPredicates.paLowercase());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PA_LOWERCASE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						} else {
+							predicatesUsed.put("l", BrachylogPredicates.pLength());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.P_LENGTH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
 					}
 					
 					//MEMBER
@@ -633,6 +644,19 @@ public abstract class BrachylogParser {
 						currentVariables.pop();
 						currentVariables.push("V" + variableCounter++);
 						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+					}
+
+					//U
+					else if(c == 'u') {
+						if(previousChar == '@') {
+							predicatesUsed.put("@u", BrachylogAlphabetPredicates.paUppercase());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PA_UPPERCASE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						} else {
+
+						}
 					}
 					
 					//WRITE
@@ -683,8 +707,10 @@ public abstract class BrachylogParser {
 							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 						}
 					}
-					
-					negateNextPredicate = "";
+
+					if(c != '@' && c != '#' && c != '<' && c != '>' && c != '$') {
+						negateNextPredicate = "";
+					}
 				}
 			}
 			previousChar = c;
