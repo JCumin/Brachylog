@@ -100,10 +100,6 @@ public abstract class BrachylogParser {
 
 			char c = program.toCharArray()[charIndex];
 
-			if(c == '$') {
-				System.out.print("tets");
-			}
-
 			StringBuilder currentRule = predicatesRules.get(currentPredicateIndex).get(currentRuleIndex);
 			Stack<String> currentVariables = predicatesVariables.get(currentPredicateIndex).get(currentRuleIndex);
 			int variableCounter = variableCounters.get(currentPredicateIndex).get(currentRuleIndex);
@@ -709,6 +705,19 @@ public abstract class BrachylogParser {
 
 						}
 					}
+					//U
+					else if(c == 'u') {
+						if(previousChar == '@') {
+							predicatesUsed.put("@u", BrachylogAlphabetPredicates.paUppercase());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PA_UPPERCASE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						} else {
+
+						}
+					}
+
 					//U
 					else if(c == 'u') {
 						if(previousChar == '@') {

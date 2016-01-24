@@ -1,5 +1,5 @@
 # Brachylog
-A Prolog-based Code Golf programming language
+A Prolog-based Code Golf programming language.
 
 Currently in development.
 Uses SWI-Prolog as Prolog engine.
@@ -10,7 +10,9 @@ Get the whole repository. It contains an Eclipse project for the Brachylog inter
 
 If you have troubles getting the interpreter to work on a simple Brachylog program (e.g. `,"This works!"w`), it most likely comes from the JPL libraries used to call SWI-Prolog from the Java program (Check that you correctly set the `PATH` variable). A file `compiled_brachylog.pl` is generated at the root of the project when you run the application, which contains the Prolog equivalent of your Brachylog code. You can consult this in a normal SWI-Prolog interpreter and run `brachylog_main(Input,Output).` to get the result of yout Brachylog program, as an alternative to having the result in the Java application.
 
-Using strings as i/o directly in the Java application doesn't work properly because for some reason the JPL library transforms strings to atoms when parsing prolog text... (strings works properly inside the Brachylog code though). Use the SWI-Prolog interpreter for string inputs/outputs for the moment.
+Using strings as i/o directly in the Java application doesn't work properly because for some reason the JPL library transforms strings to atoms when parsing prolog text... (strings works properly inside the Brachylog code though).
+
+**I would recommend using the SWI-Prolog interpreter to call the predicate `brachylog_main(Input, Output).` for the moment**
 
 ##Program structure
 
@@ -102,7 +104,7 @@ For example, `` Y`sum_list(Y,Z)`Z.`` will unify the Output with the sum of the e
 
 ### `'` - Not provable
 
-True if the following predicate (a built-in, or predicates contained in parentheses, or a predicate definition) cannot be proven. This is equivalent to Prolog's `\+` operator.
+True if the following predicate (a built-in, or predicates contained in parentheses, or a predicate definition) cannot be proven. This is equivalent to Prolog's `\+` predicate.
 
 Note that using it on built-in predicates is usually not effective because of implicit variables. For example, the program `,2'=3`, which should output `True.` (because 2 cannot be proven to be equal to 3), actually outputs `False.`. This is how this code is translated to Prolog, which shows the implicit variable :
 
@@ -112,7 +114,7 @@ Note that using it on built-in predicates is usually not effective because of im
 
 As seen above, `2'=3` gets interpreted as "Prove that 2 cannot be equal to a non-unified variable `V0`, and then prove that 3 can be unified with `V0`". The first one is obviously wrong, which is why this program returns `False.` and not `True.` as one would expect.
 
-To get the desired result, one can either use parentheses: `,'(2=3)`, or predicate decalaration: `'{,2=3}`.
+To get the desired result, one can either use parentheses: `,'(2=3)`, or predicate decalaration: `'{,2=3}`. In this particular instance, you can also use `,2'3`, which is translated to Prolog as `\+ 2 = 3`.
 
 ##Arithmetic
 
@@ -167,7 +169,13 @@ For example, the program `q|h{q|(h1;?h0),?b:1&},?b:0&`, which returns true if ev
         brachylog_call_predicate([V2,1], V3).  %               :1&}
 
 
-##Built-in Predicates
+#Built-in Predicates and Variables
+
+##Basic predicates
+
+The following predicates are standard predicates that are useful for a lot of different things.
+
+All those predicates are one character long.
 
 ### `A b Z` - Behead
 
@@ -270,6 +278,49 @@ True if `A` is less than or equal to `B`, unifies `Z` with `A` if that is the ca
 
 True if `A` is greater than or equal to `B`, unifies `Z` with `A` if that is the case. Works on lists, numbers, strings, according to the [standard order of terms of SWI-Prolog](http://www.swi-prolog.org/pldoc/man?section=compare), using `A`'s type.
 
+##Alphabet predicates and variables
+
+Those predicates and variables are used to manipulate strings.
+
+All those predicates start with `@`, followed by a lowercase letter.
+
+All the variables start with `@`, followed by an uppercase letter.
+
+### `@A` - Alphabet
+
+`@A` is the string `"abcdefghijklmnopqrstuvwxyz"`.
+
+### `@H` - Hello, World!
+
+`@H` is the string `"Hello, World!"`.
+
+### `@N` - New line
+
+`@N` is the string `"\n"`.
+
+### `@Q` - Quine
+
+`@Q` is the string `"@Qw"`. Therefore the program `@Qw` is a quine (that is, it prints its own source code).
+
+### `@S` - Space
+
+`@S` is the string `" "`.
+
+### `@T` - Tab
+
+`@T` is the string `"\t"`.
+
+### `@Z` - Reverse Alphabet
+
+`@Z` is the string `"zyxwvutsrqponmlkjihgfedcba"`.
+
+### `A @l Z` - Lowercase
+
+True if `Z` is the string `A` with each uppercase letter lowercased, and where other symbols stay the same.
+
+### `A @u Z` - Uppercase
+
+True if `Z` is the string `A` with each lowercase letter uppercased, and where other symbols stay the same.
 
 #Examples
 
@@ -295,3 +346,7 @@ Here is a breakdown of what it does:
 A quine is a program that outputs its own source code. Here is a Brachylog program that does this:
 
     ,",~c~s~cS:[34:S:34]rw"S:[34:S:34]rw
+    
+Alternatively, this program is also a quine, which uses the built-in variable `@Q` - Quine:
+
+    @Qw

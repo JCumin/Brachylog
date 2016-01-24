@@ -40,6 +40,7 @@ public abstract class Constants {
 	public static final String PM_CEIL					= "brachylog_math_ceil";
 	public static final String PM_FLOOR					= "brachylog_math_floor";
 
+
 	//VARIABLES
 	public static final String V_INPUT 					= "Input";
 	public static final String V_OUTPUT 				= "Output";
