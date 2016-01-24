@@ -27,6 +27,19 @@ public abstract class Constants {
 	public static final String P_GREATEREQUAL			= "brachylog_greaterequal";
 
 
+	public static final String PA_LOWERCASE				= "brachylog_alphabet_lowercase";
+	public static final String PA_UPPERCASE				= "brachylog_alphabet_uppercase";
+
+
+	public static final String PM_COS					= "brachylog_math_cosinus";
+	public static final String PM_SIN					= "brachylog_math_sinus";
+	public static final String PM_TAN					= "brachylog_math_tan";
+	public static final String PM_EXP					= "brachylog_math_exp";
+	public static final String PM_LOG					= "brachylog_math_log";
+	public static final String PM_FACTORIAL				= "brachylog_math_factorial";
+	public static final String PM_CEIL					= "brachylog_math_ceil";
+	public static final String PM_FLOOR					= "brachylog_math_floor";
+
 	//VARIABLES
 	public static final String V_INPUT 					= "Input";
 	public static final String V_OUTPUT 				= "Output";
