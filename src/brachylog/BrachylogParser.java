@@ -710,18 +710,6 @@ public abstract class BrachylogParser {
 
 						}
 					}
-					//U
-					else if(c == 'u') {
-						if(previousChar == '@') {
-							predicatesUsed.put("@u", BrachylogAlphabetPredicates.paUppercase());
-							currentRule.append(",\n    " + negateNextPredicate + Constants.PA_UPPERCASE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
-							currentVariables.pop();
-							currentVariables.push("V" + variableCounter++);
-							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
-						} else {
-
-						}
-					}
 
 					//U
 					else if(c == 'u') {

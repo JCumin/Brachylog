@@ -282,7 +282,7 @@ True if `A` is greater than or equal to `B`, unifies `Z` with `A` if that is the
 
 Those predicates and variables are used to manipulate strings.
 
-All those predicates start with `@`, followed by a lowercase letter.
+All those predicates start with `@`, followed by a lowercase letter or a non-letter symbol.
 
 All the variables start with `@`, followed by an uppercase letter.
 
@@ -321,6 +321,83 @@ True if `Z` is the string `A` with each uppercase letter lowercased, and where o
 ### `A @u Z` - Uppercase
 
 True if `Z` is the string `A` with each lowercase letter uppercased, and where other symbols stay the same.
+
+
+##Math predicates and variables
+
+Those predicates and variables are related to mathematics/number manipulations.
+
+All those predicates start with `$` (*a nod to TeX's `$...$ for math`*), followed by a lowercase letter or a non-letter symbol.
+
+All the variables start with `$`, followed by an uppercase letter.
+
+### `$A` - Golden Ratio
+
+`$A` is the number `(1 + sqrt(5))/2` (Mnemonic: The chemical symbol for gold is `Au`, which starts with `A`).
+
+### `$B` - Binary logarithm
+
+`$B` is the number `log(2)`.
+
+### `$D` - Decimal logarithm
+
+`$D` is the number `log(10)`.
+
+### `$E` - Euler's number
+
+`$E` is the number `e`, the base of the natural logarithm.
+
+### `$G` - Giga
+
+`$G` is the number `1,000,000,000`.
+
+### `$K` - Kilo
+
+`$K` is the number `1,000`.
+
+### `$M` - Mega
+
+`$M` is the number `1,000,000`.
+
+### `$P` - Pi
+
+`$P` is the number `Pi ≈ 3.14`.
+
+### `$R` - Root two
+
+`$R` is the number `sqrt(2)`.
+
+### `A $c Z` - Cosine
+
+`Z` is the cosine of `A` (in radians).
+
+### `A $e Z` - Exponential
+
+`Z` is `exp(A)`.
+
+### `A $f Z` - Factorial
+
+`Z` is `A!`.
+
+### `A $l Z` - Logarithm
+
+`Z` is `log(A)` (in base `e`).
+
+### `A $s Z` - Sine
+
+`Z` is the sine of `A`(in radians).
+
+### `A $t Z` - Tangent
+
+`Z` is the tangent of `A` (in radians).
+
+### `A $[ Z` - Floor
+
+`Z` is the largest integer not greater than `A`.
+
+### `A $] Z` - Ceil
+
+`Z` is the smallest integer not smaller than `A`.
 
 #Examples
 
