@@ -443,11 +443,11 @@ All the variables start with `$`, followed by an uppercase letter.
 
 `Z` is `arccosh(A)`.
 
-### `A $5 Z` - Arcsinh
+### `A $8 Z` - Arcsinh
 
 `Z` is `arcsinh(A)`.
 
-### `A $6 Z` - Arctanh
+### `A $9 Z` - Arctanh
 
 `Z` is `arctanh(A)`.
 
