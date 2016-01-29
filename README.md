@@ -395,6 +395,16 @@ All the variables start with `$`, followed by an uppercase letter.
 
 `Z` is `log(A)` (in base `e`).
 
+### `A $p Z` - Prime decomposition
+
+`Z` is a list of all prime factors of `A`.
+
+For example, `,42$p.` will output `[7, 3, 2]`.
+
+### `A $r Z` - Root
+
+`Z` is `sqrt(A)`.
+
 ### `A $s Z` - Sine
 
 `Z` is the sine of `A`(in radians).
