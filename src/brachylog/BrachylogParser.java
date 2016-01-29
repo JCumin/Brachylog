@@ -195,7 +195,7 @@ public abstract class BrachylogParser {
 				}
 				
 				//NUMBER
-				if(Character.isDigit(c)) {
+				if(Character.isDigit(c) && previousChar != '$' && previousChar != '@') {
 					if(!readingNumber) {
 						if(currentVariables.lastElement().isEmpty() || lastCharIsColon || lastCharArithmetic || lastCharArithmeticParenthesis) {
 							fillNumberInCurrentVariable = true;
@@ -234,12 +234,12 @@ public abstract class BrachylogParser {
 				}
 				
 				//START STRING
-				if(c == '"') {
+				if(c == '"' && previousChar != '$' && previousChar != '@') {
 					currentString.append(c);
 				}
 				
 				//START ARGS
-				else if(c == ':') {
+				else if(c == ':' && previousChar != '$' && previousChar != '@') {
 					String s = currentVariables.pop();
 					if(s.isEmpty()) {
 						currentVariables.push("[");	
@@ -285,7 +285,7 @@ public abstract class BrachylogParser {
 				}
 				
 				//INPUT VARIABLE
-				else if(c == '?') {
+				else if(c == '?' && previousChar != '$' && previousChar != '@') {
 					if(currentVariables.lastElement().isEmpty()) {
 						currentVariables.pop();
 						currentVariables.push(Constants.V_INPUT);
@@ -308,7 +308,7 @@ public abstract class BrachylogParser {
 				}
 				
 				//OUTPUT VARIABLE
-				else if(c == '.') {
+				else if(c == '.' && previousChar != '$' && previousChar != '@') {
 					if(!readingNumber) {
 						if(currentVariables.lastElement().isEmpty()) {
 							currentVariables.pop();
@@ -333,7 +333,7 @@ public abstract class BrachylogParser {
 				}
 				
 				//EMPTY LIST
-				else if(c == 'q') {
+				else if(c == 'q' && previousChar != '$' && previousChar != '@') {
 					if(!readingNumber) {
 						if(currentVariables.lastElement().isEmpty()) {
 							currentVariables.pop();
@@ -358,43 +358,44 @@ public abstract class BrachylogParser {
 				}
 				
 				//AND
-				else if(c == ',') {
+				else if(c == ',' && previousChar != '$' && previousChar != '@') {
 					currentVariables.pop();
 					currentVariables.push("");
 				}
 				
 				//OR
-				else if(c == ';') {
+				else if(c == ';' && previousChar != '$' && previousChar != '@') {
 					currentVariables.pop();
 					currentVariables.push("");
 					currentRule.append("\n    ;\n    1=1");
 				}
 				
 				//CUT
-				else if(c == '!') {
+				else if(c == '!' && previousChar != '$' && previousChar != '@') {
 					currentRule.append(",\n    !");
 				}
 				
 				//BACKTRACK
-				else if (c == '\\') {
+				else if (c == '\\' && previousChar != '$' && previousChar != '@') {
 					currentRule.append(",\n    0 = 1");
 				}
 				
 				//START INLINE PROLOG
-				else if(c == '`') {
+				else if(c == '`' && previousChar != '$' && previousChar != '@') {
 					currentVariables.pop();
 					currentVariables.push("");
 					currentRule.append(",\n    ");
 					readingInlineProlog = true;
 				}
 				
-				else if(c == '\'') {
+				else if(c == '\'' && previousChar != '$' && previousChar != '@') {
 					negateNextPredicate = " \\+ ";
 					continue;
 				}
 				
 				//ARITHMETIC
-				else if(c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^') {
+				else if((c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^')
+						 && previousChar != '$' && previousChar != '@') {
 					String s = currentVariables.pop();
 					if(c == '%') {
 						currentVariables.push(s + " mod ");	
@@ -405,7 +406,7 @@ public abstract class BrachylogParser {
 				}
 				
 				//OPEN PARENTHESIS
-				else if(c == '(') {
+				else if(c == '(' && previousChar != '$' && previousChar != '@') {
 					if(lastCharArithmetic || lastCharIsColon) {
 						currentVariables.push("(");
 						lastCharArithmeticParenthesis = true;
@@ -420,7 +421,7 @@ public abstract class BrachylogParser {
 				}
 				
 				//CLOSE PARENTHESIS
-				else if(c == ')') {
+				else if(c == ')' && previousChar != '$' && previousChar != '@') {
 					if(currentVariables.size() > 1) {
 						String s = currentVariables.pop();
 						String s2 = currentVariables.pop();
@@ -431,7 +432,7 @@ public abstract class BrachylogParser {
 				}
 				
 				//START PREDICATE
-				else if(c == '{') {
+				else if(c == '{' && previousChar != '$' && previousChar != '@') {
 					if(currentVariables.size() <= 1) {
 						lastCharIsColon = false;
 						if(arrayOpened) {
@@ -472,7 +473,7 @@ public abstract class BrachylogParser {
 				}
 				
 				//END PREDICATE
-				else if(c =='}') {
+				else if(c =='}' && previousChar != '$' && previousChar != '@') {
 					if(currentVariables.size() <= 1) {
 						lastCharIsColon = false;
 						if(arrayOpened) {
@@ -489,7 +490,7 @@ public abstract class BrachylogParser {
 				}
 				
 				//START NEW RULE
-				else if(c == '|') {
+				else if(c == '|' && previousChar != '$' && previousChar != '@') {
 					if(currentVariables.size() <= 1) {
 						lastCharIsColon = false;
 						if(arrayOpened) {
@@ -593,11 +594,7 @@ public abstract class BrachylogParser {
 					//FINDALL
 					else if(c == 'f') {
 						if(previousChar == '$') {
-							predicatesUsed.put("$f", BrachylogMathPredicates.pmFactorial());
-							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_FACTORIAL + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
-							currentVariables.pop();
-							currentVariables.push("V" + variableCounter++);
-							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+
 						} else {
 							predicatesUsed.put("f", BrachylogPredicates.pFindAll());
 							predicatesUsed.put("&", BrachylogPredicates.pCallPredicate());
@@ -669,11 +666,19 @@ public abstract class BrachylogParser {
 					
 					//REVERSE
 					else if(c == 'r') {
-						predicatesUsed.put("r", BrachylogPredicates.pReverse());
-						currentRule.append(",\n    " + negateNextPredicate + Constants.P_REVERSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
-						currentVariables.pop();
-						currentVariables.push("V" + variableCounter++);
-						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						if(previousChar == '$') {
+							predicatesUsed.put("$r", BrachylogMathPredicates.pmRoot());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_ROOT + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						} else {
+							predicatesUsed.put("r", BrachylogPredicates.pReverse());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.P_REVERSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
 					}
 					
 					//SUBSET
@@ -801,6 +806,123 @@ public abstract class BrachylogParser {
 							currentVariables.pop();
 							currentVariables.push("V" + variableCounter++);
 							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//!
+					else if(c == '!') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$!", BrachylogMathPredicates.pmFactorial());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_FACTORIAL + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//1
+					else if(c == '1') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$1", BrachylogMathPredicates.pmArcCos());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_ARCCOS + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//2
+					else if(c == '2') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$2", BrachylogMathPredicates.pmArcSin());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_ARCSIN + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//3
+					else if(c == '3') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$3", BrachylogMathPredicates.pmArcTan());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_ARCTAN + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//4
+					else if(c == '4') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$4", BrachylogMathPredicates.pmCosh());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_COSH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//5
+					else if(c == '5') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$5", BrachylogMathPredicates.pmSinh());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_SINH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//6
+					else if(c == '6') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$6", BrachylogMathPredicates.pmTanh());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_TANH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//7
+					else if(c == '7') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$7", BrachylogMathPredicates.pmArcCosh());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_ARCCOSH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//8
+					else if(c == '8') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$8", BrachylogMathPredicates.pmArcSinh());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_ARCSINH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//9
+					else if(c == '9') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$9", BrachylogMathPredicates.pmArcTanh());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_ARCTANH + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//0
+					else if(c == '0') {
+						if(previousChar == '$') {
+							
 						}
 					}
 

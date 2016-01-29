@@ -9,9 +9,9 @@ public abstract class BrachylogAlphabetVariables {
                       break;
             case 'B': s = "";
                       break;
-            case 'C': s = "";
+            case 'C': s = "\"bcdfghjklmnpqrstvwxyz\"";
                       break;
-            case 'D': s = "";
+            case 'D': s = "\"bcdfghjklmnpqrstvwxz\"";
                       break;
             case 'E': s = "";
                       break;
@@ -47,9 +47,9 @@ public abstract class BrachylogAlphabetVariables {
                       break;
             case 'U': s = "";
                       break;
-            case 'V': s = "";
+            case 'V': s = "\"aeiou\"";
                       break;
-            case 'W': s = "";
+            case 'W': s = "\"aeiouy\"";
                       break;
             case 'X': s = "";
                       break;
