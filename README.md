@@ -290,6 +290,14 @@ All the variables start with `@`, followed by an uppercase letter.
 
 `@A` is the string `"abcdefghijklmnopqrstuvwxyz"`.
 
+### `@C` - Consonants
+
+`@C` is the string `"bcdfghjklmnpqrstvwxyz"`.
+
+### `@C` - Consonants Variant
+
+`@C` is the string `"bcdfghjklmnpqrstvwxz"` (no `y`).
+
 ### `@H` - Hello, World!
 
 `@H` is the string `"Hello, World!"`.
@@ -309,6 +317,14 @@ All the variables start with `@`, followed by an uppercase letter.
 ### `@T` - Tab
 
 `@T` is the string `"\t"`.
+
+### `@V` - Vowels
+
+`@V` is the string `"aeiou"`.
+
+### `@W` - Vowels Variant
+
+`@W` is the string `"aeiouy"`.
 
 ### `@Z` - Reverse Alphabet
 
@@ -375,10 +391,6 @@ All the variables start with `$`, followed by an uppercase letter.
 
 `Z` is `exp(A)`.
 
-### `A $f Z` - Factorial
-
-`Z` is `A!`.
-
 ### `A $l Z` - Logarithm
 
 `Z` is `log(A)` (in base `e`).
@@ -398,6 +410,46 @@ All the variables start with `$`, followed by an uppercase letter.
 ### `A $] Z` - Ceil
 
 `Z` is the smallest integer not smaller than `A`.
+
+### `A $! Z` - Factorial
+
+`Z` is `A!`.
+
+### `A $1 Z` - Arccos
+
+`Z` is `arccos(A)`.
+
+### `A $2 Z` - Arcsin
+
+`Z` is `arcsin(A)`.
+
+### `A $3 Z` - Arctan
+
+`Z` is `arctan(A)`.
+
+### `A $4 Z` - Cosh
+
+`Z` is `cosh(A)`.
+
+### `A $5 Z` - Sinh
+
+`Z` is `sinh(A)`.
+
+### `A $6 Z` - Tanh
+
+`Z` is `cosh(A)`.
+
+### `A $7 Z` - Arccosh
+
+`Z` is `arccosh(A)`.
+
+### `A $8 Z` - Arcsinh
+
+`Z` is `arcsinh(A)`.
+
+### `A $9 Z` - Arctanh
+
+`Z` is `arctanh(A)`.
 
 #Examples
 
