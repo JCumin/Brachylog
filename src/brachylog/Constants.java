@@ -45,6 +45,7 @@ public abstract class Constants {
 	public static final String PM_ARCTANH				= "brachylog_math_tan";
 	public static final String PM_EXP					= "brachylog_math_exp";
 	public static final String PM_LOG					= "brachylog_math_log";
+	public static final String PM_PRIMEDECOMPOSITION	= "brachylog_prime_decomposition";
 	public static final String PM_ROOT					= "brachylog_math_root";
 	public static final String PM_FACTORIAL				= "brachylog_math_factorial";
 	public static final String PM_CEIL					= "brachylog_math_ceil";

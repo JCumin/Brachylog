@@ -657,11 +657,19 @@ public abstract class BrachylogParser {
 					
 					//PERMUTE
 					else if(c == 'p') {
-						predicatesUsed.put("p", BrachylogPredicates.pPermute());
-						currentRule.append(",\n    " + negateNextPredicate + Constants.P_PERMUTE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
-						currentVariables.pop();
-						currentVariables.push("V" + variableCounter++);
-						variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						if(previousChar == '$') {
+							predicatesUsed.put("$p", BrachylogMathPredicates.pmPrimeDecomposition());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_PRIMEDECOMPOSITION + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						} else {
+							predicatesUsed.put("p", BrachylogPredicates.pPermute());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.P_PERMUTE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);	
+						}
 					}
 					
 					//REVERSE

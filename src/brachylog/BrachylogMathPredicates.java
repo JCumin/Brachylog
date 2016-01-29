@@ -42,6 +42,43 @@ public class BrachylogMathPredicates {
         return s;
     }
     
+    public static String pmPrimeDecomposition() {
+    	String s = "\n"
+    			+ "% --- CREDITS TO ROSETTA CODE ---\n"
+    			+ Constants.PM_PRIMEDECOMPOSITION + "(X,Y) :-\n"
+    			+ "    SN is sqrt(X),\n"
+    			+ "    " + Constants.PM_PRIMEDECOMPOSITION + "_1(X, SN, 2, [], Y).\n"
+    			+ Constants.PM_PRIMEDECOMPOSITION + "_1(1, _, _, L, L) :- !.\n"
+    			+ Constants.PM_PRIMEDECOMPOSITION + "_1(N, SN, D, L, LF) :-\n"
+    			+ "    (   0 is N mod D ->\n"
+    			+ "        Q is N / D,\n"
+    			+ "        SQ is sqrt(Q),\n"
+    			+ "        " + Constants.PM_PRIMEDECOMPOSITION + "_1(Q, SQ, D, [D |L], LF)\n"
+    			+ "    ;\n"
+    			+ "        D1 is D+1,\n"
+    			+ "        (    D1 > SN ->\n"
+    			+ "             LF = [N |L]\n"
+    			+ "        ;\n"
+    			+ "             " + Constants.PM_PRIMEDECOMPOSITION + "_2(N, SN, D1, L, LF)\n"
+    			+ "        )\n"
+    			+ "    ).\n"
+    			+ Constants.PM_PRIMEDECOMPOSITION + "_2(1, _, _, L, L) :- !.\n"
+    			+ Constants.PM_PRIMEDECOMPOSITION + "_2(N, SN, D, L, LF) :-\n"
+    			+ "    (   0 is N mod D ->\n"
+    			+ "        Q is N / D,\n"
+    			+ "        SQ is sqrt(Q),\n"
+    			+ "        " + Constants.PM_PRIMEDECOMPOSITION + "_2(Q, SQ, D, [D |L], LF);\n"
+    			+ "        D1 is D+2,\n"
+    			+ "        (	D1 > SN ->\n"
+    			+ "             LF = [N |L]\n"
+    			+ "        ;\n"
+    			+ "             " + Constants.PM_PRIMEDECOMPOSITION + "_2(N, SN, D1, L, LF)\n"
+    			+ "        )\n"
+    			+ "    ).\n";
+    			
+    	return s;
+    }
+    
     public static String pmRoot() {
         String s = "\n"
                 + Constants.PM_ROOT + "(X,Y) :-\n"
