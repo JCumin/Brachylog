@@ -375,10 +375,6 @@ All the variables start with `$`, followed by an uppercase letter.
 
 `Z` is `exp(A)`.
 
-### `A $f Z` - Factorial
-
-`Z` is `A!`.
-
 ### `A $l Z` - Logarithm
 
 `Z` is `log(A)` (in base `e`).
@@ -398,6 +394,10 @@ All the variables start with `$`, followed by an uppercase letter.
 ### `A $] Z` - Ceil
 
 `Z` is the smallest integer not smaller than `A`.
+
+### `A $! Z` - Factorial
+
+`Z` is `A!`.
 
 #Examples
 
