@@ -204,4 +204,58 @@ public class BrachylogMathPredicates {
     	
     	return s;
     }
+    
+    public static String pmCircularPermuteLeft() {
+		
+		String s = "\n"
+				+ Constants.PM_CIRCULAR_PERM_LEFT + "(X,Y) :-\n"
+				+ "    string(X),!,\n"
+				+ "    string_codes(X,C),\n"
+				+ "    C = [H|T],\n"
+				+ "    append(T,[H],D),\n"
+				+ "    string_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    number(X),!,\n"
+				+ "    number_codes(X,C),\n"
+				+ "    C = [H|T],\n"
+				+ "    append(T,[H],D),\n"
+				+ "    number_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    atom(X),!,\n"
+				+ "    atom_codes(X,C),\n"
+				+ "    C = [H|T],\n"
+				+ "    append(T,[H],D),\n"
+				+ "    atom_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    X = [H|T],!,\n"
+				+ "    append(T,[H],Y).\n";
+		return s;
+	}
+    
+    public static String pmCircularPermuteRight() {
+		
+		String s = "\n"
+				+ Constants.PM_CIRCULAR_PERM_RIGHT + "(X,Y) :-\n"
+				+ "    string(X),!,\n"
+				+ "    string_codes(X,C),\n"
+				+ "    append(T,[H],C),\n"
+				+ "    D = [H|T],\n"
+				+ "    string_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    number(X),!,\n"
+				+ "    number_codes(X,C),\n"
+				+ "    append(T,[H],C),\n"
+				+ "    D = [H|T],\n"
+				+ "    number_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    atom(X),!,\n"
+				+ "    atom_codes(X,C),\n"
+				+ "    append(T,[H],C),\n"
+				+ "    D = [H|T],\n"
+				+ "    atom_codes(Y,D)\n"
+				+ "    ;\n"
+				+ "    append(T,[H],X),\n"
+				+ "    Y = [H|T].\n";
+		return s;
+	}
 }

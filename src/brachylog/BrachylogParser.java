@@ -805,6 +805,28 @@ public abstract class BrachylogParser {
 						}
 					}
 					
+					//(
+					else if(c == '(') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$(", BrachylogMathPredicates.pmCircularPermuteLeft());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_CIRCULAR_PERM_LEFT + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//)
+					else if(c == ')') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$)", BrachylogMathPredicates.pmCircularPermuteRight());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_CIRCULAR_PERM_RIGHT + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
 					//!
 					else if(c == '!') {
 						if(previousChar == '$') {

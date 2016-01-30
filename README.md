@@ -421,6 +421,14 @@ For example, `,42$p.` will output `[7, 3, 2]`.
 
 `Z` is the smallest integer not smaller than `A`.
 
+### `A $( Z` - Circular Permute Left
+
+`Z` is the left circular permutation of `A`, e.g. if `A = [1,2,3,4]` then `Z = [2,3,4,1]`. This works on lists, strings, and numbers.
+
+### `A $) Z` - Circular Permute Right
+
+`Z` is the right circular permutation of `A`, e.g. if `A = [1,2,3,4]` then `Z = [4,1,2,3]`. This works on lists, strings, and numbers.
+
 ### `A $! Z` - Factorial
 
 `Z` is `A!`.
