@@ -363,6 +363,14 @@ public abstract class BrachylogPredicates {
 		return s;
 	}
 	
+	public static String pEqual() {
+		
+		String s = "\n"
+				+ Constants.P_EQUAL + "(X,Y) :-\n"
+				+ "    Y is X.\n";
+		
+		return s;
+	}
 	
 	public static String pLess() {
 		

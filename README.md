@@ -54,7 +54,7 @@ Numbers consist of characters `0` to `9`. Floats are written with a period `.` a
 ### `A:B:[C:D]:E` - Lists
 
 Lists' elements are chained with a colon `:`. Sublists can be added using an opening square bracket `[` and a closing square bracket `]`. Brackets are not used for the base list. One can create a list with the current variable, e.g. `A l:42` will create the list `[L:42]` where `L` is the length of `A`.
-Note that `A l B:42` will first unify `B` with the length of `A`, and then create the list `[B:42]`. The empty list is `q`. You cannot put spaces around `[`,`]` or `:`. A list starting with a sublist as first element must start with a colon, e.g. `,:[1:2]:3` and not `,[1:2]:3` (Don't forget the comma to not add the previous variable, implicit or not, to the list)
+Note that `A l B:42` will first unify `B` with the length of `A`, and then create the list `[B:42]`. The empty list is `_`. You cannot put spaces around `[`,`]` or `:`. A list starting with a sublist as first element must start with a colon, e.g. `,:[1:2]:3` and not `,[1:2]:3` (Don't forget the comma to not add the previous variable, implicit or not, to the list)
 
 A list that starts directly with a bracket will be unified with the previous variable, e.g. `[1:2:3]` will unify the Input with the list `1:2:3`, whereas `1:2:3` would unify the input with `1` and then construct the list `1:2:3`.
 
@@ -67,9 +67,9 @@ A list that starts directly with a bracket will be unified with the previous var
 
 `.` is a reserved variable name representing the output of the current rule. When placed directly after a number, you must add a space ` ` between the two (since `.` is also used as the decimal separator).
 
-### `q` - Empty list
+### `_` - Empty list
 
-`q` is a reserved variable name representing the empty list `[]`.
+`_` is a reserved variable name representing the empty list `[]`.
 
 
 ##Execution control
@@ -116,6 +116,12 @@ As seen above, `2'=3` gets interpreted as "Prove that 2 cannot be equal to a non
 
 To get the desired result, one can either use parentheses: `,'(2=3)`, or predicate decalaration: `'{,2=3}`. In this particular instance, you can also use `,2'3`, which is translated to Prolog as `\+ 2 = 3`.
 
+### `~` - Reverse Arguments
+
+The next predicate will be called with its output as the left variable and its input as the right variable.
+
+For example, `l.` will unify the Output with the length of the Input, whereas `~l.` will unify the Output with a list of `N` elements, if `Input = N`.
+
 ##Arithmetic
 
 There are 6 basic arithmetic operators: `+`, `-`, `*`, `/`, `^` and `%` (addition, subtraction, multiplication, float division, power and modulo).
@@ -129,10 +135,10 @@ Parentheses can be used, although it can be tricky in some situations. For insta
 
 A Brachylog program starts in the first rule of the predicate `brachylog_main`. New rules for the same predicate can be added using `|`. The Input is implicitly available after `|`. Variables are not shared between rules. Rules are translated to Prolog in the same order they appear in Brachylog (therefore Prolog will attempt to unify the leftmost Brachylog rule first).
 
-For example, the program `q,"Empty".|,"Not empty".` is translated in Prolog as:
+For example, the program `_,"Empty".|,"Not empty".` is translated in Prolog as:
 
     brachylog_main(Input,Output) :-  
-        [] = Input,                  % q
+        [] = Input,                  % _
         Output = "Empty".            %  ,"Empty".
 
     brachylog_main(Input,Output) :-  %           |
@@ -142,10 +148,10 @@ For example, the program `q,"Empty".|,"Not empty".` is translated in Prolog as:
 Sub-predicates can be defined as well, using `{` to start the definition of one and `}` to end it. When defining a sub-predicate, the current variable to the left of the opening `{` will be used as Input and the variable implicitly available after the closing `}` will be the Output (To avoid calling the predicate where it is defined, simply append a `,` - And before the opening brace). Multiple rules can be defined inside a Predicate, exactly like in `brachylog_main`. Sub-predicates can be defined inside sub-predicates.
 Sub-predicates have the name `brachylog_subpred_N`, where `N` is an integer. The 0th predicate is `brachylog_main` and subsequent sub-predicates are numbered one after the other, from left to right. Calling a sub-predicate can be done using the built-in predicate *`&` - Call Sub-predicate*, which requires the sub-predicate number.
 
-For example, the program `q|h{q|(h1;?h0),?b:1&},?b:0&`, which returns true if every sublist of an Input list contains only zeros and ones, and false otherwise, is translated in Prolog as:
+For example, the program `_|h{_|(h1;?h0),?b:1&},?b:0&`, which returns true if every sublist of an Input list contains only zeros and ones, and false otherwise, is translated in Prolog as:
 
     brachylog_main(Input,Output) :-            
-        [] = Input.                            % q
+        [] = Input.                            % _
     
     brachylog_main(Input,Output) :-            %  |
         brachylog_head(Input, V0),             %   h
@@ -155,7 +161,7 @@ For example, the program `q|h{q|(h1;?h0),?b:1&},?b:0&`, which returns true if ev
     
     
     brachylog_subpred_1(Input,Output) :-       % {
-        [] = Input.                               q
+        [] = Input.                               _
     
     brachylog_subpred_1(Input,Output) :-       %   |
         (                                      %    (

@@ -12,10 +12,11 @@ public class Main {
 	
     public static void main(String[] args) {
     	
-    	//String p = "'writef(\"%s\",[\"test\"]),flush_output'";
-    	String p = ",:[1:[2:5]]:3r.";
-    	String i = ":[1:[2:5]]:3";
-    	String o = "Z";
+
+    	String p = "~l.";
+    	
+    	String i = "2";
+    	String o = "X";
     	
     	BrachylogParser.parseFromString(p,i,o);
     }
