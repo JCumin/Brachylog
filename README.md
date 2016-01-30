@@ -425,6 +425,14 @@ For example, `,42$p.` will output `[7, 3, 2]`.
 
 `Z` is `A!`.
 
+### `A $\ Z` - Transpose
+
+`Z` is the transposition of the matrix `A`.
+
+### `A $/ Z` - Anti-transpose
+
+`Z` is the transposition of the matrix `A` along the anti-diagonal.
+
 ### `A $1 Z` - Arccos
 
 `Z` is `arccos(A)`.

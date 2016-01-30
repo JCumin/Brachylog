@@ -50,6 +50,8 @@ public abstract class Constants {
 	public static final String PM_FACTORIAL				= "brachylog_math_factorial";
 	public static final String PM_CEIL					= "brachylog_math_ceil";
 	public static final String PM_FLOOR					= "brachylog_math_floor";
+	public static final String PM_TRANSPOSE				= "brachylog_math_transpose";
+	public static final String PM_ANTITRANSPOSE			= "brachylog_math_anti_transpose";
 
 
 	//VARIABLES

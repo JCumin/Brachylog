@@ -816,6 +816,28 @@ public abstract class BrachylogParser {
 						}
 					}
 					
+					///
+					else if(c == '/') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$/", BrachylogMathPredicates.pmAntiTranspose());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_ANTITRANSPOSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
+					//\
+					else if(c == '\\') {
+						if(previousChar == '$') {
+							predicatesUsed.put("$\\", BrachylogMathPredicates.pmTranspose());
+							currentRule.append(",\n    " + negateNextPredicate + Constants.PM_TRANSPOSE + "(" + currentVariables.lastElement() + ", V" + variableCounter + ")");
+							currentVariables.pop();
+							currentVariables.push("V" + variableCounter++);
+							variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
+						}
+					}
+					
 					//1
 					else if(c == '1') {
 						if(previousChar == '$') {
@@ -933,8 +955,12 @@ public abstract class BrachylogParser {
 		
 		StringBuilder prologProgram = new StringBuilder();
 		
-		//Deactivates singleton variabels warnings (that we get on all the unused implicit variables)
+		//Deactivates singleton variables warnings (that we get on all the unused implicit variables)
 		prologProgram.append(":- style_check(-singleton).\n");
+		prologProgram.append("\n");
+		
+		//Add CLPFD library for certain built-ins
+		prologProgram.append(":- use_module(library(clpfd)).\n");
 		prologProgram.append("\n");
 		
 		//Concatenate all rules of all predicates one after the other

@@ -186,4 +186,22 @@ public class BrachylogMathPredicates {
 
         return s;
     }
+    
+    public static String pmTranspose() {
+    	String s = "\n"
+    			+ Constants.PM_TRANSPOSE + "(X,Y) :-\n"
+    			+ "    transpose(X,Y).";
+    	
+    	return s;
+    }
+    
+    public static String pmAntiTranspose() {
+    	String s = "\n"
+    			+ Constants.PM_ANTITRANSPOSE + "(X,Y) :-\n"
+    			+ "    maplist(reverse,X,A),\n"
+    			+ "    transpose(A,B),\n"
+    			+ "    maplist(reverse,B,Y).\n";
+    	
+    	return s;
+    }
 }
