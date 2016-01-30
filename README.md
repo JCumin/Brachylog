@@ -495,6 +495,9 @@ Here is a breakdown of what it does:
                eI           § Unify I with a number between 2 and input - 1
                  ,?%I=0     § True if 0 can be unified with the remainder of input divided by I
 
+Alternatively, this program will also check if the Input is a prime number, using the built-in predicate `$p` - Prime Decomposition:
+
+    $pl1
 
 ### Quine
 
