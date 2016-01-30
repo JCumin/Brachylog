@@ -122,6 +122,8 @@ The next predicate will be called with its output as the left variable and its i
 
 For example, `l.` will unify the Output with the length of the Input, whereas `~l.` will unify the Output with a list of `N` elements, if `Input = N`.
 
+Some predicates (e.g. `w` - Write with its side-effect) will not work properly if reversed.
+
 ##Arithmetic
 
 There are 6 basic arithmetic operators: `+`, `-`, `*`, `/`, `^` and `%` (addition, subtraction, multiplication, float division, power and modulo).
