@@ -22,10 +22,8 @@ A brachylog program is always constitued of a main predicate which has two argum
 
 For example, the program `bArA`, which uses the variable `A`, the built-in predicate `b` - Behead and the built-in predicate `r` - Reverse, will return `True.` if its input minus the first element is a palindrome (i.e. is identical to its reverse), and `False.` otherwise. Here is a breakdown of what's happening:
 
-    b     § An implicit variable V0 is unified with Input minus the first element
-     A    § Unifies variable A with V0
-      r   § An implicit variable V1 is unified with the reverse of A = V0
-       A  § Unifies variable A with V1
+    bA    § A is unified with the Input minus its first element
+      rA  § Unify A with its own reverse
        
 If the Input minus its first element is not a palindrome, the last unification of `A` with `V1` will fail, and thus the main predicate will return false since it is only constitued of implicit logical *ands*.
 
@@ -106,15 +104,7 @@ For example, `` Y`sum_list(Y,Z)`Z.`` will unify the Output with the sum of the e
 
 True if the following predicate (a built-in, or predicates contained in parentheses, or a predicate definition) cannot be proven. This is equivalent to Prolog's `\+` predicate.
 
-Note that using it on built-in predicates is usually not effective because of implicit variables. For example, the program `,2'=3`, which should output `True.` (because 2 cannot be proven to be equal to 3), actually outputs `False.`. This is how this code is translated to Prolog, which shows the implicit variable :
-
-    brachylog_main(Input,Output) :-
-        \+ V0 is 2,  % ,2'=
-        V0 = 3.      %     3
-
-As seen above, `2'=3` gets interpreted as "Prove that 2 cannot be equal to a non-unified variable `V0`, and then prove that 3 can be unified with `V0`". The first one is obviously wrong, which is why this program returns `False.` and not `True.` as one would expect.
-
-To get the desired result, one can either use parentheses: `,'(2=3)`, or predicate decalaration: `'{,2=3}`. In this particular instance, you can also use `,2'3`, which is translated to Prolog as `\+ 2 = 3`.
+This can be used before a parenthesis or a predicate call.
 
 ### `~` - Reverse Arguments
 
@@ -147,32 +137,6 @@ For example, the program `_,"Empty".|,"Not empty".` is translated in Prolog as:
 
 Sub-predicates can be defined as well, using `{` to start the definition of one and `}` to end it. When defining a sub-predicate, the current variable to the left of the opening `{` will be used as Input and the variable implicitly available after the closing `}` will be the Output (To avoid calling the predicate where it is defined, simply append a `,` - And before the opening brace). Multiple rules can be defined inside a Predicate, exactly like in `brachylog_main`. Sub-predicates can be defined inside sub-predicates.
 Sub-predicates have the name `brachylog_subpred_N`, where `N` is an integer. The 0th predicate is `brachylog_main` and subsequent sub-predicates are numbered one after the other, from left to right. Calling a sub-predicate can be done using the built-in predicate *`&` - Call Sub-predicate*, which requires the sub-predicate number.
-
-For example, the program `_|h{_|(h1;?h0),?b:1&},?b:0&`, which returns true if every sublist of an Input list contains only zeros and ones, and false otherwise, is translated in Prolog as:
-
-    brachylog_main(Input,Output) :-            
-        [] = Input.                            % _
-    
-    brachylog_main(Input,Output) :-            %  |
-        brachylog_head(Input, V0),             %   h
-        brachylog_subpred_1(V0,V1),            %    {...}
-        brachylog_behead(Input, V2),           %         ,?b
-        brachylog_call_predicate([V2,0], V3).  %            :0&
-    
-    
-    brachylog_subpred_1(Input,Output) :-       % {
-        [] = Input.                               _
-    
-    brachylog_subpred_1(Input,Output) :-       %   |
-        (                                      %    (
-        brachylog_head(Input, V0),             %     h
-        V0 = 1                                 %      1
-        ;                                      %       ;
-        brachylog_head(Input, V1),             %        ?h
-        V1 = 0                                 %          0
-        ),                                     %           )
-        brachylog_behead(Input, V2),           %            ,?b
-        brachylog_call_predicate([V2,1], V3).  %               :1&}
 
 
 #Built-in Predicates and Variables
