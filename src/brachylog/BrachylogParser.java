@@ -196,7 +196,7 @@ public abstract class BrachylogParser {
 				}
 				
 				if(!predicateName.isEmpty() && c != '$' && c != '@' && !Character.isUpperCase(c) && c != '"' && c != '[' && !Character.isDigit(c) && 
-						(c != '?' && previousChar != '$' && previousChar != '$') && (c != '.' && previousChar != '$' && previousChar != '@') &&
+						(c != '?' || (previousChar != '$' || previousChar != '@')) && (c != '.' || (previousChar != '$' || previousChar != '@')) &&
 						!arrayOpened && currentNumber.isEmpty()) {
 					if(reverseNextPredicate) {
 						currentRule.append(",\n    " + negateNextPredicate + predicateName + "(" + "V" + variableCounter + ", " + currentVariables.lastElement() + ")");
