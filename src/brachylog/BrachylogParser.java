@@ -638,13 +638,16 @@ public abstract class BrachylogParser {
 						lastCharArithmeticParenthesis = false;
 					}
 					if(currentVariables.size() <= 1) {
-						lastCharIsColon = false;
-						if(arrayOpened) {
-							String s = currentVariables.pop();
-							currentVariables.push(s + "]");
-							arrayOpened = false;
-						}	
+						if(c != '$' && c != '@') {
+							lastCharIsColon = false;
+							if(arrayOpened) {
+								String s = currentVariables.pop();
+								currentVariables.push(s + "]");
+								arrayOpened = false;
+							}
+						}
 					}
+					
 					
 					//B
 					if(c == 'b') {
