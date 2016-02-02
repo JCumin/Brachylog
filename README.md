@@ -339,6 +339,10 @@ All the variables start with `$`, followed by an uppercase letter.
 
 `$G` is the number `1,000,000,000`.
 
+### `$I` - Infinity
+
+`$I` is the positive infinity.
+
 ### `$K` - Kilo
 
 `$K` is the number `1,000`.
