@@ -31,7 +31,7 @@ public abstract class BrachylogMathVariables {
                 s = "";
                 break;
             case 'I':
-                s = "inf";
+                s = "infinite";
                 break;
             case 'J':
                 s = "";
