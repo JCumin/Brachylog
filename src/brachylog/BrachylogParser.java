@@ -230,6 +230,12 @@ public abstract class BrachylogParser {
 						currentVariables.push(s + variableName);
 						lastCharIsColon = false;
 					} else {
+						if(arrayOpened) {
+							String s = currentVariables.pop();
+							currentVariables.push(s + "]");
+						}
+						arrayOpened = false;
+						lastCharIsColon = false;
 						if(!predicateName.isEmpty()) {
 							if(reverseNextPredicate) {
 								currentRule.append(",\n    " + negateNextPredicate + predicateName + "(" + variableName + ", " + currentInputVariable + ")");
@@ -359,12 +365,12 @@ public abstract class BrachylogParser {
 						lastCharArithmetic = false;
 						lastCharArithmeticParenthesis = false;
 					} else {
-						arrayOpened = false;
-						lastCharIsColon = false;
 						if(arrayOpened) {
 							String s = currentVariables.pop();
 							currentVariables.push(s + "]");
 						}
+						arrayOpened = false;
+						lastCharIsColon = false;
 						if(!predicateName.isEmpty()) {
 							if(reverseNextPredicate) {
 								currentRule.append(",\n    " + negateNextPredicate + predicateName + "(" + Constants.V_INPUT + ", " + currentInputVariable + ")");
@@ -396,12 +402,12 @@ public abstract class BrachylogParser {
 							lastCharArithmetic = false;
 							lastCharArithmeticParenthesis = false;
 						} else {
-							arrayOpened = false;
-							lastCharIsColon = false;
 							if(arrayOpened) {
 								String s = currentVariables.pop();
 								currentVariables.push(s + "]");
 							}
+							arrayOpened = false;
+							lastCharIsColon = false;
 							if(!predicateName.isEmpty()) {
 								if(reverseNextPredicate) {
 									currentRule.append(",\n    " + negateNextPredicate + predicateName + "(" + Constants.V_OUTPUT + ", " + currentInputVariable + ")");
@@ -648,7 +654,6 @@ public abstract class BrachylogParser {
 							}
 						}
 					}
-					
 					
 					//B
 					if(c == 'b') {
