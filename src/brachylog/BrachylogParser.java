@@ -210,6 +210,7 @@ public abstract class BrachylogParser {
 					variableCounters.get(currentPredicateIndex).set(currentRuleIndex, variableCounter);
 					predicateName = "";
 					currentInputVariable = "";
+					negateNextPredicate = "";
 				}
 				
 				//VARIABLE NAME
