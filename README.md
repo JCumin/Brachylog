@@ -266,9 +266,9 @@ All the variables start with `@`, followed by an uppercase letter.
 
 `@C` is the string `"bcdfghjklmnpqrstvwxyz"`.
 
-### `@C` - Consonants Variant
+### `@D` - Consonants Variant
 
-`@C` is the string `"bcdfghjklmnpqrstvwxz"` (no `y`).
+`@D` is the string `"bcdfghjklmnpqrstvwxz"` (no `y`).
 
 ### `@H` - Hello, World!
 
