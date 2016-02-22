@@ -94,7 +94,7 @@ Equivalent to Prolog's parentheses.
 
 The variable preceding (implicitly or not) the opening parenthesis is implicitly available right after the opening parenthesis.
 
-### `` `exemple` `` - Inline Prolog
+### `` `example` `` - Inline Prolog
 
 Since Brachylog is still a work in progress, and since there are a lot of different useful built-in predicates in SWI-Prolog that we won't/can't fit into one letter predicates, We provide a way to input SWI-Prolog code directly in a Brachylog program. All code between two back-quotes `` ` `` will not be analyzed as Brachylog code and will be outputted as is. Variables names (i.e. uppercase characters) used in those Prolog blocks are shared with the Brachylog program.
 
