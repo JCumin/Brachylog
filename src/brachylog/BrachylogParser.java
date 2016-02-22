@@ -195,9 +195,9 @@ public abstract class BrachylogParser {
 					previousChar = ' ';
 				}
 				
-				if(!predicateName.isEmpty() && c != '$' && c != '@' && !Character.isUpperCase(c) && (c != '"' || (previousChar != '$' || previousChar != '@')) &&
-						(c != '[' || (previousChar != '$' || previousChar != '@')) && (!Character.isDigit(c) || (previousChar != '$' || previousChar != '@'))  &&
-						(c != '?' || (previousChar == '$' || previousChar == '@')) && (c != '.' || (previousChar != '$' || previousChar != '@')) &&
+				if(!predicateName.isEmpty() && c != '$' && c != '@' && !Character.isUpperCase(c) && (c != '"' || (previousChar == '$' || previousChar == '@')) &&
+						(c != '[' || (previousChar == '$' || previousChar == '@')) && (!Character.isDigit(c) || (previousChar == '$' || previousChar == '@'))  &&
+						(c != '?' || (previousChar == '$' || previousChar == '@')) && (c != '.' || (previousChar == '$' || previousChar == '@')) &&
 						!arrayOpened && currentNumber.isEmpty()) {
 					if(reverseNextPredicate) {
 						currentRule.append(",\n    " + negateNextPredicate + predicateName + "(" + "V" + variableCounter + ", " + currentVariables.lastElement() + ")");
