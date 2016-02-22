@@ -41,7 +41,7 @@ The equivalent Prolog program, without the implicit variables, is:
 
 Any uppercase letter is a variable identifier.
 
-### `"Exemple"` - Strings
+### `"Example"` - Strings
 
 Strings are opened and closed with double quotes `"`. `\` will escape the following character.
 
