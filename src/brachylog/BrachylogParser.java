@@ -928,7 +928,7 @@ public abstract class BrachylogParser {
 					else if(c == '7') {
 						if(previousChar == '$') {
 							predicatesUsed.put("$7", BrachylogMathPredicates.pmArcCosh());
-							predicateName = Constants.PM_ARCCOSH;
+							predicateName = Constants.PM_ARGCOSH;
 						}
 					}
 					
@@ -936,7 +936,7 @@ public abstract class BrachylogParser {
 					else if(c == '8') {
 						if(previousChar == '$') {
 							predicatesUsed.put("$8", BrachylogMathPredicates.pmArcSinh());
-							predicateName = Constants.PM_ARCSINH;
+							predicateName = Constants.PM_ARGSINH;
 						}
 					}
 					
@@ -944,7 +944,7 @@ public abstract class BrachylogParser {
 					else if(c == '9') {
 						if(previousChar == '$') {
 							predicatesUsed.put("$9", BrachylogMathPredicates.pmArcTanh());
-							predicateName = Constants.PM_ARCTANH;
+							predicateName = Constants.PM_ARGTANH;
 						}
 					}
 					
