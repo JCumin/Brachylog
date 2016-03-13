@@ -165,24 +165,24 @@ public class BrachylogMathPredicates {
     
     public static String pmArcCosh() {
         String s = "\n"
-                + Constants.PM_ARCCOSH + "(X,Y) :-\n"
-                + "    Y is cos(X).\n";
+                + Constants.PM_ARGCOSH + "(X,Y) :-\n"
+                + "    Y is acosh(X).\n";
 
         return s;
     }
 
     public static String pmArcSinh() {
         String s = "\n"
-                + Constants.PM_ARCSINH + "(X,Y) :-\n"
-                + "    Y is sin(X).\n";
+                + Constants.PM_ARGSINH + "(X,Y) :-\n"
+                + "    Y is asinh(X).\n";
 
         return s;
     }
 
     public static String pmArcTanh() {
         String s = "\n"
-                + Constants.PM_ARCTANH + "(X,Y) :-\n"
-                + "    Y is tan(X).\n";
+                + Constants.PM_ARGTANH + "(X,Y) :-\n"
+                + "    Y is atanh(X).\n";
 
         return s;
     }
