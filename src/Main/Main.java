@@ -3,6 +3,7 @@ package Main;
 import brachylog.BrachylogParser;
 import java.nio.file.Files;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * BRACHYLOG
@@ -12,7 +13,7 @@ import java.io.File;
  */
 public class Main {
 	
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
     	
 
     	String p = new String(Files.readAllBytes(new File(args[0]).toPath()));
