@@ -1,6 +1,7 @@
 package Main;
 
 import brachylog.BrachylogParser;
+import java.nio.file.Files;
 
 /**
  * BRACHYLOG
@@ -13,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
     	
 
-    	String p = "_|h{_|(h1;?h0),?b:1&},?b:0&";
+    	String p = new String(Files.readAllBytes(new File(args[0]).toPath()));
     	
     	String i = "[1:1]:[0:1]";
     	String o = "X";
