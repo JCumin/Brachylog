@@ -224,7 +224,13 @@ Otherwise (i.e. `A` is a number or a "normal" list or a string), `A` is printed 
 
 ### `[A:Elem] x Z` - Xterminate
 
-True if `Z` is `A` minus all elements of `A` that unify with `Elem` (so it essentially deletes all occurrences of `Elem` from `A`). Works on lists, numbers (deletes digits) and strings (deletes characters).
+True if `Z` is `A` minus all elements of `A` that unify with `Elem` (so it essentially deletes all occurrences of the members of `Elem` from `A`). Works on lists, numbers (deletes digits) and strings (deletes characters).
+
+For example, for `1234321:12xZ`, then `Z = 343` (Each digit in `12` is removed from `1234321`). For `1234321:[12]xZ` however, `Z = 34321` (Each occurence of `12` in its entirety is removed).
+
+The same behavior happens on strings and lists.
+
+Note that elements are removed from left to right, so if you have `"testest":"test"xZ`, then `Z = "est"` and not `Z = ""`.
 
 ### `[Arg1:...:Argn:I] & Z` - Call Sub-predicate
 
