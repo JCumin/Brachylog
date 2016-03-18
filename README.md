@@ -230,7 +230,7 @@ For example, for `1234321:12xZ`, then `Z = 343` (Each digit in `12` is removed f
 
 The same behavior happens on strings and lists.
 
-Note that elements are removed from left to right, so if you have `"testest":"test"xZ`, then `Z = "est"` and not `Z = ""`.
+Note that elements are removed from left to right, so if you have `"testest":["test"]xZ`, then `Z = "est"` and not `Z = ""`.
 
 ### `[Arg1:...:Argn:I] & Z` - Call Sub-predicate
 
