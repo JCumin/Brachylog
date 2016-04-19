@@ -40,6 +40,7 @@ fill_implicit_variables(['predicate':A,'variable':B|T],I,['predicate':A,'variabl
 
 fill_implicit_variables([Type:A|T],I,[Type:A|T2]) :-
 	Type \= 'predicate',
+	\+ (Type = 'control', A = ':', T = ['predicate':_|_]),
 	fill_implicit_variables(T,I,T2).
 	
 
@@ -257,6 +258,8 @@ brachylog_list_to_atom_([A],AtomA) :-
 		A = _:_,
 		term_to_atom(A,AtomA)
 		;
+		\+ is_list(A),
+		A \= _:_,
 		AtomA = A
 	).
 brachylog_list_to_atom_([A,B|T],Atom) :-
@@ -267,6 +270,8 @@ brachylog_list_to_atom_([A,B|T],Atom) :-
 		A = _:_,
 		term_to_atom(A,AtomA)
 		;
+		\+ is_list(A),
+		A \= _:_,
 		AtomA = A
 	),
 	brachylog_list_to_atom_([B|T],T2),
