@@ -16,18 +16,18 @@ parse(Code,Program) :-
 	
 
 /*
-FILL_IMPLICITS
+FILL_IMPLICIT_VARIABLES
 */
 fill_implicit_variables(Tokens,Program) :-
 	fill_implicit_variables(Tokens,0,Program).
 
 fill_implicit_variables([],_,[]).
 	
-fill_implicit_variables(['predicate':A,Type:B|T],I,['predicate':A,'variable':V,Type:B|T2]) :-
+fill_implicit_variables(['predicate':A,Type:B|T],I,['predicate':A,'variable':V|T2]) :-
 	Type \= 'variable',
 	atom_concat('V',I,V),
 	J is I + 1,
-	fill_implicit_variables(T,J,T2).
+	fill_implicit_variables([Type:B|T],J,T2).
 	
 fill_implicit_variables(['predicate':A],I,['predicate':A,'variable':V]) :-
 	atom_concat('V',I,V).
@@ -85,11 +85,11 @@ fix_list([X|T],[Y|T2]) :-
 TRANSPILE
 */
 transpile(Program,[['brachylog_main(Input,Output) :-\n    1=1'|T]|OtherPredicates]) :-
-	transpile_(Program,['Input'],no,no,[T|OtherPredicates]).
+	transpile_(Program,['Input'],no,no,0,[T|OtherPredicates]).
 	
-transpile_([],_,_,_,[['.\n']]).
+transpile_([],_,_,_,_,[['.\n']]).
 
-transpile_(['variable':B|T],A,Reverse,Negate,[[Unification|T2]|OtherPredicates]) :-
+transpile_(['variable':B|T],A,Reverse,Negate,PredNumber,[[Unification|T2]|OtherPredicates]) :-
 	A \= [],
 	(
 		A = ['variable':L],
@@ -125,17 +125,17 @@ transpile_(['variable':B|T],A,Reverse,Negate,[[Unification|T2]|OtherPredicates])
 	(
 		Reverse = no,
 		atomic_list_concat([',\n    ',Var2,UnificationAtom,Var1],Unification),
-		transpile_(T,[B],no,no,[T2|OtherPredicates])
+		transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates])
 		;
 		Reverse = yes,
 		atomic_list_concat([',\n    ',Var1,UnificationAtom,Var2],Unification),
-		transpile_(T,[B],no,no,[T2|OtherPredicates])
+		transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates])
 	).
 	
-transpile_(['variable':B|T],[],_,_,[T2|OtherPredicates]) :-
-	transpile_(T,[B],no,no,[T2|OtherPredicates]).
+transpile_(['variable':B|T],[],_,_,PredNumber,[T2|OtherPredicates]) :-
+	transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates]).
 	
-transpile_(['predicate':P,'variable':B|T],A,Reverse,Negate,[[Predicate|T2]|OtherPredicates]) :-
+transpile_(['predicate':P,'variable':B|T],A,Reverse,Negate,PredNumber,[[Predicate|T2]|OtherPredicates]) :-
 	A \= [],
 	(
 		A = ['variable':L],
@@ -171,20 +171,20 @@ transpile_(['predicate':P,'variable':B|T],A,Reverse,Negate,[[Predicate|T2]|Other
 	(
 		Reverse = no,
 		atomic_list_concat([',\n    ',NegateAtom,P,'(',Var1,',',Var2,')'],Predicate),
-		transpile_(T,[B],no,no,[T2|OtherPredicates])
+		transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates])
 		;
 		Reverse = yes,
 		atomic_list_concat([',\n    ',NegateAtom,P,'(',Var2,',',Var1,')'],Predicate),
-		transpile_(T,[B],no,no,[T2|OtherPredicates])
+		transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates])
 	).
 
-transpile_(['control':','|T],_,_,_,[T2|OtherPredicates]) :-
-	transpile_(T,[],no,no,[T2|OtherPredicates]).
+transpile_(['control':','|T],_,_,_,PredNumber,[T2|OtherPredicates]) :-
+	transpile_(T,[],no,no,PredNumber,[T2|OtherPredicates]).
 	
-transpile_(['control':';'|T],_,_,_,[['\n    ;\n    1=1'|T2]|OtherPredicates]) :-
-	transpile_(T,[],no,no,[T2|OtherPredicates]).
+transpile_(['control':';'|T],_,_,_,PredNumber,[['\n    ;\n    1=1'|T2]|OtherPredicates]) :-
+	transpile_(T,[],no,no,PredNumber,[T2|OtherPredicates]).
 	
-transpile_(['control':'('|T],B,_,Negate,[[Parenthesis|T2]|OtherPredicates]) :-
+transpile_(['control':'('|T],B,_,Negate,PredNumber,[[Parenthesis|T2]|OtherPredicates]) :-
 	(
 		Negate = yes,
 		Parenthesis = ',\n    \\+ (\n    1=1'
@@ -192,18 +192,18 @@ transpile_(['control':'('|T],B,_,Negate,[[Parenthesis|T2]|OtherPredicates]) :-
 		Negate = no,
 		Parenthesis = ',\n    (\n    1=1'
 	),
-	transpile_(T,B,no,no,[T2|OtherPredicates]).
+	transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]).
 	
-transpile_(['control':')'|T],B,_,_,[['\n    )'|T2]|OtherPredicates]) :-
-	transpile_(T,B,no,no,[T2|OtherPredicates]).
+transpile_(['control':')'|T],B,_,_,PredNumber,[['\n    )'|T2]|OtherPredicates]) :-
+	transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]).
 	
-transpile_(['control':'!'|T],B,_,_,[[',\n    !'|T2]|OtherPredicates]) :-
-	transpile_(T,B,no,no,[T2|OtherPredicates]).
+transpile_(['control':'!'|T],B,_,_,PredNumber,[[',\n    !'|T2]|OtherPredicates]) :-
+	transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]).
 	
-transpile_(['control':'\\'|T],B,_,_,[[',\n    fail'|T2]|OtherPredicates]) :-
-	transpile_(T,B,no,no,[T2|OtherPredicates]).
+transpile_(['control':'\\'|T],B,_,_,PredNumber,[[',\n    fail'|T2]|OtherPredicates]) :-
+	transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]).
 	
-transpile_(['control':'~'|T],B,Reverse,Negate,[T2|OtherPredicates]) :-
+transpile_(['control':'~'|T],B,Reverse,Negate,PredNumber,[T2|OtherPredicates]) :-
 	(
 		Reverse = yes,
 		NewReverse = no
@@ -211,9 +211,9 @@ transpile_(['control':'~'|T],B,Reverse,Negate,[T2|OtherPredicates]) :-
 		Reverse = no,
 		NewReverse = yes
 	),
-	transpile_(T,B,NewReverse,Negate,[T2|OtherPredicates]).
+	transpile_(T,B,NewReverse,Negate,PredNumber,[T2|OtherPredicates]).
 	
-transpile_(['control':'\''|T],B,Reverse,Negate,[T2|OtherPredicates]) :-
+transpile_(['control':'\''|T],B,Reverse,Negate,PredNumber,[T2|OtherPredicates]) :-
 	(
 		Negate = yes,
 		NewNegate = no
@@ -221,16 +221,21 @@ transpile_(['control':'\''|T],B,Reverse,Negate,[T2|OtherPredicates]) :-
 		Negate = no,
 		NewNegate = yes
 	),
-	transpile_(T,B,Reverse,NewNegate,[T2|OtherPredicates]).
+	transpile_(T,B,Reverse,NewNegate,PredNumber,[T2|OtherPredicates]).
 	
-transpile_(['control':':',Type:A|T],B,_,_,[T2|OtherPredicates]) :-
+transpile_(['control':':',Type:A|T],B,_,_,PredNumber,[T2|OtherPredicates]) :-
 	(
 		Type = 'variable'
 		;
 		Type = 'predicate'
 	),
 	append(B,[A],NewVar),
-	transpile_(T,NewVar,no,no,[T2|OtherPredicates]).
+	transpile_(T,NewVar,no,no,PredNumber,[T2|OtherPredicates]).
+	
+transpile_(['control':'\n'|T],_,_,_,PredNumber,[['.\n'],[PredHead|T2]|OtherPredicates]) :-
+	J is PredNumber + 1,
+	atomic_list_concat(['brachylog_predicate_',J,'(Input,Output) :-\n    1=1'],PredHead),
+	transpile_(T,['Input'],no,no,J,[T2|OtherPredicates]).
 	
 	
 brachylog_list_to_atom(List,Atom) :-
