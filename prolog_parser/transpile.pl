@@ -22,6 +22,9 @@ fill_implicit_variables(Tokens,Program) :-
 	fill_implicit_variables(Tokens,0,Program).
 
 fill_implicit_variables([],_,[]).
+
+fill_implicit_variables(['control':':','predicate':A|T],I,['control':':','predicate':A|T2]) :-
+	fill_implicit_variables(T,I,T2).
 	
 fill_implicit_variables(['predicate':A,Type:B|T],I,['predicate':A,'variable':V|T2]) :-
 	Type \= 'variable',
@@ -238,6 +241,9 @@ transpile_(['control':'\n'|T],_,_,_,PredNumber,[['.\n'],[PredHead|T2]|OtherPredi
 	transpile_(T,['Input'],no,no,J,[T2|OtherPredicates]).
 	
 	
+/*
+BRACHYLOG_LIST_TO_ATOM
+*/
 brachylog_list_to_atom(List,Atom) :-
 	brachylog_list_to_atom_(List,T2),
 	atomic_list_concat(['[',T2,']'],Atom).
