@@ -16,8 +16,13 @@ tokenize(['?'|T], ['variable':'Input'|T2]) :-
 
 tokenize(['.'|T], ['variable':'Output'|T2]) :-
 	tokenize(T,T2).
+	
+tokenize(['<','='|T], ['predicate':PredName|T2]) :-
+	token_predicate('<=',PredName),
+	tokenize(T,T2).
 
-tokenize(['_'|T], ['variable':[]|T2]) :-
+tokenize(['>','='|T], ['predicate':PredName|T2]) :-
+	token_predicate('>=',PredName),
 	tokenize(T,T2).
 	
 tokenize([Predicate|T], ['predicate':PredName|T2]) :-
@@ -51,22 +56,22 @@ tokenize(['"'|T], ['variable':Variable|T2]) :-
 	tokenize_string(['"'|T],Rest,Variable),
 	tokenize(Rest,T2).
 	
-tokenize([Digit|T], ['variable':Variable|T2]) :-
+tokenize(['_',Digit|T], ['variable':Type:'negative':X|T2]) :-
 	is_digit(Digit),
-	tokenize_number([Digit|T],Rest,Variable),
+	tokenize_number([Digit|T],Rest,Type:X),
+	tokenize(Rest,T2).
+	
+tokenize(['_','_'|T], T2) :-
+	tokenize(T,T2).
+	
+tokenize([Digit|T], ['variable':Type:'positive':X|T2]) :-
+	is_digit(Digit),
+	tokenize_number([Digit|T],Rest,Type:X),
 	tokenize(Rest,T2).
 	
 tokenize(['['|T], ['variable':List|T2]) :-
 	tokenize_list(['['|T],Rest,List),
 	tokenize(Rest,T2).
-	
-tokenize(['<','='|T], ['predicate':PredName|T2]) :-
-	token_predicate('<=',PredName),
-	tokenize(T,T2).
-
-tokenize(['>','='|T], ['predicate':PredName|T2]) :-
-	token_predicate('>=',PredName),
-	tokenize(T,T2).
 	
 tokenize([Modifier,Variable|T], ['variable':RealVariable|T2]) :-
 	is_modifier(Modifier),
@@ -114,8 +119,9 @@ tokenize_number(N,Rest,Type:T2) :-
 	).
 	
 tokenize_number_([],[],[]).
-tokenize_number_(['.',I|T],Rest,['.',I|T2]) :-
+tokenize_number_(['.',I|T],Rest,['.',J|T2]) :-
 	is_digit(I),
+	atom_number(I,J),
 	tokenize_integer(T,Rest,T2).
 tokenize_number_(['.'],['.'],[]).
 tokenize_number_(['.',X|T],['.',X|T],[]) :-
@@ -123,13 +129,15 @@ tokenize_number_(['.',X|T],['.',X|T],[]) :-
 tokenize_number_([X|T],[X|T],[]) :-
 	\+ (is_digit(X)),
 	X \= '.'.
-tokenize_number_([I|T],Rest,[I|T2]) :-
+tokenize_number_([I|T],Rest,[J|T2]) :-
 	is_digit(I),
+	atom_number(I,J),
 	tokenize_number_(T,Rest,T2).
 
 tokenize_integer([],[],[]).
-tokenize_integer([I|T],Rest,[I|T2]) :-
+tokenize_integer([I|T],Rest,[J|T2]) :-
 	is_digit(I),
+	atom_number(I,J),
 	tokenize_integer(T,Rest,T2).
 tokenize_integer([X|T],[X|T],[]) :-
 	\+ (is_digit(X)).

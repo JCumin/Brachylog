@@ -40,10 +40,11 @@ token_predicate('=','brachylog_equal').
 token_predicate('<','brachylog_less').
 token_predicate('>','brachylog_greater').
 token_predicate('^','brachylog_power').
+token_predicate('*','brachylog_multiply').
 token_predicate('/','brachylog_divide').
 token_predicate('%','brachylog_modulo').
-token_predicate('+','brachylog_add').
-token_predicate('-','brachylog_subtract').
+token_predicate('+','brachylog_plus').
+token_predicate('-','brachylog_minus').
 token_predicate('<=','brachylog_lessequal').
 token_predicate('>=','brachylog_greaterequal').
 

@@ -142,9 +142,9 @@ transpile_(['variable':B|T],[],_,_,PredNumber,[T2|OtherPredicates]) :-
 transpile_(['predicate':P,'variable':B|T],A,Reverse,Negate,PredNumber,[[Predicate|T2]|OtherPredicates]) :-
 	A \= [],
 	(
-		A = ['variable':L],
+		A = [L],
 		is_list(L),
-		brachylog_list_to_atom(A,Var1)
+		brachylog_list_to_atom(L,Var1)
 		;
 		length(A,L),
 		L > 1,
