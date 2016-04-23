@@ -29,10 +29,14 @@ BRACHYLOG_ENUMERATE
 brachylog_enumerate('string':L,'string':M) :-
 	nth0(_,L,M).
 	
-brachylog_enumerate(L,M) :-
-	nth0(_,L,M).
-	
 brachylog_enumerate(['integer':SignInf:Inf,'integer':SignSup:Sup],'integer':SignI:I) :-
+	integer_value('integer':SignInf:Inf,InfV),
+	integer_value('integer':SignSup:Sup,SupV),
+	label([InfV,SupV]),
+	IV in InfV..SupV,
+	integer_value('integer':SignI:I,IV).
+	
+brachylog_enumerate(['integer':SignSup:Sup,'integer':SignInf:Inf],'integer':SignI:I) :-
 	integer_value('integer':SignInf:Inf,InfV),
 	integer_value('integer':SignSup:Sup,SupV),
 	label([InfV,SupV]),
@@ -45,6 +49,10 @@ brachylog_enumerate('integer':_:L,'integer':'positive':M) :-
 brachylog_enumerate('float':_:L,'float':'positive':M) :-
 	nth0(_,L,M),
 	M \= '.'.
+	
+brachylog_enumerate(L,M) :-
+	L \= ['integer':SignI:I,'integer':SignJ:J],
+	nth0(_,L,M).
 
 /*
 BRACHYLOG_HEAD
