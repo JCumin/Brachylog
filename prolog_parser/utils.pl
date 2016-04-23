@@ -28,7 +28,6 @@ integer_value_('integer':Sign:[],N0,N,_) :-
 		N #\= 0,
 		N #= - N0
 	).
-	
 integer_value_('integer':Sign:[H],N0,N,M) :-
 	H in 0..9,
 	N1 #= H + N0 * 10,
@@ -39,4 +38,3 @@ integer_value_('integer':Sign:[H,I|T],N0,N,M) :-
 	N1 #= H + N0 * 10,
 	abs(M) #>= abs(N1),
 	integer_value_('integer':Sign:[I|T],N1,N,M).
-	

@@ -88,7 +88,7 @@ fix_list([X|T],[Y|T2]) :-
 /*
 TRANSPILE
 */
-transpile(Program,[[':- use_module(library(clpfd)).\n\n','brachylog_main(Input,Output) :-\n    1=1'|T]|OtherPredicates]) :-
+transpile(Program,[[':- use_module(library(clpfd)).\n:- use_module(predicates).\n\n','brachylog_main(Input,Output) :-\n    1=1'|T]|OtherPredicates]) :-
 	transpile_(Program,['Input'],no,no,0,[T|OtherPredicates]).
 	
 transpile_([],_,_,_,_,[['.\n']]).
