@@ -16,6 +16,7 @@
 BRACHYLOG_BEHEAD
 */				
 brachylog_behead('string':[_|T],'string':T).
+brachylog_behead('integer':0,'integer':0).
 brachylog_behead('integer':I,'integer':J) :-
 	H #\= 0,
 	integer_value('integer':Sign:[H|T],I),
@@ -49,6 +50,7 @@ brachylog_enumerate(L,M) :-
 BRACHYLOG_HEAD
 */
 brachylog_head('string':[H|_],'string':[H]).
+brachylog_head('integer':0,'integer':0).
 brachylog_head('integer':I,'integer':J) :-
 	J #\= 0,
 	integer_value('integer':_:[J|_],I).
