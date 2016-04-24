@@ -7,14 +7,52 @@ PARSE
 parse(Code,Program) :-
 	atom_chars(Code,SplittedCode),
 	tokenize(SplittedCode,Tokens),
-	fill_implicit_variables(Tokens,FilledTokens),
+	fix_predicates(Tokens,FixedPredicates),
+	fill_implicit_variables(FixedPredicates,FilledTokens),
 	fix_lists(FilledTokens,Program),
 	transpile(Program,Predicates),
 	open('compiled_brachylog.pl', write, File),
 	maplist(write_to_file(File),Predicates),
 	close(File).
 	
-
+	
+/*
+FIX_PREDICATES_CURLY_BRACES
+*/
+fix_predicates(Tokens,FixedPredicates) :-
+	fix_predicates(Tokens,1,L),
+	append(L,FixedPredicates).
+	
+fix_predicates([],_,[[]]).
+fix_predicates(['control':'{'|T],I,[['predicate':PredName|Rest],['control':'\n'|Predicate]|AllOtherPredicates]) :-
+	atomic_list_concat(['brachylog_predicate_',I],PredName),
+	J is I + 1,
+	fix_predicates_(T,J,[Predicate|OtherPredicates1],Z,Remaining),
+	fix_predicates(Remaining,Z,[Rest|OtherPredicates2]),
+	append(OtherPredicates1,OtherPredicates2,AllOtherPredicates).
+fix_predicates(['control':'\n'|T],I,[[],['control':'\n'|Rest]|OtherPredicates]) :-
+	J is I + 1,
+	fix_predicates(T,J,[Rest|OtherPredicates]).
+fix_predicates([Type:A|T],I,[[Type:A|Rest]|OtherPredicates]) :-
+	\+ (Type = 'control', A = '{'),
+	\+ (Type = 'control', A = '}'),
+	\+ (Type = 'control', A = '\n'),
+	fix_predicates(T,I,[Rest|OtherPredicates]).
+	
+fix_predicates_([],_,[[]]).
+fix_predicates_(['control':'{'|T],I,[['predicate':PredName|Rest],['control':'\n'|Predicate]|AllOtherPredicates],Z,Remaining) :-
+	atomic_list_concat(['brachylog_predicate_',I],PredName),
+	J is I + 1,
+	fix_predicates_(T,J,[Predicate|OtherPredicates1],Z2,Remaining2),
+	fix_predicates_(Remaining2,Z2,[Rest|OtherPredicates2],Z,Remaining),
+	append(OtherPredicates1,OtherPredicates2,AllOtherPredicates).
+fix_predicates_(['control':'}'|T],I,[[]],I,T).
+fix_predicates_([Type:A|T],I,[[Type:A|Rest]|OtherPredicates],Z,Remaining) :-
+	\+ (Type = 'control', A = '{'),
+	\+ (Type = 'control', A = '}'),
+	\+ (Type = 'control', A = '\n'),
+	fix_predicates_(T,I,[Rest|OtherPredicates],Z,Remaining).
+	
 /*
 FILL_IMPLICIT_VARIABLES
 */
@@ -43,7 +81,6 @@ fill_implicit_variables([Type:A|T],I,[Type:A|T2]) :-
 	\+ (Type = 'control', A = ':', T = ['predicate':_|_]),
 	fill_implicit_variables(T,I,T2).
 	
-
 /*
 FIX_LISTS
 */
