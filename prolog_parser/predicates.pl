@@ -1,12 +1,17 @@
 :- module(predicates, [brachylog_behead/2,
 					   brachylog_enumerate/2,
+					   brachylog_findall/2,
 					   brachylog_head/2,
 					   brachylog_length/2,
 					   brachylog_reverse/2,
+					   brachylog_write/2,
+					   brachylog_call_predicate/2,
 					   brachylog_plus/2,
 					   brachylog_minus/2,
 					   brachylog_greater/2,
 					   brachylog_less/2,
+					   brachylog_lessequal/2,
+					   brachylog_greaterequal/2,
 					   brachylog_modulo/2]).
 					   
 :- use_module(library(clpfd)).
@@ -46,6 +51,12 @@ brachylog_enumerate(L,M) :-
 	L \= ['integer':_,'integer':_],
 	nth0(_,L,M).
 
+/*
+BRACHYLOG_FINDALL
+*/
+brachylog_findall(X,Y) :-
+	append(X,['ignore_calling_predicate'],X2),
+	findall(A,brachylog_call_predicate(X2,A),Y).
 
 /*
 BRACHYLOG_HEAD
@@ -92,9 +103,62 @@ brachylog_write([X,'string':F],X) :-
 	\+ (is_list(X)),
 	atom_string(F,Format),
 	format(Format,[X]).
-brachylog_write(X,X) :-
+brachylog_write('string':S,'string':S) :-
+	atomic_list_concat(S,X),
 	write(X).
 	
+/*
+BRACHYLOG_CALL_PREDICATE
+*/
+brachylog_call_predicate(X,Output) :-
+	(
+		reverse(X,[CallingPredName,P|RArgs])
+		;
+		X = [CallingPredName],
+		P = 'no_args',
+		RArgs = []
+	),
+	reverse(RArgs,Args),
+	(
+		P = 'integer':I,
+		(
+			I = 0,
+			PredName = 'brachylog_main'
+			;
+			I #> 0,
+			atomic_list_concat(['brachylog_predicate_',I],PredName)
+		),
+		RealArgs = Args
+		;
+		P \= 'integer':_,
+		atom(P),
+		atom_concat('brachylog_',_,P),
+		PredName = P,
+		RealArgs = Args
+		;
+		P \= 'integer':_,
+		\+ (atom(P), atom_concat('brachylog_',_,P)),
+		PredName = CallingPredName,
+		(
+			P = 'no_args',
+			RealArgs = []
+			;
+			P \= 'no_args',
+			reverse([P|RArgs],RealArgs)
+		)
+	),
+	(
+		RealArgs = [UniqueArg],
+		A = UniqueArg
+		;
+		length(RealArgs,Length),
+		Length > 1,
+		A = RealArgs
+		;
+		RealArgs = [],
+		A = _
+	),
+	call(PredName,A,Output).
 
 /*
 BRACHYLOG_PLUS

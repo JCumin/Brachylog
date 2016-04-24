@@ -11,6 +11,7 @@ parse(Code,Program) :-
 	fill_implicit_variables(FixedPredicates,FilledTokens),
 	fix_lists(FilledTokens,Program),
 	transpile(Program,Predicates),
+	!,
 	open('compiled_brachylog.pl', write, File),
 	maplist(write_to_file(File),Predicates),
 	close(File).
@@ -125,10 +126,10 @@ fix_list([X|T],[Y|T2]) :-
 /*
 TRANSPILE
 */
-transpile(Program,[[':- use_module(library(clpfd)).\n:- use_module(predicates).\n\n','brachylog_main(Input,Output) :-\n    1=1'|T]|OtherPredicates]) :-
+transpile(Program,[[':- use_module(library(clpfd)).\n:- use_module(predicates).\n\n','brachylog_main(Input,Output) :-\n    Name = brachylog_main,\n    (1=1'|T]|OtherPredicates]) :-
 	transpile_(Program,['Input'],no,no,0,[T|OtherPredicates]).
 	
-transpile_([],_,_,_,_,[['.\n']]).
+transpile_([],_,_,_,_,[['\n    ).\n']]).
 
 transpile_(['variable':B|T],A,Reverse,Negate,PredNumber,[[Unification|T2]|OtherPredicates]) :-
 	A \= [],
@@ -179,18 +180,26 @@ transpile_(['variable':B|T],[],_,_,PredNumber,[T2|OtherPredicates]) :-
 transpile_(['predicate':P,'variable':B|T],A,Reverse,Negate,PredNumber,[[Predicate|T2]|OtherPredicates]) :-
 	A \= [],
 	(
-		A = [L],
+		P = 'brachylog_call_predicate',
+		A3 = ['Name'|A],
+		reverse(A3,A2)
+		;
+		P \= 'brachylog_call_predicate',
+		A2 = A
+	),
+	(
+		A2 = [L],
 		is_list(L),
 		brachylog_list_to_atom(L,Var1)
 		;
-		length(A,L),
+		length(A2,L),
 		L > 1,
-		brachylog_list_to_atom(A,Var1)
+		brachylog_list_to_atom(A2,Var1)
 		;
-		A = [Type:L],
+		A2 = [Type:L],
 		term_to_atom(Type:L,Var1)
 		;
-		A = [L],
+		A2 = [L],
 		Var1 = L
 	),
 	(
@@ -273,12 +282,12 @@ transpile_(['control':':',Type:A|T],B,_,_,PredNumber,[T2|OtherPredicates]) :-
 	append(B,[A],NewVar),
 	transpile_(T,NewVar,no,no,PredNumber,[T2|OtherPredicates]).
 	
-transpile_(['control':'\n'|T],_,_,_,PredNumber,[['.\n'],[PredHead|T2]|OtherPredicates]) :-
+transpile_(['control':'\n'|T],_,_,_,PredNumber,[['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
 	J is PredNumber + 1,
-	atomic_list_concat(['brachylog_predicate_',J,'(Input,Output) :-\n    1=1'],PredHead),
+	atomic_list_concat(['brachylog_predicate_',J,'(Input,Output) :-\n    Name = brachylog_predicate_',J,',\n    (1=1'],PredHead),
 	transpile_(T,['Input'],no,no,J,[T2|OtherPredicates]).
 	
-transpile_(['control':'|'|T],_,_,_,PredNumber,[['.\n'],[PredHead|T2]|OtherPredicates]) :-
+transpile_(['control':'|'|T],_,_,_,PredNumber,[['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
 	(
 		PredNumber = 0,
 		PredName = 'brachylog_main'
@@ -286,7 +295,7 @@ transpile_(['control':'|'|T],_,_,_,PredNumber,[['.\n'],[PredHead|T2]|OtherPredic
 		PredNumber \= 0,
 		atomic_list_concat(['brachylog_predicate_',PredNumber],PredName)
 	),
-	atomic_list_concat([PredName,'(Input,Output) :-\n    1=1'],PredHead),
+	atomic_list_concat([PredName,'(Input,Output) :-\n    Name = ',PredName,',\n    (1=1'],PredHead),
 	transpile_(T,['Input'],no,no,PredNumber,[T2|OtherPredicates]).
 	
 /*
