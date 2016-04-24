@@ -46,6 +46,7 @@ brachylog_enumerate(L,M) :-
 	L \= ['integer':_,'integer':_],
 	nth0(_,L,M).
 
+
 /*
 BRACHYLOG_HEAD
 */
@@ -79,6 +80,21 @@ brachylog_reverse('integer':I,'integer':R) :-
 	integer_value('integer':Sign:M,R).
 brachylog_reverse(List,R) :-
 	reverse(List,R).
+	
+/*
+BRACHYLOG_WRITE
+*/
+brachylog_write([List,'string':F],List) :-
+	is_list(List),
+	atom_string(F,Format),
+	format(Format,List).
+brachylog_write([X,'string':F],X) :-
+	\+ (is_list(X)),
+	atom_string(F,Format),
+	format(Format,[X]).
+brachylog_write(X,X) :-
+	write(X).
+	
 
 /*
 BRACHYLOG_PLUS

@@ -17,7 +17,7 @@ parse(Code,Program) :-
 	
 	
 /*
-FIX_PREDICATES_CURLY_BRACES
+FIX_PREDICATES
 */
 fix_predicates(Tokens,FixedPredicates) :-
 	fix_predicates(Tokens,1,L),
