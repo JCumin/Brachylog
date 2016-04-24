@@ -119,6 +119,18 @@ brachylog_greater('integer':I1,'integer':I2) :-
 	I1 #> I2.
 	
 /*
+BRACHYLOG_LESSEQUAL
+*/
+brachylog_lessequal('integer':I1,'integer':I2) :-
+	I1 #=< I2.
+		
+/*
+BRACHYLOG_GREATEREQUAL
+*/
+brachylog_greaterequal('integer':I1,'integer':I2) :-
+	I1 #>= I2.
+	
+/*
 BRACHYLOG_MODULO
 */
 brachylog_modulo(['integer':I1,'integer':I2],'integer':Rem) :-
