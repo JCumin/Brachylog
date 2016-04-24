@@ -241,6 +241,16 @@ transpile_(['control':'\n'|T],_,_,_,PredNumber,[['.\n'],[PredHead|T2]|OtherPredi
 	atomic_list_concat(['brachylog_predicate_',J,'(Input,Output) :-\n    1=1'],PredHead),
 	transpile_(T,['Input'],no,no,J,[T2|OtherPredicates]).
 	
+transpile_(['control':'|'|T],_,_,_,PredNumber,[['.\n'],[PredHead|T2]|OtherPredicates]) :-
+	(
+		PredNumber = 0,
+		PredName = 'brachylog_main'
+		;
+		PredNumber \= 0,
+		atomic_list_concat(['brachylog_predicate_',PredNumber],PredName)
+	),
+	atomic_list_concat([PredName,'(Input,Output) :-\n    1=1'],PredHead),
+	transpile_(T,['Input'],no,no,PredNumber,[T2|OtherPredicates]).
 	
 /*
 BRACHYLOG_LIST_TO_ATOM
