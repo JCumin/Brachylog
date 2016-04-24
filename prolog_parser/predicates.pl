@@ -16,148 +16,109 @@
 BRACHYLOG_BEHEAD
 */				
 brachylog_behead('string':[_|T],'string':T).
-
+brachylog_behead('integer':I,'integer':J) :-
+	H #\= 0,
+	integer_value('integer':Sign:[H|T],I),
+	integer_value('integer':Sign:T,J).
 brachylog_behead([_|T],T).
 
-brachylog_behead('integer':_:[_|T],'integer':_:T).
-
-brachylog_behead('float':_:[_|T],'float':_:T).
 
 /*
 BRACHYLOG_ENUMERATE
 */
 brachylog_enumerate('string':L,'string':M) :-
 	nth0(_,L,M).
-	
-brachylog_enumerate(['integer':SignInf:Inf,'integer':SignSup:Sup],'integer':SignI:I) :-
-	integer_value('integer':SignInf:Inf,InfV),
-	integer_value('integer':SignSup:Sup,SupV),
-	label([InfV,SupV]),
-	IV in InfV..SupV,
-	integer_value('integer':SignI:I,IV).
-	
-brachylog_enumerate(['integer':SignSup:Sup,'integer':SignInf:Inf],'integer':SignI:I) :-
-	integer_value('integer':SignInf:Inf,InfV),
-	integer_value('integer':SignSup:Sup,SupV),
-	label([InfV,SupV]),
-	IV in InfV..SupV,
-	integer_value('integer':SignI:I,IV).
-	
-brachylog_enumerate('integer':_:L,'integer':'positive':M) :-
-	nth0(_,L,M).
-	
-brachylog_enumerate('float':_:L,'float':'positive':M) :-
+brachylog_enumerate(['integer':Inf,'integer':Sup],'integer':I) :-
+	Sup #>= Inf,
+	label([Sup,Inf]),
+	between(Inf,Sup,I).
+brachylog_enumerate(['integer':Sup,'integer':Inf],'integer':I) :-
+	Sup #> Inf,
+	label([Sup,Inf]),
+	between(Inf,Sup,N),
+	I #= Inf + Sup - N.
+brachylog_enumerate('integer':I,'integer':J) :-
+	integer_value('integer':_:L,I),
 	nth0(_,L,M),
-	M \= '.'.
-	
+	integer_value('integer':'positive':M,J).
 brachylog_enumerate(L,M) :-
-	L \= ['integer':SignI:I,'integer':SignJ:J],
+	L \= ['integer':_,'integer':_],
 	nth0(_,L,M).
 
 /*
 BRACHYLOG_HEAD
 */
 brachylog_head('string':[H|_],'string':[H]).
-
+brachylog_head('integer':I,'integer':J) :-
+	J #\= 0,
+	integer_value('integer':_:[J|_],I).
 brachylog_head([H|_],H).
-
-brachylog_head('integer':_:[H|_],'integer':_:[H]).
-
-brachylog_head('float':_:[H|_],'float':_:[H]).
 
 /*
 BRACHYLOG_LENGTH
 */
 brachylog_length('string':S,Length) :-
 	length(S,Length).
-
+brachylog_length('integer':I,Length) :-
+	integer_value('integer':_:L,I),
+	length(L,Length).
 brachylog_length(List,Length) :-
 	length(List,Length).
 	
-brachylog_length('integer':_:I,Length) :-
-	length(I,Length).
-	
-brachylog_length('float':_:F,Length) :-
-	length(F,Length).
 	
 /*
 BRACHYLOG_REVERSE
 */
 brachylog_reverse('string':S,'string':R) :-
 	reverse(S,R).
-	
+brachylog_reverse('integer':I,'integer':R) :-
+	integer_value('integer':Sign:L,I),
+	reverse(L,M),
+	integer_value('integer':Sign:M,R).
 brachylog_reverse(List,R) :-
 	reverse(List,R).
-	
-brachylog_reverse('integer':Sign:I,'integer':Sign:R) :-
-	reverse(I,R).
-	
-brachylog_reverse('float':Sign:I,'float':Sign:R) :-
-	reverse(I,R).
-	
+
 /*
 BRACHYLOG_PLUS
 */
-brachylog_plus('integer':Sign:I,AbsoluteValue) :-
-	integer_value('integer':Sign:I,E),
-	I #= abs(E),
-	label([I]),
-	integer_value(AbsoluteValue,I).
+brachylog_plus('integer':I,'integer':AbsoluteValue) :-
+	AbsoluteValue #= abs(I),
+	label([I,AbsoluteValue]).
+brachylog_plus(L,'integer':Sum) :-
+	brachylog_plus_(L,M,'integer':Sum),
+	label([Sum|M]).
 	
-brachylog_plus([],'integer':'positive':[0]).
-brachylog_plus(['integer':Sign:I|T],Sum) :-
-	S #= E + F,
-	brachylog_plus(T,'integer':SignZ:Z),
-	integer_value('integer':SignZ:Z,F),
-	integer_value('integer':Sign:I,E),
-	integer_value(Sum,S),
-	label([S]).
+brachylog_plus_([],[],'integer':0).
+brachylog_plus_(['integer':I|T],[I|T2],'integer':Sum) :-
+	brachylog_plus_(T,T2,'integer':F),
+	Sum #= I + F.
 	
 /*
 BRACHYLOG_MINUS
 */
-brachylog_minus('integer':Sign:I,'integer':NewSign:I) :-
-	(
-		I = [0],
-		NewSign = 'positive'
-		;
-		Sign = 'positive',
-		NewSign = 'negative'
-		;
-		Sign = 'negative',
-		NewSign = 'positive'
-	).
-	
-brachylog_minus([],'integer':'positive':[0]).
-brachylog_minus(['integer':Sign1:I1,'integer':Sign2:I2],Sum) :-
-	S #= E - F,
-	integer_value('integer':Sign1:I1,E),
-	integer_value('integer':Sign2:I2,F),
-	integer_value(Sum,S),
-	label([S]).
+brachylog_minus('integer':I,'integer':J) :-
+	J #= -I,
+	label([I,J]).
+brachylog_minus([],'integer':[0]).
+brachylog_minus(['integer':I1,'integer':I2],'integer':Sum) :-
+	Sum #= I1 - I2,
+	label([Sum,I1,I2]).
 	
 /*
 BRACHYLOG_LESS
 */
-brachylog_less('integer':Sign1:I1,'integer':Sign2:I2) :-
-	E1 #< E2,
-	integer_value('integer':Sign1:I1,E1),
-	integer_value('integer':Sign2:I2,E2).
+brachylog_less('integer':I1,'integer':I2) :-
+	I1 #< I2.
 	
 /*
 BRACHYLOG_GREATER
 */
-brachylog_greater('integer':Sign1:I1,'integer':Sign2:I2) :-
-	E1 #> E2,
-	integer_value('integer':Sign1:I1,E1),
-	integer_value('integer':Sign2:I2,E2).
+brachylog_greater('integer':I1,'integer':I2) :-
+	I1 #> I2.
 	
 /*
 BRACHYLOG_MODULO
 */
-brachylog_modulo(['integer':Sign1:I1,'integer':Sign2:I2],'integer':SignR:R) :-
-	Rem #= E1 mod E2,
-	integer_value('integer':Sign1:I1,E1),
-	integer_value('integer':Sign2:I2,E2),
-	integer_value('integer':SignR:R,Rem),
-	label([Rem]).
+brachylog_modulo(['integer':I1,'integer':I2],'integer':Rem) :-
+	Rem #= I1 mod I2,
+	label([I1,I2,Rem]).

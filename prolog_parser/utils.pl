@@ -7,34 +7,21 @@ INTEGER_VALUE
 */
 integer_value('integer':Sign:I,E) :-
 	integer_value('integer':Sign:I,0,E,E).
-
-integer_value('integer':Sign:[H],N0,N,M) :-
-	H in 0..9,
-	N1 #= H + N0 * 10,
-	abs(M) #>= abs(N1),
-	integer_value_('integer':Sign:[],N1,N,M).
-integer_value('integer':Sign:[H,I|T],N0,N,M) :-
-	H in 1..9,
-	N1 #= H + N0 * 10,
-	abs(M) #>= abs(N1),
-	integer_value_('integer':Sign:[I|T],N1,N,M).
-	
-integer_value_('integer':Sign:[],N0,N,_) :-
+integer_value('integer':Sign:[],N0,N,_) :-
 	(
 		Sign = 'positive',
 		N #= N0
 		;
 		Sign = 'negative',
-		N #\= 0,
 		N #= - N0
 	).
-integer_value_('integer':Sign:[H],N0,N,M) :-
+integer_value('integer':Sign:[H],N0,N,M) :-
 	H in 0..9,
 	N1 #= H + N0 * 10,
 	abs(M) #>= abs(N1),
-	integer_value_('integer':Sign:[],N1,N,M).
-integer_value_('integer':Sign:[H,I|T],N0,N,M) :-
+	integer_value('integer':Sign:[],N1,N,M).
+integer_value('integer':Sign:[H,I|T],N0,N,M) :-
 	H in 0..9,
 	N1 #= H + N0 * 10,
 	abs(M) #>= abs(N1),
-	integer_value_('integer':Sign:[I|T],N1,N,M).
+	integer_value('integer':Sign:[I|T],N1,N,M).

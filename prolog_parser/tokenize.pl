@@ -56,15 +56,16 @@ tokenize(['"'|T], ['variable':Variable|T2]) :-
 	tokenize_string(['"'|T],Rest,Variable),
 	tokenize(Rest,T2).
 	
-tokenize(['_',Digit|T], ['variable':Type:'negative':X|T2]) :-
+tokenize(['_',Digit|T], ['variable':Type:N|T2]) :-
 	is_digit(Digit),
 	tokenize_number([Digit|T],Rest,Type:X),
+	N is -X,
 	tokenize(Rest,T2).
 	
 tokenize(['_','_'|T], T2) :-
 	tokenize(T,T2).
 	
-tokenize([Digit|T], ['variable':Type:'positive':X|T2]) :-
+tokenize([Digit|T], ['variable':Type:X|T2]) :-
 	is_digit(Digit),
 	tokenize_number([Digit|T],Rest,Type:X),
 	tokenize(Rest,T2).
@@ -109,14 +110,16 @@ tokenize_string_([X|T],Rest,[X|T2]) :-
 /*
 TOKENIZE_NUMBER
 */	
-tokenize_number(N,Rest,Type:T2) :-
+tokenize_number(N,Rest,Type:Number) :-
 	tokenize_number_(N,Rest,T2),
 	(
 		member('.',T2),!,
 		Type = 'float'
 		;
 		Type = 'integer'
-	).
+	),
+	atomic_list_concat(T2,A),
+	atom_number(A,Number).
 	
 tokenize_number_([],[],[]).
 tokenize_number_(['.',I|T],Rest,['.',J|T2]) :-
