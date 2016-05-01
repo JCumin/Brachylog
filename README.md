@@ -1,5 +1,8 @@
-# Brachylog
-A Prolog-based Code Golf programming language.
+<a href="https://github.com/JCumin/Brachylog"><img src="https://github.com/JCumin/Brachylog/blob/master/misc/brachylog_logo.png" alt="Brachylog"/></a>
+
+#What is it?
+
+Brachylog is a Code Golf programming language based on Prolog.
 
 Currently in development.
 Uses SWI-Prolog as Prolog engine.
