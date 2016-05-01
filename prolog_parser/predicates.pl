@@ -97,15 +97,28 @@ BRACHYLOG_WRITE
 */
 brachylog_write([List,'string':F],List) :-
 	is_list(List),
-	atom_string(F,Format),
-	format(Format,List).
-brachylog_write([X,'string':F],X) :-
-	\+ (is_list(X)),
-	atom_string(F,Format),
-	format(Format,[X]).
+	atomic_list_concat(F,Format),
+	brachylog_prolog_variable(List,PrologList),
+	format(Format,PrologList).
+brachylog_write(Args,S) :-
+	is_list(Args),
+	reverse(Args,['string':F|R]),
+	reverse(R,S),
+	brachylog_prolog_variable(S,PrologS),
+	atomic_list_concat(F,Format),
+	format(Format,PrologS).
 brachylog_write('string':S,'string':S) :-
 	atomic_list_concat(S,X),
 	write(X).
+brachylog_write('integer':I,'integer':I) :-
+	write(I).
+brachylog_write('float':F, 'float':F) :-
+	write(F).
+brachylog_write(List,List) :-
+	is_list(List),
+	\+ (reverse(List,['string':_|_])),
+	brachylog_prolog_variable(List,PrologList),
+	write(PrologList).
 	
 /*
 BRACHYLOG_CALL_PREDICATE
