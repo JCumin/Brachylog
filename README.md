@@ -1,5 +1,4 @@
-![alt-text](https://github.com/JCumin/Brachylog/blob/master/misc/brachylog_logo.png "Brachylog")
-
+<a href="https://github.com/JCumin/Brachylog"><img src="https://github.com/JCumin/Brachylog/blob/master/misc/brachylog_logo.png" alt="Brachylog"/></a>
 
 #What is it?
 
