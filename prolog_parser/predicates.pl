@@ -188,8 +188,8 @@ brachylog_plus(L,Sum) :-
 brachylog_plus(ListOfLists,Sums) :-
 	maplist(is_list,ListOfLists),
 	ListOfLists = [H|_],
+	length(H,Length),
 	(
-		length(H,Length),
 		maplist(length_(Length),ListOfLists),
 		transpose(ListOfLists,Transpose),
 		maplist(brachylog_plus_,Transpose,Sums)
@@ -255,24 +255,72 @@ BRACHYLOG_LESS
 */
 brachylog_less('integer':I1,'integer':I2) :-
 	I1 #< I2.
+brachylog_less('float':I1,'integer':I2) :-
+	label([I2]),
+	nonvar(I1),
+	I1 < I2.
+brachylog_less('integer':I1,'float':I2) :-
+	label([I1]),
+	nonvar(I2),
+	I1 < I2.
+brachylog_less('float':I1,'float':I2) :-
+	nonvar(I1),
+	nonvar(I2),
+	I1 < I2.
 	
 /*
 BRACHYLOG_GREATER
 */
 brachylog_greater('integer':I1,'integer':I2) :-
 	I1 #> I2.
+brachylog_greater('float':I1,'integer':I2) :-
+	label([I2]),
+	nonvar(I1),
+	I1 > I2.
+brachylog_greater('integer':I1,'float':I2) :-
+	label([I1]),
+	nonvar(I2),
+	I1 > I2.
+brachylog_greater('float':I1,'float':I2) :-
+	nonvar(I1),
+	nonvar(I2),
+	I1 > I2.	
 	
 /*
 BRACHYLOG_LESSEQUAL
 */
 brachylog_lessequal('integer':I1,'integer':I2) :-
 	I1 #=< I2.
+brachylog_lessequal('float':I1,'integer':I2) :-
+	label([I2]),
+	nonvar(I1),
+	I1 =< I2.
+brachylog_lessequal('integer':I1,'float':I2) :-
+	label([I1]),
+	nonvar(I2),
+	I1 =< I2.
+brachylog_lessequal('float':I1,'float':I2) :-
+	nonvar(I1),
+	nonvar(I2),
+	I1 =< I2.
 		
 /*
 BRACHYLOG_GREATEREQUAL
 */
 brachylog_greaterequal('integer':I1,'integer':I2) :-
 	I1 #>= I2.
+brachylog_greaterequal('float':I1,'integer':I2) :-
+	label([I2]),
+	nonvar(I1),
+	I1 >= I2.
+brachylog_greaterequal('integer':I1,'float':I2) :-
+	label([I1]),
+	nonvar(I2),
+	I1 >= I2.
+brachylog_greaterequal('float':I1,'float':I2) :-
+	nonvar(I1),
+	nonvar(I2),
+	I1 >= I2.
 	
 /*
 BRACHYLOG_MODULO
