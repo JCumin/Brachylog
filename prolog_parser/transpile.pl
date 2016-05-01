@@ -1,10 +1,13 @@
+:- module(transpile, [parse/2,
+					  parse_argument/2]).
+
 :- use_module(tokenize).
 :- use_module(symbols).
 
 /*
 PARSE
 */
-parse(Code,Program) :-
+parse(Code,TranspiledPath) :-
 	atom_chars(Code,SplittedCode),
 	tokenize(SplittedCode,Tokens),
 	fix_predicates(Tokens,FixedPredicates),
@@ -12,9 +15,18 @@ parse(Code,Program) :-
 	fix_lists(FilledTokens,Program),
 	transpile(Program,Predicates),
 	!,
-	open('compiled_brachylog.pl', write, File),
+	open(TranspiledPath, write, File),
 	maplist(write_to_file(File),Predicates),
 	close(File).
+	
+	
+/*
+PARSE_ARGUMENT
+*/
+parse_argument(Arg,ParsedArg) :-
+	atom_chars(Arg,SplittedArg),
+	tokenize(SplittedArg,Token),
+	fix_lists(Token,ParsedArg).
 	
 	
 /*

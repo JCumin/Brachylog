@@ -166,14 +166,38 @@ BRACHYLOG_PLUS
 brachylog_plus('integer':I,'integer':AbsoluteValue) :-
 	AbsoluteValue #= abs(I),
 	label([I,AbsoluteValue]).
-brachylog_plus(L,'integer':Sum) :-
-	brachylog_plus_(L,M,'integer':Sum),
-	label([Sum|M]).
+brachylog_plus('float':F,'float':AbsoluteValue) :-
+	AbsoluteValue is abs(F).
+brachylog_plus(L,Sum) :-
+	is_list(L),
+	brachylog_plus_(L,Sum).
 	
-brachylog_plus_([],[],'integer':0).
-brachylog_plus_(['integer':I|T],[I|T2],'integer':Sum) :-
-	brachylog_plus_(T,T2,'integer':F),
-	Sum #= I + F.
+brachylog_plus_([],'integer':0).
+brachylog_plus_([TypeI:I|T],TypeS:Sum) :-
+	brachylog_plus_(T,TypeF:F),
+	(
+		TypeI = 'integer',
+		TypeF = 'integer',
+		Sum #= I + F,
+		TypeS = 'integer'
+		;
+		TypeS = 'float',
+		(
+			TypeF = 'float',
+			TypeI = 'integer',
+			label([I])
+			;
+			TypeI = 'float',
+			nonvar(I),
+			TypeF = 'integer',
+			label([F])
+			;
+			TypeF = 'float',
+			TypeI = 'float',
+			nonvar(I)
+		),
+		Sum is I + F
+	).
 	
 /*
 BRACHYLOG_MINUS
