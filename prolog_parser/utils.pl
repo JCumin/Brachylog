@@ -1,5 +1,6 @@
 :- module(utils, [integer_value/2,
-                  brachylog_prolog_variable/2]).
+                  brachylog_prolog_variable/2,
+				  length_/2]).
 
 :- use_module(library(clpfd)).
 				 
@@ -37,3 +38,9 @@ brachylog_prolog_variable('string':S,String) :-
 brachylog_prolog_variable(List,PrologList) :-
 	is_list(List),
 	maplist(brachylog_prolog_variable,List,PrologList).
+
+/*
+LENGTH_
+*/
+length_(Length,List) :-
+	length(List,Length).

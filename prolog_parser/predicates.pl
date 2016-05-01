@@ -183,7 +183,20 @@ brachylog_plus('float':F,'float':AbsoluteValue) :-
 	AbsoluteValue is abs(F).
 brachylog_plus(L,Sum) :-
 	is_list(L),
+	\+ (maplist(is_list,L)),
 	brachylog_plus_(L,Sum).
+brachylog_plus(ListOfLists,Sums) :-
+	maplist(is_list,ListOfLists),
+	ListOfLists = [H|_],
+	(
+		length(H,Length),
+		maplist(length_(Length),ListOfLists),
+		transpose(ListOfLists,Transpose),
+		maplist(brachylog_plus_,Transpose,Sums)
+		;
+		\+ (maplist(length_(Length),ListOfLists)),
+		throw('Lists must have have the same length to be added')
+	).
 	
 brachylog_plus_([],'integer':0).
 brachylog_plus_([TypeI:I|T],TypeS:Sum) :-
