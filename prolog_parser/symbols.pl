@@ -95,7 +95,7 @@ token_predicate('$h','').
 token_predicate('$i','').
 token_predicate('$j','').
 token_predicate('$k','').
-token_predicate('$l','brachylog_math_log').
+token_predicate('$l','brachylog_math_ln').
 token_predicate('$m','').
 token_predicate('$n','').
 token_predicate('$o','').
@@ -133,9 +133,9 @@ token_predicate('$!','brachylog_math_factorial').
 token_predicate('$[','brachylog_math_floor').
 token_predicate('$]','brachylog_math_ceil').
 token_predicate('$\\','brachylog_math_transpose').
-token_predicate('$/','brachylog_math_anti_transpose').
-token_predicate('$(','brachylog_math_circular_permutation_left').
-token_predicate('$)','brachylog_math_circular_permutation_right').
+token_predicate('$/','brachylog_math_antitranspose').
+token_predicate('$(','brachylog_math_circular_permutate_left').
+token_predicate('$)','brachylog_math_circular_permutate_right').
 
 
 /*
