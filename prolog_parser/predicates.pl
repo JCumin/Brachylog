@@ -218,6 +218,8 @@ BRACHYLOG_MINUS
 brachylog_minus('integer':I,'integer':J) :-
 	J #= -I,
 	label([I,J]).
+brachylog_minus('float':I,'float':J) :-
+	J is -I.
 brachylog_minus([],'integer':[0]).
 brachylog_minus(['integer':I1,'integer':I2],'integer':Sum) :-
 	Sum #= I1 - I2,
