@@ -3,6 +3,7 @@
 					   brachylog_findall/2,
 					   brachylog_head/2,
 					   brachylog_length/2,
+					   brachylog_permute/2,
 					   brachylog_reverse/2,
 					   brachylog_write/2,
 					   brachylog_call_predicate/2,
