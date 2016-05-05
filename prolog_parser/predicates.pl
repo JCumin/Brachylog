@@ -3,6 +3,7 @@
 					   brachylog_findall/2,
 					   brachylog_head/2,
 					   brachylog_length/2,
+					   brachylog_permute/2,
 					   brachylog_reverse/2,
 					   brachylog_write/2,
 					   brachylog_call_predicate/2,
@@ -81,6 +82,27 @@ brachylog_length('integer':I,Length) :-
 brachylog_length(List,Length) :-
 	length(List,Length).
 	
+/*
+BRACHYLOG_PERMUTE
+*/
+brachylog_permute('string':S,'string':Permutation) :-
+	permutation(S,Permutation).
+brachylog_permute(List, Permutation) :-
+	is_list(List),
+	permutation(List, Permutation).
+brachylog_permute('integer':I, 'integer':J) :-
+	H #\= 0,
+	integer_value('integer':Sign:[H|L],I),
+	permutation([H|L],M),
+	integer_value('integer':Sign:M,J).
+brachylog_permute('float':F, 'float':G) :-
+	number_chars(F,C),
+	permutation(C,D),
+	\+ (D = ['.'|_]
+		;
+		reverse(D,['.'|_])
+	),
+	number_chars(G,D).
 	
 /*
 BRACHYLOG_REVERSE

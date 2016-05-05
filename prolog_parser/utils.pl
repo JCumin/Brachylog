@@ -9,6 +9,7 @@ INTEGER_VALUE
 */
 integer_value('integer':Sign:I,E) :-
 	integer_value('integer':Sign:I,0,E,E).
+	
 integer_value('integer':Sign:[],N0,N,_) :-
 	(
 		Sign = 'positive',
