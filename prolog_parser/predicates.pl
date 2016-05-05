@@ -44,8 +44,9 @@ brachylog_enumerate(['integer':Sup,'integer':Inf],'integer':I) :-
 	between(Inf,Sup,N),
 	I #= Inf + Sup - N.
 brachylog_enumerate('integer':I,'integer':J) :-
-	integer_value('integer':_:L,I),
-	nth0(_,L,M),
+	H #\= 0,
+	integer_value('integer':_:[H|T],I),
+	nth0(_,[H|T],M),
 	integer_value('integer':'positive':M,J).
 brachylog_enumerate(L,M) :-
 	L \= ['integer':_,'integer':_],
@@ -74,7 +75,8 @@ BRACHYLOG_LENGTH
 brachylog_length('string':S,Length) :-
 	length(S,Length).
 brachylog_length('integer':I,Length) :-
-	integer_value('integer':_:L,I),
+	H #\= 0,
+	integer_value('integer':_:[H|T],I),
 	length(L,Length).
 brachylog_length(List,Length) :-
 	length(List,Length).
@@ -86,9 +88,11 @@ BRACHYLOG_REVERSE
 brachylog_reverse('string':S,'string':R) :-
 	reverse(S,R).
 brachylog_reverse('integer':I,'integer':R) :-
-	integer_value('integer':Sign:L,I),
-	reverse(L,M),
-	integer_value('integer':Sign:M,R).
+	H #\= 0,
+	A #\= 0,
+	integer_value('integer':Sign:[H|T],I),
+	reverse([H|T],[A|B]),
+	integer_value('integer':Sign:[A|B],R).
 brachylog_reverse(List,R) :-
 	reverse(List,R).
 	
