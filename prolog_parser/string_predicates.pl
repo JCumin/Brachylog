@@ -1,4 +1,4 @@
-:- module(predicates, [brachylog_string_lowercase/2,
+:- module(string_predicates, [brachylog_string_lowercase/2,
 					   brachylog_string_uppercase/2]).
 					   
 :- use_module(library(clpfd)).
