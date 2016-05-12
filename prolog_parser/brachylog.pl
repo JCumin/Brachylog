@@ -1,5 +1,6 @@
 :- use_module(transpile).
 :- use_module(symbols).
+:- use_module(utils).
 
 /*
 RUN_FROM_FILE
@@ -30,25 +31,41 @@ RUN
 run(Input,Output) :-
 	consult('compiled_brachylog.pl'),
 	(
-		var(Input),
-		ParsedInput = Input
-		;
-		is_variable(Input),
-		ParsedInput = Input
-		;
+		\+ var(Input),
+		\+ is_variable(Input),
 		parse_argument(Input,ParsedInput)
+		;
+		true
 	),
 	(
-		var(Output),
-		ParsedOutput = Output
-		;
-		is_variable(Output),
-		ParsedOutput = Output
-		;
+		\+ var(Output),
+		\+ is_variable(Output),
 		parse_argument(Output,ParsedOutput)
+		;
+		true
 	),
 	!,
-	call(brachylog_main,ParsedInput,ParsedOutput).
+	call(brachylog_main,ParsedInput,ParsedOutput),
+	(
+		(
+			var(Input)
+			;
+			is_variable(Input)
+		)
+		-> brachylog_prolog_variable(ParsedInput,Input)
+		;
+		true
+	),
+	(
+		(
+			var(Output)
+			;
+			is_variable(Output)
+		)
+		-> brachylog_prolog_variable(ParsedOutput,Output)
+		;
+		true
+	).
 	
 	
 /*

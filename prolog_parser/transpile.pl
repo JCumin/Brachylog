@@ -1,6 +1,5 @@
 :- module(transpile, [parse/2,
-					  parse_argument/2,
-					  brachylog_list_to_atom/2]).
+					  parse_argument/2]).
 
 :- use_module(tokenize).
 :- use_module(symbols).
