@@ -26,8 +26,16 @@ PARSE_ARGUMENT
 parse_argument(Arg,ParsedArg) :-
 	atom_chars(Arg,SplittedArg),
 	tokenize(SplittedArg,Token),
-	fix_lists(Token,ParsedArg).
-	
+	fix_lists(Token,Program),
+	transpile(Program,[TempMainPredicate]),
+	!,
+	nth0(2,TempMainPredicate,Atom),
+	atom_concat(',\n    ',AtomT,Atom),
+	atom_concat(ParsedArg,' = Input',AtomT),
+	term_to_atom(Term,ParsedArg).
+	;
+	throw('Incorrect variable format.').
+
 	
 /*
 FIX_PREDICATES
