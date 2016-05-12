@@ -23,7 +23,7 @@ parse(Code,TranspiledPath) :-
 /*
 PARSE_ARGUMENT
 */
-parse_argument(Arg,ParsedArg) :-
+parse_argument(Arg,Term) :-
 	atom_chars(Arg,SplittedArg),
 	tokenize(SplittedArg,Token),
 	fix_lists(Token,Program),
@@ -32,7 +32,7 @@ parse_argument(Arg,ParsedArg) :-
 	nth0(2,TempMainPredicate,Atom),
 	atom_concat(',\n    ',AtomT,Atom),
 	atom_concat(ParsedArg,' = Input',AtomT),
-	term_to_atom(Term,ParsedArg).
+	term_to_atom(Term,ParsedArg)
 	;
 	throw('Incorrect variable format.').
 
