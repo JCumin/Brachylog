@@ -1,5 +1,6 @@
 :- module(transpile, [parse/2,
-					  parse_argument/2]).
+					  parse_argument/2,
+					  brachylog_list_to_atom/2]).
 
 :- use_module(tokenize).
 :- use_module(symbols).
@@ -24,7 +25,8 @@ parse(Code,TranspiledPath) :-
 PARSE_ARGUMENT
 */
 parse_argument(Arg,Term) :-
-	atom_chars(Arg,SplittedArg),
+	term_to_atom(Arg,AtomArg),
+	atom_chars(AtomArg,SplittedArg),
 	tokenize(SplittedArg,Token),
 	fix_lists(Token,Program),
 	transpile(Program,[TempMainPredicate]),
