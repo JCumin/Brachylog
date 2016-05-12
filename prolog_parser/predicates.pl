@@ -78,7 +78,7 @@ brachylog_length('string':S,Length) :-
 brachylog_length('integer':I,Length) :-
 	H #\= 0,
 	integer_value('integer':_:[H|T],I),
-	length(L,Length).
+	length([H|T],Length).
 brachylog_length(List,Length) :-
 	length(List,Length).
 	
@@ -110,11 +110,19 @@ BRACHYLOG_REVERSE
 brachylog_reverse('string':S,'string':R) :-
 	reverse(S,R).
 brachylog_reverse('integer':I,'integer':R) :-
+	nonvar(I),
 	H #\= 0,
 	A #\= 0,
 	integer_value('integer':Sign:[H|T],I),
 	reverse([H|T],[A|B]),
 	integer_value('integer':Sign:[A|B],R).
+brachylog_reverse('integer':I,'integer':R) :-
+	var(I),
+	H #\= 0,
+	A #\= 0,
+	integer_value('integer':Sign:[A|B],R),
+	reverse([H|T],[A|B]),
+	integer_value('integer':Sign:[H|T],I).
 brachylog_reverse(List,R) :-
 	reverse(List,R).
 	
