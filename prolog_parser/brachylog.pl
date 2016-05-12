@@ -1,4 +1,5 @@
 :- use_module(transpile).
+:- use_module(symbols).
 
 /*
 RUN_FROM_FILE
@@ -9,6 +10,7 @@ run_from_file(FilePath,Input) :-
 	run_from_file(FilePath,Input, _).
 run_from_file(FilePath,Input,Output) :-
 	read_file(FilePath,Code),
+	!,
 	run_from_atom(Code,Input,Output).
 	
 /*
@@ -19,7 +21,34 @@ run_from_atom(Code) :-
 run_from_atom(Code,Input) :-
 	run_from_atom(Code,Input,_).
 run_from_atom(Code,Input,Output) :-
-	parse(Code,'compiled_brachylog.pl').
+	parse(Code,'compiled_brachylog.pl'),
+	run(Input,Output).
+	
+/*
+RUN
+*/
+run(Input,Output) :-
+	consult('compiled_brachylog.pl'),
+	(
+		var(Input),
+		ParsedInput = Input
+		;
+		is_variable(Input),
+		ParsedInput = Input
+		;
+		parse_argument(Input,ParsedInput)
+	),
+	(
+		var(Output),
+		ParsedOutput = Output
+		;
+		is_variable(Output),
+		ParsedOutput = Output
+		;
+		parse_argument(Output,ParsedOutput)
+	),
+	!,
+	call(brachylog_main,ParsedInput,ParsedOutput).
 	
 	
 /*
