@@ -1,4 +1,5 @@
 :- module(predicates, [brachylog_behead/2,
+					   brachylog_concatenate/2,
 					   brachylog_enumerate/2,
 					   brachylog_findall/2,
 					   brachylog_head/2,
@@ -48,6 +49,59 @@ brachylog_behead_float_([H|T],[H|T2]) :-
 	brachylog_behead_float_(T,T2).
 
 
+/*
+BRACHYLOG_CONCATENATE
+*/
+brachylog_concatenate('string':L,'string':L).
+brachylog_concatenate('integer':I,'integer':I).
+brachylog_concatenate('float':F,'float':F).
+brachylog_concatenate([H|T],L) :-
+	brachylog_concatenate(T,H,L).
+
+brachylog_concatenate([],L,L).
+brachylog_concatenate(['string':H|T],'string':S,L) :-
+	append(S,H,I),
+	brachylog_concatenate(T,'string':I,L).
+brachylog_concatenate([L|T],L2,L3) :-
+	is_list(L),
+	is_list(L2),
+	append(L2,L,M),
+	brachylog_concatenate(T,M,L3).
+brachylog_concatenate(L,'integer':I,Z) :-
+	AI #= abs(I),
+	(
+		I #= 0,
+		HI #= 0,
+		TI = []
+		;
+		HI #\= 0
+	),
+	integer_value('integer':'positive':[HI|TI],AI),
+	brachylog_concatenate_(L,[HI|TI],Z).
+	
+brachylog_concatenate_([],[HZ|TZ],'integer':Z) :-
+	(
+		Z #= 0,
+		HZ #= 0,
+		TZ = []
+		;
+		HZ #\= 0
+	),
+	integer_value('integer':'positive':[HZ|TZ],Z).
+brachylog_concatenate_(['integer':I|T],L,'integer':Z) :-
+	AI #= abs(I),
+	(
+		I #= 0,
+		HI #= 0,
+		TI = []
+		;
+		HI #\= 0
+	),
+	integer_value('integer':'positive':[HI|TI],AI),
+	append(L,[HI|TI],M),
+	brachylog_concatenate_(T,M,'integer':Z).
+
+	
 /*
 BRACHYLOG_ENUMERATE
 */
