@@ -176,6 +176,9 @@ brachylog_length('integer':I,Length) :-
     H #\= 0,
     integer_value('integer':_:[H|T],I),
     length([H|T],Length).
+brachylog_length('float':F,Length) :-
+    number_codes(F,L),
+    length(L,Length).
 brachylog_length(List,Length) :-
     length(List,Length).
     
