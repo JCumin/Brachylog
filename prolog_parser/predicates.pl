@@ -27,7 +27,25 @@ brachylog_behead('integer':I,'integer':J) :-
 	H #\= 0,
 	integer_value('integer':Sign:[H|T],I),
 	integer_value('integer':Sign:T,J).
+brachylog_behead('float':F,'float':G) :-
+	number_codes(F,L),
+	brachylog_behead_float(L,M),
+	number_codes(G,M).
 brachylog_behead([_|T],T).
+
+brachylog_behead_float([],[]).
+brachylog_behead_float([48|T],[48|T2]) :-
+	brachylog_behead_float(T,T2).
+brachylog_behead_float([46|T],[46|T2]) :-
+	brachylog_behead_float(T,T2).
+brachylog_behead_float([H|T],[48|T2]) :-
+	H \= 46,
+	H \= 48,
+	brachylog_behead_float_(T,T2).
+
+brachylog_behead_float_([],[]).
+brachylog_behead_float_([H|T],[H|T2]) :-
+	brachylog_behead_float_(T,T2).
 
 
 /*
