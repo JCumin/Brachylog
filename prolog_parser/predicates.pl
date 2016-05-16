@@ -188,6 +188,7 @@ brachylog_reverse('integer':I,'integer':R) :-
 	integer_value('integer':Sign:[H|T],I),
 	reverse([H|T],[A|B]),
 	integer_value('integer':Sign:[A|B],R).
+brachylog_reverse('integer':0,'integer':0).
 brachylog_reverse('integer':I,'integer':R) :-
 	var(I),
 	H #\= 0,
