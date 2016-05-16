@@ -18,6 +18,8 @@
 					   
 :- use_module(library(clpfd)).
 :- use_module(utils).
+
+:- dynamic brachylog_main/2.
 				
 /*
 BRACHYLOG_BEHEAD
@@ -140,7 +142,30 @@ brachylog_head('integer':0,'integer':0).
 brachylog_head('integer':I,'integer':J) :-
 	J #\= 0,
 	integer_value('integer':_:[J|_],I).
+brachylog_head('float':F,'integer':I) :-
+	number_codes(F,L),
+	brachylog_head_float(L,'integer':I).
 brachylog_head([H|_],H).
+
+brachylog_head_float([H|T],'integer':I) :-
+	(
+		(
+			H = 48
+			;
+			H = 46
+		) ->
+		(
+			T = [],
+			I = 0
+			;
+			T \= [],
+			brachylog_head_float(T,'integer':I)	
+		)
+		;
+		H \= 48,
+		H \= 46,
+		number_codes(I,[H])	
+	).
 
 /*
 BRACHYLOG_LENGTH
