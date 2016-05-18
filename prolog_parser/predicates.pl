@@ -11,6 +11,7 @@
                        brachylog_plus/2,
                        brachylog_minus/2,
                        brachylog_multiply/2,
+                       brachylog_power/2,
                        brachylog_greater/2,
                        brachylog_less/2,
                        brachylog_lessequal/2,
@@ -433,6 +434,31 @@ brachylog_multiply_([TypeI:I|T],TypeS:Product) :-
 		),
 		Product is I * F
 	).
+
+/*
+BRACHYLOG_POWER
+*/
+brachylog_power('integer':I,'float':J) :-
+	label([I]),
+	J is exp(I).
+brachylog_power('float':I,'float':J) :-
+	J is exp(I).
+brachylog_power([],'integer':1).
+brachylog_power(['integer':I1,'integer':I2],'integer':Power) :-
+	Power #= I1 ^ I2,
+	label([Power,I1,I2]).
+brachylog_power(['float':I1,'integer':I2],'float':Power) :-
+	label([I2]),
+	nonvar(I1),
+	Power is I1 ^ I2.
+brachylog_power(['integer':I1,'float':I2],'float':Power) :-
+	label([I1]),
+	nonvar(I2),
+	Power is I1 ^ I2.
+brachylog_power(['float':I1,'float':I2],'float':Power) :-
+	nonvar(I1),
+	nonvar(I2),
+	Power is I1 ^ I2.
 
 /*
 BRACHYLOG_LESS
