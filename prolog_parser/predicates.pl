@@ -10,6 +10,7 @@
                        brachylog_call_predicate/2,
                        brachylog_plus/2,
                        brachylog_minus/2,
+                       brachylog_multiply/2,
                        brachylog_greater/2,
                        brachylog_less/2,
                        brachylog_lessequal/2,
@@ -384,6 +385,53 @@ brachylog_minus(['float':I1,'float':I2],'float':Sum) :-
     nonvar(I1),
     nonvar(I2),
     Sum is I1 - I2.
+
+/*
+BRACHYLOG_MULTIPLY
+*/
+brachylog_multiply(L,Product) :-
+	is_list(L),
+	\+ (maplist(is_list,L)),
+	brachylog_multiply_(L,Product).
+brachylog_multiply(ListOfLists,Products) :-
+	maplist(is_list,ListOfLists),
+	ListOfLists = [H|_],
+	length(H,Length),
+	(
+		maplist(length_(Length),ListOfLists),
+		transpose(ListOfLists,Transpose),
+		maplist(brachylog_multiply_,Transpose,Products)
+		;
+		\+ (maplist(length_(Length),ListOfLists)),
+		throw('Lists must have have the same length to be added')
+	).
+	
+brachylog_multiply_([],'integer':1).
+brachylog_multiply_([TypeI:I|T],TypeS:Product) :-
+	brachylog_multiply_(T,TypeF:F),
+	(
+		TypeI = 'integer',
+		TypeF = 'integer',
+		Product #= I * F,
+		TypeS = 'integer'
+		;
+		TypeS = 'float',
+		(
+			TypeF = 'float',
+			TypeI = 'integer',
+			label([I])
+			;
+			TypeI = 'float',
+			nonvar(I),
+			TypeF = 'integer',
+			label([F])
+			;
+			TypeF = 'float',
+			TypeI = 'float',
+			nonvar(I)
+		),
+		Product is I + F
+	).
 
 /*
 BRACHYLOG_LESS
