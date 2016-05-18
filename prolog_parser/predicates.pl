@@ -431,7 +431,7 @@ brachylog_multiply_([TypeI:I|T],TypeS:Product) :-
 			TypeI = 'float',
 			nonvar(I)
 		),
-		Product is I + F
+		Product is I * F
 	).
 
 /*
