@@ -15,6 +15,7 @@
                        brachylog_less/2,
                        brachylog_lessequal/2,
                        brachylog_greaterequal/2,
+                       brachylog_equals/2,
                        brachylog_modulo/2]).
                        
 :- use_module(library(clpfd)).
@@ -504,6 +505,15 @@ brachylog_greaterequal('float':I1,'float':I2) :-
     nonvar(I1),
     nonvar(I2),
     I1 >= I2.
+    
+/*
+BRACHYLOG_EQUALS
+*/
+brachylog_equals(Z,Z) :-
+	is_list(Z)
+	-> label(Z)
+	;
+	label([Z]).
     
 /*
 BRACHYLOG_MODULO
