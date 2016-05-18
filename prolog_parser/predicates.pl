@@ -11,6 +11,7 @@
                        brachylog_plus/2,
                        brachylog_minus/2,
                        brachylog_multiply/2,
+                       brachylog_divide/2,
                        brachylog_power/2,
                        brachylog_greater/2,
                        brachylog_less/2,
@@ -434,6 +435,31 @@ brachylog_multiply_([TypeI:I|T],TypeS:Product) :-
 		),
 		Product is I * F
 	).
+
+/*
+BRACHYLOG_DIVIDE
+*/
+brachylog_divide('integer':I,'float':J) :-
+	label([I]),
+	J is 1/I.
+brachylog_divide('float':I,'float':J) :-
+	J is 1/I.
+brachylog_divide([],'integer':[1]).
+brachylog_divide(['integer':I1,'integer':I2],'integer':Division) :-
+	Division #= I1 // I2,
+	label([Division,I1,I2]).
+brachylog_divide(['float':I1,'integer':I2],'float':Division) :-
+	label([I2]),
+	nonvar(I1),
+	Division is I1 / I2.
+brachylog_divide(['integer':I1,'float':I2],'float':Division) :-
+	label([I1]),
+	nonvar(I2),
+	Division is I1 / I2.
+brachylog_divide(['float':I1,'float':I2],'float':Division) :-
+	nonvar(I1),
+	nonvar(I2),
+	Division is I1 / I2.
 
 /*
 BRACHYLOG_POWER
