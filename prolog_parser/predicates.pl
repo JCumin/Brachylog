@@ -1,4 +1,5 @@
-:- module(predicates, [brachylog_behead/2,
+:- module(predicates, [brachylog_apply/2,
+                       brachylog_behead/2,
                        brachylog_concatenate/2,
                        brachylog_enumerate/2,
                        brachylog_findall/2,
@@ -24,7 +25,27 @@
 :- use_module(utils).
 
 :- dynamic brachylog_main/2.
-                
+    
+/*
+BRACHYLOG_APPLY
+*/
+brachylog_apply(L,Y) :-
+	is_list(L),
+	reverse(L,[PredName|Args]),
+	(
+		Args = [Arg],
+		is_list(Arg)
+		-> true
+		;
+		Arg = Args
+	),
+	brachylog_apply_append_predname(Arg,PredName,NewArg),
+	maplist(brachylog_call_predicate,NewArg,Y).
+	
+brachylog_apply_append_predname([],_,[]).
+brachylog_apply_append_predname([H|T],PredName,[[H,PredName,'ignore_calling_predicate']|T2]) :-
+	brachylog_apply_append_predname(T,PredName,T2).
+    
 /*
 BRACHYLOG_BEHEAD
 */                
