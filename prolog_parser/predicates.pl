@@ -7,6 +7,7 @@
                        brachylog_head/2,
                        brachylog_length/2,
                        brachylog_member/2,
+                       brachylog_order/2,
                        brachylog_permute/2,
                        brachylog_reverse/2,
                        brachylog_write/2,
@@ -274,6 +275,21 @@ brachylog_member([L,'integer':I],M) :-
     I in 0.. Length2,
     label([I]),
     nth0(I,L,M).
+    
+/*
+BRACHYLOG_ORDER
+*/
+brachylog_order('string':S,'string':T) :-
+    msort(S,T).
+brachylog_order('integer':I,'integer':J) :-
+    label([I]),
+    number_codes(I,C),
+    msort(C,D),
+    number_codes(J,D).
+brachylog_order(List,OrderedList) :-
+    is_list(List),
+    msort(List,OrderedList).
+    
     
 /*
 BRACHYLOG_PERMUTE
