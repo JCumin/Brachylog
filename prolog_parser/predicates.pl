@@ -10,6 +10,7 @@
                        brachylog_order/2,
                        brachylog_permute/2,
                        brachylog_reverse/2,
+                       brachylog_subset/2,
                        brachylog_write/2,
                        brachylog_call_predicate/2,
                        brachylog_plus/2,
@@ -335,6 +336,34 @@ brachylog_reverse('integer':I,'integer':R) :-
     integer_value('integer':Sign:[H|T],I).
 brachylog_reverse(List,R) :-
     reverse(List,R).
+    
+/*
+BRACHYLOG_SUBSET
+*/
+brachylog_subset('string':S,'string':T) :-
+    brachylog_subset_recur(S,T).
+brachylog_subset('integer':I,'integer':J) :-
+    H #\= 0,
+    integer_value('integer':Sign:[H|L],I),
+    brachylog_subset_recur([H|L],M),
+    integer_value('integer':Sign:M,J).
+brachylog_subset('float':F,'float':G) :-
+    number_chars(F,C),
+    brachylog_subset_recur(C,D),
+    \+ (D = ['.'|_]
+        ;
+        reverse(D,['.'|_])
+    ),
+    number_chars(G,D).
+brachylog_subset(L,S) :-
+    is_list(L),
+    brachylog_subset_recur(L,S).
+    
+brachylog_subset_recur([],[]).
+brachylog_subset_recur([H|T],[H|T2]) :-
+    brachylog_subset_recur(T,T2).
+brachylog_subset_recur([_|T],T2) :-
+    brachylog_subset_recur(T,T2).
     
 /*
 BRACHYLOG_WRITE
