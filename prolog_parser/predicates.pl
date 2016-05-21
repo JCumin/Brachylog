@@ -6,6 +6,7 @@
                        brachylog_findall/2,
                        brachylog_head/2,
                        brachylog_length/2,
+                       brachylog_member/2,
                        brachylog_permute/2,
                        brachylog_reverse/2,
                        brachylog_write/2,
@@ -224,6 +225,55 @@ brachylog_length('float':F,Length) :-
     length(L,Length).
 brachylog_length(List,Length) :-
     length(List,Length).
+    
+/*
+BRACHYLOG_MEMBER
+*/
+brachylog_member('string':S,'string':C) :-
+    member(C,S).
+brachylog_member('integer':I,'integer':J) :-
+    H #\= 0,
+    integer_value('integer':_:[H|T],I),
+    nth0(_,[H|T],M),
+    integer_value('integer':'positive':M,J).
+brachylog_member('float':F,'integer':I) :-
+    number_codes(F,L),
+    member(C,L),
+    C \= 45,
+    C \= 46,
+    number_codes(I,[C]).
+brachylog_member(['string':S,'integer':I],'string':C) :-
+    length(S,L),
+    L2 #= L - 1,
+    I in 0..L2,
+    label([I]),
+    nth0(I,S,C).
+brachylog_member(['integer':J,'integer':I],'integer':K) :-
+    H #\= 0,
+    integer_value('integer':_:[H|T],J),
+    length([H|T],Length),
+    Length2 #= Length - 1,
+    I in 0..Length2,
+    label([I]),
+    nth0(I,[H|T],M),
+    integer_value('integer':'positive':M,K).
+brachylog_member(['float':F,'integer':I],'integer':J) :-
+    number_codes(F,L),
+    length(L,Length),
+    Length2 #= Length - 1,
+    I in 0.. Length2,
+    label([I]),
+    delete(L,45,L2),
+    delete(L2,46,L3),
+    nth0(I,L3,D),
+    number_codes(J,[D]).
+brachylog_member([L,'integer':I],M) :-
+    is_list(L),
+    length(L,Length),
+    Length2 #= Length - 1,
+    I in 0.. Length2,
+    label([I]),
+    nth0(I,L,M).
     
 /*
 BRACHYLOG_PERMUTE
