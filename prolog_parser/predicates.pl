@@ -1,6 +1,7 @@
 :- module(predicates, [brachylog_apply/2,
                        brachylog_behead/2,
                        brachylog_concatenate/2,
+                       brachylog_duplicates/2,
                        brachylog_enumerate/2,
                        brachylog_findall/2,
                        brachylog_head/2,
@@ -128,6 +129,23 @@ brachylog_concatenate_(['integer':I|T],L,'integer':Z) :-
     append(L,[HI|TI],M),
     brachylog_concatenate_(T,M,'integer':Z).
 
+/*
+BRACHYLOG_DUPLICATES
+*/
+brachylog_duplicates('string':S,'string':T) :-
+    list_to_set(S,T).
+brachylog_duplicates('integer':I,'integer':J) :-
+    label([I]),
+    number_codes(I,C),
+    list_to_set(C,S),
+    number_codes(J,S).
+brachylog_duplicates('float':F,'float':G) :-
+    number_codes(F,C),
+    list_to_set(C,S),
+    number_codes(G,S).
+brachylog_duplicates(L,M) :-
+    is_list(L),
+    list_to_set(L,M).
     
 /*
 BRACHYLOG_ENUMERATE
