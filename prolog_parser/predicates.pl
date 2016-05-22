@@ -5,6 +5,7 @@
                        brachylog_enumerate/2,
                        brachylog_findall/2,
                        brachylog_head/2,
+                       brachylog_iterate/2,
                        brachylog_length/2,
                        brachylog_member/2,
                        brachylog_order/2,
@@ -212,6 +213,25 @@ brachylog_head_float([H|T],'integer':I) :-
         H \= 46,
         number_codes(I,[H])    
     ).
+
+/*
+BRACHYLOG_ITERATE
+*/
+brachylog_iterate([Arg,'integer':I,PredName],Z) :-
+    !,
+    label([I]),
+    brachylog_iterate_(I,PredName,Arg,Z).
+brachylog_iterate(List,Z) :-
+    reverse(List,[PredName,'integer':I|Arg]),
+    label([I]),
+    brachylog_iterate_(I,PredName,Arg,Z).
+
+brachylog_iterate_(0,_,Z,Z).
+brachylog_iterate_(I,PredName,Arg,Z) :-
+    I #> 0,
+    brachylog_call_predicate([Arg,PredName,'ignore_calling_predicate'],X),
+    J #= I - 1,
+    brachylog_iterate_(J,PredName,X,Z).
 
 /*
 BRACHYLOG_LENGTH
