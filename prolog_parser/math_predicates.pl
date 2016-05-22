@@ -134,8 +134,8 @@ brachylog_math_factorial('integer':I,'integer':J) :-
     brachylog_math_factorial_(I,J),
     label([I,J]).
     
-brachylog_math_factorial_('integer':0,'integer':1).
-brachylog_math_factorial_('integer':I,'integer':J) :-
+brachylog_math_factorial_(0,1).
+brachylog_math_factorial_(I,J) :-
     I #> 0,
     A #= I - 1,
     brachylog_math_factorial_(A,B),
