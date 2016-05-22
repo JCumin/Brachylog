@@ -83,7 +83,8 @@ tokenize([Modifier,Variable|T], ['variable':RealVariable|T2]) :-
 tokenize([Modifier,Predicate|T], ['predicate':PredName|T2]) :-
     is_modifier(Modifier),
     \+ (is_variable(Predicate)),
-    token_predicate(Modifier:Predicate,PredName),
+    atomic_list_concat([Modifier,Predicate],Pred),
+    token_predicate(Pred,PredName),
     tokenize(T,T2).
     
 tokenize([ControlFlow|T],['control':ControlFlow|T2]) :-

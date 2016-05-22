@@ -9,7 +9,7 @@
 /*
 TOKEN_PREDICATE
 */                    
-token_predicate('a','').
+token_predicate('a','brachylog_apply').
 token_predicate('b','brachylog_behead').
 token_predicate('c','brachylog_concatenate').
 token_predicate('d','brachylog_duplicates').
@@ -17,7 +17,7 @@ token_predicate('e','brachylog_enumerate').
 token_predicate('f','brachylog_findall').
 token_predicate('g','').
 token_predicate('h','brachylog_head').
-token_predicate('i','').
+token_predicate('i','brachylog_iterate').
 token_predicate('j','').
 token_predicate('k','').
 token_predicate('l','brachylog_length').
