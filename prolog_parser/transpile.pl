@@ -202,7 +202,8 @@ transpile_(['predicate':P,'variable':B|T],A,Reverse,Negate,PredNumber,[[Predicat
     A \= [],
     (
         P = 'brachylog_call_predicate',
-        A3 = ['Name'|A],
+        reverse(A,RA),
+        A3 = ['Name'|RA],
         reverse(A3,A2)
         ;
         P \= 'brachylog_call_predicate',
