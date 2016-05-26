@@ -36,7 +36,7 @@ token_predicate('x','brachylog_xterminate').
 token_predicate('y','').
 token_predicate('z','').
 token_predicate('&','brachylog_call_predicate').
-token_predicate('=','brachylog_equal').
+token_predicate('=','brachylog_equals').
 token_predicate('<','brachylog_less').
 token_predicate('>','brachylog_greater').
 token_predicate('^','brachylog_power').
