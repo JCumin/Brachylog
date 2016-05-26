@@ -166,6 +166,9 @@ transpile_(['variable':B|T],A,Reverse,Negate,PredNumber,[[Unification|T2]|OtherP
         A = [Type:L],
         term_to_atom(Type:L,Var1)
         ;
+		    A = [[]],
+		    brachylog_list_to_atom([],Var1)
+        ;
         A = [L],
         Var1 = L
     ),
