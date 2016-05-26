@@ -6,9 +6,9 @@
 RUN_FROM_FILE
 */
 run_from_file(FilePath) :-
-    run_from_file(FilePath,_,_).
+    run_from_file(FilePath,'ignore','ignore').
 run_from_file(FilePath,Input) :-
-    run_from_file(FilePath,Input, _).
+    run_from_file(FilePath,Input, 'ignore').
 run_from_file(FilePath,Input,Output) :-
     read_file(FilePath,Code),
     !,
@@ -18,9 +18,9 @@ run_from_file(FilePath,Input,Output) :-
 RUN_FROM_ATOM
 */
 run_from_atom(Code) :-
-    run_from_atom(Code,_,_).
+    run_from_atom(Code,'ignore','ignore').
 run_from_atom(Code,Input) :-
-    run_from_atom(Code,Input,_).
+    run_from_atom(Code,Input,'ignore').
 run_from_atom(Code,Input,Output) :-
     parse(Code,'compiled_brachylog.pl'),
     run(Input,Output).
@@ -32,14 +32,14 @@ run(Input,Output) :-
     consult('compiled_brachylog.pl'),
     (
         \+ var(Input),
-        \+ is_variable(Input),
+		Input \= 'ignore',
         parse_argument(Input,ParsedInput)
         ;
         true
     ),
     (
         \+ var(Output),
-        \+ is_variable(Output),
+		Output \= 'ignore',
         parse_argument(Output,ParsedOutput)
         ;
         true
@@ -47,21 +47,13 @@ run(Input,Output) :-
     !,
     call(brachylog_main,ParsedInput,ParsedOutput),
     (
-        (
-            var(Input)
-            ;
-            is_variable(Input)
-        )
+        var(Input)
         -> brachylog_prolog_variable(ParsedInput,Input)
         ;
         true
     ),
     (
-        (
-            var(Output)
-            ;
-            is_variable(Output)
-        )
+        var(Output)
         -> brachylog_prolog_variable(ParsedOutput,Output)
         ;
         true
