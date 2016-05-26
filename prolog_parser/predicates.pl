@@ -236,16 +236,16 @@ brachylog_iterate_(I,PredName,Arg,Z) :-
 /*
 BRACHYLOG_LENGTH
 */
-brachylog_length('string':S,Length) :-
+brachylog_length('string':S,'integer':Length) :-
     length(S,Length).
-brachylog_length('integer':I,Length) :-
+brachylog_length('integer':I,'integer':Length) :-
     H #\= 0,
     integer_value('integer':_:[H|T],I),
     length([H|T],Length).
-brachylog_length('float':F,Length) :-
+brachylog_length('float':F,'integer':Length) :-
     number_codes(F,L),
     length(L,Length).
-brachylog_length(List,Length) :-
+brachylog_length(List,'integer':Length) :-
     length(List,Length).
     
 /*
