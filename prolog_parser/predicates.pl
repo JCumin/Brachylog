@@ -716,10 +716,10 @@ brachylog_greaterequal('float':I1,'float':I2) :-
 BRACHYLOG_EQUALS
 */
 brachylog_equals(Z,Z) :-
-	is_list(Z)
-	-> label(Z)
-	;
-	label([Z]).
+	is_list(Z),
+	maplist(brachylog_equals,Z,_).
+brachylog_equals('integer':Z,'integer':Z) :-
+    label([Z]).
     
 /*
 BRACHYLOG_MODULO
