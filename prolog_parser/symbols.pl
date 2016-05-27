@@ -190,9 +190,9 @@ token_predicate('@#','').
 TOKEN_VARIABLE
 */
 token_variable('@':'A','\'string\':[a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z]').
-token_variable('@':'B','\'string\':[b,c,d,f,g,h,j,k,l,m,n,p,q,r,s,t,v,w,x,y,z]').
-token_variable('@':'C','\'string\':[b,c,d,f,g,h,j,k,l,m,n,p,q,r,s,t,v,w,x,z]').
-token_variable('@':'D','').
+token_variable('@':'B','').
+token_variable('@':'C','\'string\':[b,c,d,f,g,h,j,k,l,m,n,p,q,r,s,t,v,w,x,y,z]').
+token_variable('@':'D','\'string\':[b,c,d,f,g,h,j,k,l,m,n,p,q,r,s,t,v,w,x,z]').
 token_variable('@':'E','').
 token_variable('@':'F','').
 token_variable('@':'G','').
