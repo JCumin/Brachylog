@@ -154,7 +154,7 @@ brachylog_duplicates(L,M) :-
 /*
 BRACHYLOG_ENUMERATE
 */
-brachylog_enumerate('string':L,'string':M) :-
+brachylog_enumerate('string':L,'string':[M]) :-
     nth0(_,L,M).
 brachylog_enumerate(['integer':Inf,'integer':Sup],'integer':I) :-
     Sup #>= Inf,
