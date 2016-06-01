@@ -169,7 +169,7 @@ brachylog_enumerate('integer':I,'integer':J) :-
     H #\= 0,
     integer_value('integer':_:[H|T],I),
     nth0(_,[H|T],M),
-    integer_value('integer':'positive':M,J).
+    integer_value('integer':'positive':[M],J).
 brachylog_enumerate(L,M) :-
     L \= ['integer':_,'integer':_],
     nth0(_,L,M).
