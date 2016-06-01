@@ -224,7 +224,7 @@ token_variable('$':'E','\'float\':2.71828182846').
 token_variable('$':'F','').
 token_variable('$':'G','\'integer\':1000000000').
 token_variable('$':'H','').
-token_variable('$':'I','').
+token_variable('$':'I','\'integer\':infinite').
 token_variable('$':'J','').
 token_variable('$':'K','\'integer\':1000').
 token_variable('$':'L','').
