@@ -156,7 +156,11 @@ BRACHYLOG_ENUMERATE
 */
 brachylog_enumerate('string':L,'string':[M]) :-
     nth0(_,L,M).
+brachylog_enumerate(['integer':Inf,'integer':'infinite'],'integer':I) :-
+    label([Inf]),
+    between(Inf,infinite,I).
 brachylog_enumerate(['integer':Inf,'integer':Sup],'integer':I) :-
+    Sup \= 'infinite',
     Sup #>= Inf,
     label([Sup,Inf]),
     between(Inf,Sup,I).
