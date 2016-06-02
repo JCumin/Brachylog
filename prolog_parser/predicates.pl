@@ -718,64 +718,45 @@ brachylog_greaterequal('float':I1,'float':I2) :-
     
 /*
 BRACHYLOG_EQUALS
-*/
-brachylog_equals(Z,Z) :-
-    brachylog_equals_('init',10,Z).
 
-brachylog_equals_(I,J,Z,Z) :-
+Credits to Markus Triska
+See: http://codereview.stackexchange.com/questions/129924/clpfd-labeling-on-possibly-infinite-domains/129945#129945
+*/
+brachylog_equals('integer':Z,'integer':Z) :-
+    unsafe_indomain(Z).
+
+brachylog_equals(Z,Z) :-
 	is_list(Z),
-	maplist(brachylog_equals_(I,J),Z).
-brachylog_equals_(I,J,'integer':Z) :-
-    fd_inf(Z,'inf'),
-    fd_sup(Z,'sup')
-    -> (
-        (
-            I = 'init'
-            ;
-            I \= 'init',
-            abs(Z) #>= I
-        ),
-        abs(Z) #< J,
-        label([Z])
-        ;
-        I2 is J,
-        J2 is J*10,
-        brachylog_equals_(I2,J2,'integer':Z)
-    )
-    ;
-    fd_inf(Z,'inf')
-    -> (
-        (
-            I = 'init'
-            ;
-            I \= 'init',
-            Z #=< -I
-        ),
-        Z #> -J,
-        label([Z])
-        ;
-        I2 is J,
-        J2 is J*10,
-        brachylog_equals_(I2,J2,'integer':Z)
-    )
-    ;
-    fd_sup(Z,'sup')
-    -> (
-        (
-            I = 'init'
-            ;
-            I \= 'init',
-            Z #>= I
-        ),
-        Z #< J,
-        label([Z])
-        ;
-        I2 is J,
-        J2 is J*10,
-        brachylog_equals_(I2,J2,'integer':Z)
-    )
-    ;
-    label([Z]).
+	maplist(brachylog_equals,Z,_).
+
+unsafe_indomain(X) :-
+    fd_inf(X, Inf),
+    fd_sup(X, Sup),
+    unsafe_indomain_(Inf, Sup, X).
+
+unsafe_indomain_(inf, Sup, X) :- !,
+    infinite_down(Sup, X).
+unsafe_indomain_(Low, Sup, X) :-
+    unsafe_up_(Sup, Low, X).
+
+infinite_down(sup, X) :- !,
+    (   X = 0
+    ;   positive_integer(N),
+        ( X #= N ; X #= -N )
+    ).
+infinite_down(Up, X ) :-
+    (   between(0, Up, X)
+    ;   length([_|_], N),
+        X #= -N
+    ).
+
+unsafe_up_(sup, Low, X) :- !,
+    (   between(Low, 0, X)
+    ;   positive_integer(X)
+    ).
+unsafe_up_(Up, Low, X) :- between(Low, Up, X).
+
+positive_integer(N) :- length([_|_], N).
     
 /*
 BRACHYLOG_MODULO
