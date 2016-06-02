@@ -720,9 +720,61 @@ brachylog_greaterequal('float':I1,'float':I2) :-
 BRACHYLOG_EQUALS
 */
 brachylog_equals(Z,Z) :-
+    brachylog_equals_('init',10,Z).
+
+brachylog_equals_(I,J,Z,Z) :-
 	is_list(Z),
-	maplist(brachylog_equals,Z,_).
-brachylog_equals('integer':Z,'integer':Z) :-
+	maplist(brachylog_equals_(I,J),Z).
+brachylog_equals_(I,J,'integer':Z) :-
+    fd_inf(Z,'inf'),
+    fd_sup(Z,'sup')
+    -> (
+        (
+            I = 'init'
+            ;
+            I \= 'init',
+            abs(Z) #>= I
+        ),
+        abs(Z) #< J,
+        label([Z])
+        ;
+        I2 is J,
+        J2 is J*10,
+        brachylog_equals_(I2,J2,'integer':Z)
+    )
+    ;
+    fd_inf(Z,'inf')
+    -> (
+        (
+            I = 'init'
+            ;
+            I \= 'init',
+            Z #=< -I
+        ),
+        Z #> -J,
+        label([Z])
+        ;
+        I2 is J,
+        J2 is J*10,
+        brachylog_equals_(I2,J2,'integer':Z)
+    )
+    ;
+    fd_sup(Z,'sup')
+    -> (
+        (
+            I = 'init'
+            ;
+            I \= 'init',
+            Z #>= I
+        ),
+        Z #< J,
+        label([Z])
+        ;
+        I2 is J,
+        J2 is J*10,
+        brachylog_equals_(I2,J2,'integer':Z)
+    )
+    ;
     label([Z]).
     
 /*
