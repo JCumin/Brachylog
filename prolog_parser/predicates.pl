@@ -13,6 +13,7 @@
                        brachylog_reverse/2,
                        brachylog_subset/2,
                        brachylog_write/2,
+                       brachylog_xterminate/2,
                        brachylog_call_predicate/2,
                        brachylog_plus/2,
                        brachylog_minus/2,
@@ -416,6 +417,41 @@ brachylog_write(List,List) :-
     \+ (reverse(List,['string':_|_])),
     brachylog_prolog_variable(List,PrologList),
     write(PrologList).
+    
+/*
+BRACHYLOG_XTERMINATE
+*/
+brachylog_xterminate(['string':S,X],'string':T) :-
+    \+ is_list(X),
+    brachylog_xterminate_(X,'string':S,'string':T).
+brachylog_xterminate([L,[]],L).
+brachylog_xterminate(['string':S,[H|T]],L3) :-
+    brachylog_xterminate_(H,'string':S,L2),
+    brachylog_xterminate([L2,T],L3).
+brachylog_xterminate([L,[H|T]],L3) :-
+    is_list(L),
+    maplist(brachylog_xterminate_(H),L,L2),
+    brachylog_xterminate([L2,T],L3).
+    
+brachylog_xterminate_(X,'string':S,'string':T) :-
+    brachylog_xterminate_single(X,'string':S,'string':T).
+brachylog_xterminate_(_,[],[]).
+brachylog_xterminate_(X,[H|T],[H2|T2]) :-
+    brachylog_xterminate_single(X,H,H2),
+    brachylog_xterminate_(X,T,T2).
+    
+brachylog_xterminate_single('string':L,'string':H,'string':Z) :-
+    (
+        append([A,L,B],H),
+        append(A,B,H2),
+        brachylog_xterminate_single('string':L,'string':H2,'string':Z)
+        ;
+        \+ append([_,L,_],H),
+        Z = H
+    ).
+brachylog_xterminate_single(L,H,Z) :-
+    is_list(H),
+    delete(H,L,Z).
     
 /*
 BRACHYLOG_CALL_PREDICATE
