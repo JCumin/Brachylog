@@ -394,14 +394,14 @@ brachylog_subset_recur([_|T],T2) :-
 /*
 BRACHYLOG_TAIL
 */
-brachylog_tail('string':L,'string':[H]) :- !,
+brachylog_tail('string':L,'string':[H]) :-
     reverse(L,[H|_]).
-brachylog_tail('integer':0,'integer':0) :- !.
-brachylog_tail('integer':I,'integer':Z) :- !,
+brachylog_tail('integer':0,'integer':0).
+brachylog_tail('integer':I,'integer':Z) :-
     J #\= 0,
     integer_value('integer':_:[J|T],I),
     reverse([J|T],[Z|_]).
-brachylog_tail('float':F,'integer':I) :- !,
+brachylog_tail('float':F,'integer':I) :-
     number_codes(F,L),
     reverse(L,R),
     brachylog_tail_float(R,'integer':I).
