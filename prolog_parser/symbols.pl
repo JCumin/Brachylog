@@ -30,7 +30,7 @@ token_predicate('r','brachylog_reverse').
 token_predicate('s','brachylog_subset').
 token_predicate('t','brachylog_tail').
 token_predicate('u','').
-token_predicate('v','').
+token_predicate('v','brachylog_void').
 token_predicate('w','brachylog_write').
 token_predicate('x','brachylog_xterminate').
 token_predicate('y','').

@@ -13,6 +13,7 @@
                        brachylog_reverse/2,
                        brachylog_subset/2,
                        brachylog_tail/2,
+                       brachylog_void/2,
                        brachylog_write/2,
                        brachylog_xterminate/2,
                        brachylog_call_predicate/2,
@@ -428,6 +429,15 @@ brachylog_tail_float([H|T],'integer':I) :-
         H \= 46,
         number_codes(I,[H])    
     ).
+    
+/*
+BRACHYLOG_VOID
+*/
+brachylog_void('string':[],_).
+brachylog_void('integer':I,_) :-
+    I #= 0.
+brachylog_void('float':0.0,_).
+brachylog_void([],_).    
  
 /*
 BRACHYLOG_WRITE
