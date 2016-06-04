@@ -23,6 +23,7 @@ run_from_atom(Code,Input) :-
     run_from_atom(Code,Input,'ignore').
 run_from_atom(Code,Input,Output) :-
     parse(Code,'compiled_brachylog.pl'),
+    !,
     run(Input,Output).
     
 /*

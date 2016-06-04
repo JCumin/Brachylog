@@ -32,9 +32,9 @@ integer_value('integer':Sign:[H,I|T],N0,N,M) :-
 /*
 BRACHYLOG_PROLOG_VARIABLE
 */
-brachylog_prolog_variable('integer':I,I).
-brachylog_prolog_variable('float':F,F).
-brachylog_prolog_variable('string':S,String) :-
+brachylog_prolog_variable('integer':I,I) :- !.
+brachylog_prolog_variable('float':F,F) :- !.
+brachylog_prolog_variable('string':S,String) :- !,
     atomic_list_concat(S,T),
     atomic_list_concat(['"',T,'"'],A),
     term_to_atom(String,A).
