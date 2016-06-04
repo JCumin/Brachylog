@@ -7,15 +7,11 @@
 /*
 BRACHYLOG_STRING_LOWERCASE
 */
-brachylog_string_lowercase('string':[],'string':[]).
-brachylog_string_lowercase('string':[H|T],'string':[H2|T2]) :-
-    downcase_atom(H,H2),
-    brachylog_string_lowercase('string':T,'string':T2).
-    
+brachylog_string_lowercase('string':Ls0,'string':Ls) :-
+    maplist(downcase_atom, Ls0, Ls).
+
 /*
 BRACHYLOG_STRING_UPPERCASE
 */
-brachylog_string_uppercase('string':[],'string':[]).
-brachylog_string_uppercase('string':[H|T],'string':[H2|T2]) :-
-    upcase_atom(H,H2),
-    brachylog_string_uppercase('string':T,'string':T2).
+brachylog_string_uppercase('string':Ls0,'string':Ls) :-
+    maplist(upcase_atom, Ls0, Ls).
