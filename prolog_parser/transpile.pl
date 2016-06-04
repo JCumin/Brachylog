@@ -24,7 +24,13 @@ parse(Code,TranspiledPath) :-
 PARSE_ARGUMENT
 */
 parse_argument(Arg,Term) :-
-    term_to_atom(Arg,AtomArg),
+    (
+        atom(Arg),
+        AtomArg = Arg
+        ;
+        \+ atom(Arg),
+        term_to_atom(Arg,AtomArg)
+    ),
     atom_chars(AtomArg,SplittedArg),
     tokenize(SplittedArg,Token),
     fix_lists(Token,Program),
