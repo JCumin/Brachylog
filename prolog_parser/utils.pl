@@ -35,12 +35,23 @@ BRACHYLOG_PROLOG_VARIABLE
 brachylog_prolog_variable('integer':I,I) :- !.
 brachylog_prolog_variable('float':F,F) :- !.
 brachylog_prolog_variable('string':S,String) :- !,
-    atomic_list_concat(S,T),
-    atomic_list_concat(['"',T,'"'],A),
+    escape_string_list(S,T),
+    atomic_list_concat(T,U),
+    atomic_list_concat(['"',U,'"'],A),
     term_to_atom(String,A).
 brachylog_prolog_variable(List,PrologList) :-
     is_list(List),
     maplist(brachylog_prolog_variable,List,PrologList).
+    
+escape_string_list([],[]).
+escape_string_list(['"'|T],['\\','"'|T2]) :-
+    escape_string_list(T,T2).
+escape_string_list(['\\'|T],['\\','\\'|T2]) :-
+    escape_string_list(T,T2).
+escape_string_list([H|T],[H|T2]) :-
+    H \= '"',
+    H \= '\\',
+    escape_string_list(T,T2).
 
 /*
 LENGTH_
