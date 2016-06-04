@@ -805,34 +805,39 @@ brachylog_equals(Z,Z) :-
 	maplist(brachylog_equals,Z,_).
 
 unsafe_indomain(X) :-
-    fd_inf(X, Inf),
-    fd_sup(X, Sup),
+    fd_inf(X, Inf0),
+    fd_sup(X, Sup0),
+    maplist(limit_pure, [Inf0,Sup0], [Inf,Sup]),
     unsafe_indomain_(Inf, Sup, X).
 
-unsafe_indomain_(inf, Sup, X) :- !,
+limit_pure(inf, inf) :- !.
+limit_pure(sup, sup) :- !.
+limit_pure(N, n(N))  :- !.
+
+unsafe_indomain_(inf, Sup, X) :-
     infinite_down(Sup, X).
-unsafe_indomain_(Low, Sup, X) :-
+unsafe_indomain_(n(Low), Sup, X) :-
     unsafe_up_(Sup, Low, X).
 
-infinite_down(sup, X) :- !,
+infinite_down(sup, X) :-
     (   X = 0
     ;   positive_integer(N),
         ( X #= N ; X #= -N )
     ).
-infinite_down(Up, X ) :-
+infinite_down(n(Up), X ) :-
     (   between(0, Up, X)
     ;   length([_|_], N),
         X #= -N
     ).
 
-unsafe_up_(sup, Low, X) :- !,
+unsafe_up_(sup, Low, X) :-
     (   between(Low, 0, X)
     ;   positive_integer(X)
     ).
-unsafe_up_(Up, Low, X) :- between(Low, Up, X).
+unsafe_up_(n(Up), Low, X) :- between(Low, Up, X).
 
 positive_integer(N) :- length([_|_], N).
-    
+
 /*
 BRACHYLOG_MODULO
 */
