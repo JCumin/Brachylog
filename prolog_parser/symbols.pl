@@ -28,7 +28,7 @@ token_predicate('p','brachylog_permute').
 token_predicate('q','').
 token_predicate('r','brachylog_reverse').
 token_predicate('s','brachylog_subset').
-token_predicate('t','').
+token_predicate('t','brachylog_tail').
 token_predicate('u','').
 token_predicate('v','').
 token_predicate('w','brachylog_write').

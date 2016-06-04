@@ -12,6 +12,7 @@
                        brachylog_permute/2,
                        brachylog_reverse/2,
                        brachylog_subset/2,
+                       brachylog_tail/2,
                        brachylog_write/2,
                        brachylog_xterminate/2,
                        brachylog_call_predicate/2,
@@ -390,6 +391,44 @@ brachylog_subset_recur([H|T],[H|T2]) :-
 brachylog_subset_recur([_|T],T2) :-
     brachylog_subset_recur(T,T2).
     
+/*
+BRACHYLOG_TAIL
+*/
+brachylog_tail('string':L,'string':[H]) :- !,
+    reverse(L,[H|_]).
+brachylog_tail('integer':0,'integer':0) :- !.
+brachylog_tail('integer':I,'integer':Z) :- !,
+    J #\= 0,
+    integer_value('integer':_:[J|T],I),
+    reverse([J|T],[Z|_]).
+brachylog_tail('float':F,'integer':I) :- !,
+    number_codes(F,L),
+    reverse(L,R),
+    brachylog_tail_float(R,'integer':I).
+brachylog_tail(L,H) :-
+    is_list(L),
+    reverse(L,[H|_]).
+
+brachylog_tail_float([H|T],'integer':I) :-
+    (
+        (
+            H = 48
+            ;
+            H = 46
+        ) ->
+        (
+            T = [],
+            I = 0
+            ;
+            T \= [],
+            brachylog_tail_float(T,'integer':I)    
+        )
+        ;
+        H \= 48,
+        H \= 46,
+        number_codes(I,[H])    
+    ).
+ 
 /*
 BRACHYLOG_WRITE
 */
