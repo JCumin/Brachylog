@@ -30,6 +30,8 @@ run_from_atom(Code,Input,Output) :-
 RUN
 */
 run(Input,Output) :-
+    set_prolog_flag(answer_write_options,[quoted(true),portray(true),max_depth(10),spacing(next_argument),max_depth(0)]),
+    set_prolog_flag(print_write_options,[portray(true), quoted(true), numbervars(true), max_depth(0)]),
     consult('compiled_brachylog.pl'),
     (
         \+ var(Input),
