@@ -18,7 +18,7 @@ Check [Brachylog's Wiki](https://github.com/JCumin/Brachylog/wiki) if you want t
 
 Brachylog's interpreter is entirely written in Prolog. Therefore, installing [SWI-Prolog](http://www.swi-prolog.org/) (version 7 and up) is mandatory to use Brachylog (We do not guarantee that Brachylog's interpreter will be compatible with any other Prolog engines).
 
-To run Brachylog's interpreter, start SWI-Prolog's interpreter inside the `prolog_parser` directory available in this repository.
+To run Brachylog's interpreter, start SWI-Prolog's interpreter inside the `prolog_parser` directory available in this repository, and consult the file `brachylog.pl` (`consult(brachylog.pl).`).
 
 You can then run Brachylog programs using different predicates:
 
@@ -30,4 +30,4 @@ You can then run Brachylog programs using different predicates:
 
  The first two predicates will transpile your Brachylog program into Prolog, subsequently generating a file called `compiled_brachylog.pl` in the same directory that contains `brachylog.pl`. The three run predicates will then consult it and query `brachylog_main/2`.
  
- Note that those three run predicates also exist with either no `Output` argument, or with no `Input` nor `Output` argument, if necessary. For example, `run_from_file('code.brachylog')` is equivalent to `run_from_file('code.brachylog', _, _)`.
+ Note that the first two run predicates also exist with either no `Output` argument, or with no `Input` nor `Output` argument, if necessary. For example, `run_from_file('code.brachylog')` is equivalent to `run_from_file('code.brachylog', _, _)`.
