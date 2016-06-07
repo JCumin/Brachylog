@@ -81,10 +81,11 @@ BRACHYLOG_PRIME_DECOMPOSITION
 Credits to rosettecode.org
 */
 brachylog_math_prime_decomposition('integer':N, Z) :-
-	label([N]),
+    N #> 0,
+    label([N]),
     SN is sqrt(N),
     brachylog_math_prime_decomposition_1(N, SN, 2, [], L),
-	brachylog_math_prime_decomposition_append_integer(L,Z).
+    brachylog_math_prime_decomposition_append_integer(L,Z).
  
 brachylog_math_prime_decomposition_1(1, _, _, L, L) :- !.
 brachylog_math_prime_decomposition_1(N, SN, D, L, LF) :-
