@@ -66,6 +66,6 @@ brachylog_string_Nchotomize(L,L2) :-
     append(L2,L),
     length(L,LengthL),
     length(L2,LengthL2),
-    Length #= (LengthL + 1)//LengthL2,
+    Length #= LengthL//LengthL2,
     reverse(L2,[_|T]),
     maplist(length_(Length),T).
