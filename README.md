@@ -1,4 +1,4 @@
-<a href="https://github.com/JCumin/Brachylog"><img src="https://github.com/JCumin/Brachylog/blob/master/misc/brachylog_logo.png" alt="Brachylog"/></a>
+<p align="center"><a href="https://github.com/JCumin/Brachylog"><img src="https://github.com/JCumin/Brachylog/blob/master/misc/brachylog_logo.png" alt="Brachylog" width="600"/></a></p>
 
 #What is it?
 
