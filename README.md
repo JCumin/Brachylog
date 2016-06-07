@@ -2,7 +2,7 @@
 
 #What is it?
 
-Brachylog is a declarative logic programming language much like Prolog. Brachylog is designed to be much terser than Prolog.
+Brachylog is a declarative logic programming language much like Prolog. Brachylog is designed to be much terser than Prolog, while retaining some readability.
 
 Currently in development.
 
@@ -13,6 +13,20 @@ Brachylog uses [SWI-Prolog](http://www.swi-prolog.org/) as Prolog engine.
 ###The language itself
 
 Check [Brachylog's Wiki](https://github.com/JCumin/Brachylog/wiki) if you want to learn how to write programs in this language.
+
+As an example, this predicate:
+
+    >0,?=$pl1
+    
+will successively unify its Input variable with a prime number, starting from `2`:
+
+    ?- run_from_atom('>,?=$pl1',Z).
+    Z = 2 ;
+    Z = 3 ;
+    Z = 5 ;
+    Z = 7 ;
+    Z = 11 ;
+    ...
 
 ###The interpreter
 
