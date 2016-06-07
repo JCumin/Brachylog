@@ -559,8 +559,7 @@ brachylog_call_predicate(X,Output) :-
 BRACHYLOG_PLUS
 */
 brachylog_plus('integer':I,'integer':AbsoluteValue) :-
-    AbsoluteValue #= abs(I),
-    label([I,AbsoluteValue]).
+    AbsoluteValue #= abs(I).
 brachylog_plus('float':F,'float':AbsoluteValue) :-
     AbsoluteValue is abs(F).
 brachylog_plus(L,Sum) :-
