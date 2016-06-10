@@ -172,6 +172,7 @@ brachylog_enumerate(['integer':Sup,'integer':Inf],'integer':I) :-
     label([Sup,Inf]),
     between(Inf,Sup,N),
     I #= Inf + Sup - N.
+brachylog_enumerate('integer':0,'integer':0).
 brachylog_enumerate('integer':I,'integer':J) :-
     H #\= 0,
     integer_value('integer':_:[H|T],I),
