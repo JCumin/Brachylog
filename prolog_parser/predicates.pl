@@ -443,26 +443,26 @@ brachylog_void([],_).
 /*
 BRACHYLOG_WRITE
 */
-brachylog_write([List,'string':F],List) :-
+brachylog_write([List,'string':F],_) :-
     is_list(List),
     atomic_list_concat(F,Format),
     brachylog_prolog_variable(List,PrologList),
     format(Format,PrologList).
-brachylog_write(Args,S) :-
+brachylog_write(Args,_) :-
     is_list(Args),
     reverse(Args,['string':F|R]),
     reverse(R,S),
     brachylog_prolog_variable(S,PrologS),
     atomic_list_concat(F,Format),
     format(Format,PrologS).
-brachylog_write('string':S,'string':S) :-
+brachylog_write('string':S,_) :-
     atomic_list_concat(S,X),
     write(X).
-brachylog_write('integer':I,'integer':I) :-
+brachylog_write('integer':I,_) :-
     write(I).
-brachylog_write('float':F, 'float':F) :-
+brachylog_write('float':F,_) :-
     write(F).
-brachylog_write(List,List) :-
+brachylog_write(List,_) :-
     is_list(List),
     \+ (reverse(List,['string':_|_])),
     brachylog_prolog_variable(List,PrologList),
