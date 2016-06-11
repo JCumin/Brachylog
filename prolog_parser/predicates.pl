@@ -247,6 +247,7 @@ BRACHYLOG_LENGTH
 */
 brachylog_length('string':S,'integer':Length) :-
     length(S,Length).
+brachylog_length('integer':0,'integer':1).
 brachylog_length('integer':I,'integer':Length) :-
     H #\= 0,
     integer_value('integer':_:[H|T],I),
