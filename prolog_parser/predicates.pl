@@ -254,8 +254,8 @@ brachylog_length('integer':I,'integer':Length) :-
 brachylog_length('float':F,'integer':Length) :-
     number_codes(F,L),
     length(L,Length).
-brachylog_length(List,'integer':Length) :-
-    length(List,Length).
+brachylog_length([H|T],'integer':Length) :-
+    length([H|T],Length).
     
 /*
 BRACHYLOG_MEMBER
