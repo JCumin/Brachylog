@@ -549,7 +549,7 @@ brachylog_zip(L,Z) :-
     
 brachylog_zip_(_,0,[]).
 brachylog_zip_(L,I,[Heads|Z]) :-
-    I > 0,
+    I #> 0,
     maplist(brachylog_head,L,Heads),
     maplist(brachylog_behead,L,Tails),
     J #= I - 1,
