@@ -20,6 +20,7 @@ ____            ____
                        brachylog_duplicates/2,
                        brachylog_enumerate/2,
                        brachylog_findall/2,
+                       brachylog_group/2,
                        brachylog_head/2,
                        brachylog_iterate/2,
                        brachylog_length/2,
@@ -211,6 +212,12 @@ brachylog_enumerate(L,M) :-
 brachylog_findall(X,Y) :-
     append(X,['ignore_calling_predicate'],X2),
     findall(A,brachylog_call_predicate(X2,A),Y).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_GROUP
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_group(X,[X]).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

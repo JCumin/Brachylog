@@ -33,7 +33,7 @@ token_predicate('c','brachylog_concatenate').
 token_predicate('d','brachylog_duplicates').
 token_predicate('e','brachylog_enumerate').
 token_predicate('f','brachylog_findall').
-token_predicate('g','').
+token_predicate('g','brachylog_group').
 token_predicate('h','brachylog_head').
 token_predicate('i','brachylog_iterate').
 token_predicate('j','').
