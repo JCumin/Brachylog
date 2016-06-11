@@ -16,6 +16,7 @@
                        brachylog_void/2,
                        brachylog_write/2,
                        brachylog_xterminate/2,
+                       brachylog_zip/2,
                        brachylog_call_predicate/2,
                        brachylog_plus/2,
                        brachylog_minus/2,
@@ -503,6 +504,23 @@ brachylog_xterminate_single(L,H,Z) :-
     is_list(H),
     delete(H,L,Z).
     
+/*
+BRACHYLOG_ZIP
+*/
+brachylog_zip(L,Z) :-
+    is_list(L),
+    maplist(brachylog_length,L,Lengths),
+    brachylog_order(Lengths,['integer':MinLength|_]),
+    brachylog_zip_(L,MinLength,Z).
+    
+brachylog_zip_(_,0,[]).
+brachylog_zip_(L,I,[Heads|Z]) :-
+    I > 0,
+    maplist(brachylog_head,L,Heads),
+    maplist(brachylog_behead,L,Tails),
+    J #= I - 1,
+    brachylog_zip_(Tails,J,Z).
+
 /*
 BRACHYLOG_CALL_PREDICATE
 */
