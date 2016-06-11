@@ -1,3 +1,19 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+____            ____
+\   \          /   /
+ \   \  ____  /   /
+  \   \/    \/   /
+   \     /\     /     BRACHYLOG       
+    \   /  \   /      A terse declarative logic programming language
+    /   \  /   \    
+   /     \/     \     Written by Julien Cumin - 2016
+  /   /\____/\   \    https://github.com/JCumin/Brachylog
+ /   /  ___   \   \
+/___/  /__/    \___\
+     
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
 :- module(string_predicates, [brachylog_string_lowercase/2,
                               brachylog_string_uppercase/2,
                               brachylog_string_dichotomize/2,
@@ -7,26 +23,30 @@
                               brachylog_string_hexachotomize/2,
                               brachylog_string_heptachotomize/2,
                               brachylog_string_octachotomize/2,
-                              brachylog_string_enneachotomize/2]).
+                              brachylog_string_enneachotomize/2
+                             ]).
                        
 :- use_module(library(clpfd)).
 :- use_module(utils).
-                
-/*
-BRACHYLOG_STRING_LOWERCASE
-*/
+ 
+ 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_LOWERCASE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_string_lowercase('string':Ls0,'string':Ls) :-
     maplist(downcase_atom, Ls0, Ls).
 
-/*
-BRACHYLOG_STRING_UPPERCASE
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_UPPERCASE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_string_uppercase('string':Ls0,'string':Ls) :-
     maplist(upcase_atom, Ls0, Ls).
 
-/*
-BRACHYLOG_STRING_NCHOTOMIZE
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_NCHOTOMIZE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_string_dichotomize(X,[A,B]) :-
     brachylog_string_Nchotomize(X,[A,B]).
 

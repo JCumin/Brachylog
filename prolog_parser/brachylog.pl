@@ -1,10 +1,27 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+____            ____
+\   \          /   /
+ \   \  ____  /   /
+  \   \/    \/   /
+   \     /\     /     BRACHYLOG       
+    \   /  \   /      A terse declarative logic programming language
+    /   \  /   \    
+   /     \/     \     Written by Julien Cumin - 2016
+  /   /\____/\   \    https://github.com/JCumin/Brachylog
+ /   /  ___   \   \
+/___/  /__/    \___\
+     
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
 :- use_module(transpile).
 :- use_module(symbols).
 :- use_module(utils).
 
-/*
-RUN_FROM_FILE
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   RUN_FROM_FILE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 run_from_file(FilePath) :-
     run_from_file(FilePath,'ignore','ignore').
 run_from_file(FilePath,Input) :-
@@ -14,9 +31,10 @@ run_from_file(FilePath,Input,Output) :-
     !,
     run_from_atom(Code,Input,Output).
     
-/*
-RUN_FROM_ATOM
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   RUN_FROM_ATOM
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 run_from_atom(Code) :-
     run_from_atom(Code,'ignore','ignore').
 run_from_atom(Code,Input) :-
@@ -26,12 +44,20 @@ run_from_atom(Code,Input,Output) :-
     !,
     run(Input,Output).
     
-/*
-RUN
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   RUN
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 run(Input,Output) :-
-    set_prolog_flag(answer_write_options,[quoted(true),portray(true),max_depth(10),spacing(next_argument),max_depth(0)]),
-    set_prolog_flag(print_write_options,[portray(true), quoted(true), numbervars(true), max_depth(0)]),
+    set_prolog_flag(answer_write_options,[quoted(true),
+                                          portray(true),
+                                          max_depth(10),
+                                          spacing(next_argument),
+                                          max_depth(0)]),
+    set_prolog_flag(print_write_options,[portray(true),
+                                         quoted(true),
+                                         numbervars(true),
+                                         max_depth(0)]),
     consult('compiled_brachylog.pl'),
     (
         \+ var(Input),
@@ -63,9 +89,9 @@ run(Input,Output) :-
     ).
     
     
-/*
-READ_FILE
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   READ_FILE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 read_file(FilePath,Code) :-
     (
         exists_file(FilePath),
@@ -76,8 +102,7 @@ read_file(FilePath,Code) :-
         ;
         throw('The file does not exist.')
     ).
-    
-    
+
 read_file_(File,[]) :-
     at_end_of_stream(File).
 read_file_(File,[H|T]) :-

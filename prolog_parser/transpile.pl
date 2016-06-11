@@ -1,12 +1,30 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+____            ____
+\   \          /   /
+ \   \  ____  /   /
+  \   \/    \/   /
+   \     /\     /     BRACHYLOG       
+    \   /  \   /      A terse declarative logic programming language
+    /   \  /   \    
+   /     \/     \     Written by Julien Cumin - 2016
+  /   /\____/\   \    https://github.com/JCumin/Brachylog
+ /   /  ___   \   \
+/___/  /__/    \___\
+     
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
 :- module(transpile, [parse/2,
-                      parse_argument/2]).
+                      parse_argument/2
+                     ]).
 
 :- use_module(tokenize).
 :- use_module(symbols).
 
-/*
-PARSE
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   PARSE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 parse(Code,TranspiledPath) :-
     atom_chars(Code,SplittedCode),
     tokenize(SplittedCode,Tokens),
@@ -20,9 +38,9 @@ parse(Code,TranspiledPath) :-
     close(File).
     
     
-/*
-PARSE_ARGUMENT
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   PARSE_ARGUMENT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 parse_argument(Arg,Term) :-
     (
         atom(Arg),
@@ -44,9 +62,9 @@ parse_argument(Arg,Term) :-
     throw('Incorrect variable format.').
 
     
-/*
-FIX_PREDICATES
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   FIX_PREDICATES
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 fix_predicates(Tokens,FixedPredicates) :-
     fix_predicates(Tokens,1,L),
     append(L,FixedPredicates).
@@ -81,9 +99,10 @@ fix_predicates_([Type:A|T],I,[[Type:A|Rest]|OtherPredicates],Z,Remaining) :-
     \+ (Type = 'control', A = '\n'),
     fix_predicates_(T,I,[Rest|OtherPredicates],Z,Remaining).
     
-/*
-FILL_IMPLICIT_VARIABLES
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   FILL_IMPLICIT_VARIABLES
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 fill_implicit_variables(Tokens,Program) :-
     fill_implicit_variables(Tokens,0,Program).
 
@@ -108,10 +127,11 @@ fill_implicit_variables([Type:A|T],I,[Type:A|T2]) :-
     Type \= 'predicate',
     \+ (Type = 'control', A = ':', T = ['predicate':_|_]),
     fill_implicit_variables(T,I,T2).
-    
-/*
-FIX_LISTS
-*/
+   
+   
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   FIX_LISTS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 fix_lists([],[]).
 
 fix_lists(['variable':List|T],['variable':FixedList|T2]) :-
@@ -149,15 +169,13 @@ fix_list([X|T],[Y|T2]) :-
     fix_list(T,T2).
     
     
-    
-/*
-TRANSPILE
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   TRANSPILE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 transpile(Program,[[':- style_check(-singleton).\n:- use_module(library(clpfd)).\n:- use_module(predicates).\n:- use_module(math_predicates).\n:- use_module(string_predicates).\n\n','brachylog_main(Input,Output) :-\n    Name = brachylog_main,\n    (1=1'|T]|OtherPredicates]) :-
     transpile_(Program,['Input'],no,no,0,[T|OtherPredicates]).
     
 transpile_([],_,_,_,_,[['\n    ).\n']]).
-
 transpile_(['variable':B|T],A,Reverse,Negate,PredNumber,[[Unification|T2]|OtherPredicates]) :-
     A \= [],
     (
@@ -203,10 +221,8 @@ transpile_(['variable':B|T],A,Reverse,Negate,PredNumber,[[Unification|T2]|OtherP
         atomic_list_concat([',\n    ',Var1,UnificationAtom,Var2],Unification),
         transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates])
     ).
-    
 transpile_(['variable':B|T],[],_,_,PredNumber,[T2|OtherPredicates]) :-
-    transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates]).
-    
+    transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates]). 
 transpile_(['predicate':P,'variable':B|T],A,Reverse,Negate,PredNumber,[[Predicate|T2]|OtherPredicates]) :-
     A \= [],
     (
@@ -258,13 +274,11 @@ transpile_(['predicate':P,'variable':B|T],A,Reverse,Negate,PredNumber,[[Predicat
         atomic_list_concat([',\n    ',NegateAtom,P,'(',Var2,',',Var1,')'],Predicate),
         transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates])
     ).
-
 transpile_(['control':','|T],_,_,_,PredNumber,[T2|OtherPredicates]) :-
     transpile_(T,[],no,no,PredNumber,[T2|OtherPredicates]).
     
 transpile_(['control':';'|T],_,_,_,PredNumber,[['\n    ;\n    1=1'|T2]|OtherPredicates]) :-
     transpile_(T,[],no,no,PredNumber,[T2|OtherPredicates]).
-    
 transpile_(['control':'('|T],B,_,Negate,PredNumber,[[Parenthesis|T2]|OtherPredicates]) :-
     (
         Negate = yes,
@@ -274,16 +288,12 @@ transpile_(['control':'('|T],B,_,Negate,PredNumber,[[Parenthesis|T2]|OtherPredic
         Parenthesis = ',\n    (\n    1=1'
     ),
     transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]).
-    
 transpile_(['control':')'|T],B,_,_,PredNumber,[['\n    )'|T2]|OtherPredicates]) :-
-    transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]).
-    
+    transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]). 
 transpile_(['control':'!'|T],B,_,_,PredNumber,[[',\n    !'|T2]|OtherPredicates]) :-
-    transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]).
-    
+    transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]). 
 transpile_(['control':'\\'|T],B,_,_,PredNumber,[[',\n    fail'|T2]|OtherPredicates]) :-
-    transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]).
-    
+    transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]).  
 transpile_(['control':'~'|T],B,Reverse,Negate,PredNumber,[T2|OtherPredicates]) :-
     (
         Reverse = yes,
@@ -292,8 +302,7 @@ transpile_(['control':'~'|T],B,Reverse,Negate,PredNumber,[T2|OtherPredicates]) :
         Reverse = no,
         NewReverse = yes
     ),
-    transpile_(T,B,NewReverse,Negate,PredNumber,[T2|OtherPredicates]).
-    
+    transpile_(T,B,NewReverse,Negate,PredNumber,[T2|OtherPredicates]).   
 transpile_(['control':'\''|T],B,Reverse,Negate,PredNumber,[T2|OtherPredicates]) :-
     (
         Negate = yes,
@@ -302,8 +311,7 @@ transpile_(['control':'\''|T],B,Reverse,Negate,PredNumber,[T2|OtherPredicates]) 
         Negate = no,
         NewNegate = yes
     ),
-    transpile_(T,B,Reverse,NewNegate,PredNumber,[T2|OtherPredicates]).
-    
+    transpile_(T,B,Reverse,NewNegate,PredNumber,[T2|OtherPredicates]).  
 transpile_(['control':':',Type:A|T],B,_,_,PredNumber,[T2|OtherPredicates]) :-
     (
         Type = 'variable'
@@ -311,13 +319,11 @@ transpile_(['control':':',Type:A|T],B,_,_,PredNumber,[T2|OtherPredicates]) :-
         Type = 'predicate'
     ),
     append(B,[A],NewVar),
-    transpile_(T,NewVar,no,no,PredNumber,[T2|OtherPredicates]).
-    
+    transpile_(T,NewVar,no,no,PredNumber,[T2|OtherPredicates]).  
 transpile_(['control':'\n'|T],_,_,_,PredNumber,[['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
     J is PredNumber + 1,
     atomic_list_concat(['brachylog_predicate_',J,'(Input,Output) :-\n    Name = brachylog_predicate_',J,',\n    (1=1'],PredHead),
     transpile_(T,['Input'],no,no,J,[T2|OtherPredicates]).
-    
 transpile_(['control':'|'|T],_,_,_,PredNumber,[['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
     (
         PredNumber = 0,
@@ -329,9 +335,10 @@ transpile_(['control':'|'|T],_,_,_,PredNumber,[['\n    ).\n'],[PredHead|T2]|Othe
     atomic_list_concat([PredName,'(Input,Output) :-\n    Name = ',PredName,',\n    (1=1'],PredHead),
     transpile_(T,['Input'],no,no,PredNumber,[T2|OtherPredicates]).
     
-/*
-BRACHYLOG_LIST_TO_ATOM
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_LIST_TO_ATOM
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_list_to_atom(List,Atom) :-
     brachylog_list_to_atom_(List,T2),
     atomic_list_concat(['[',T2,']'],Atom).
@@ -365,9 +372,9 @@ brachylog_list_to_atom_([A,B|T],Atom) :-
     atomic_list_concat([AtomA,',',T2],Atom).
     
     
-/*
-WRITE_TO_FILE
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   WRITE_TO_FILE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 write_to_file(File,[]) :-
     write(File,'\n\n').
 write_to_file(File, [H|T]) :-

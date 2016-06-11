@@ -1,3 +1,19 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+____            ____
+\   \          /   /
+ \   \  ____  /   /
+  \   \/    \/   /
+   \     /\     /     BRACHYLOG       
+    \   /  \   /      A terse declarative logic programming language
+    /   \  /   \    
+   /     \/     \     Written by Julien Cumin - 2016
+  /   /\____/\   \    https://github.com/JCumin/Brachylog
+ /   /  ___   \   \
+/___/  /__/    \___\
+     
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
 :- module(math_predicates, [brachylog_math_cos/2,
                             brachylog_math_sin/2,
                             brachylog_math_tan/2,
@@ -20,15 +36,16 @@
                             brachylog_math_transpose/2,
                             brachylog_math_antitranspose/2,
                             brachylog_math_circular_permute_left/2,
-                            brachylog_math_circular_permute_right/2]).
+                            brachylog_math_circular_permute_right/2
+                           ]).
                        
 :- use_module(library(clpfd)).
 :- use_module(utils).
                 
 
-/*
-BRACHYLOG_MATH_COS
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_COS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_cos('integer':I,Cos) :-
     label([I]),
     Cos is cos(I).
@@ -36,9 +53,10 @@ brachylog_math_cos('float':F,Cos) :-
     nonvar(F),
     Cos is cos(F).
     
-/*
-BRACHYLOG_MATH_SIN
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_SIN
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_sin('integer':I,Sin) :-
     label([I]),
     Sin is sin(I).
@@ -46,9 +64,10 @@ brachylog_math_sin('float':F,Sin) :-
     nonvar(F),
     Sin is sin(F).
     
-/*
-BRACHYLOG_MATH_TAN
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_TAN
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_tan('integer':I,Tan) :-
     label([I]),
     Tan is tan(I).
@@ -56,9 +75,10 @@ brachylog_math_tan('float':F,Tan) :-
     nonvar(F),
     Tan is tan(F).
     
-/*
-BRACHYLOG_MATH_EXP
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_EXP
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_exp('integer':I,Exp) :-
     label([I]),
     Exp is exp(I).
@@ -66,9 +86,10 @@ brachylog_math_exp('float':F,Exp) :-
     nonvar(F),
     Exp is exp(F).
     
-/*
-BRACHYLOG_MATH_LN
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_LN
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_ln('integer':I,Ln) :-
     label([I]),
     Ln is log(I).
@@ -76,10 +97,12 @@ brachylog_math_ln('float':F,Ln) :-
     nonvar(F),
     Ln is log(F).
     
-/*
-BRACHYLOG_PRIME_DECOMPOSITION
-Credits to rosettecode.org
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_PRIME_DECOMPOSITION
+   
+   Credits to RosettaCode
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_prime_decomposition('integer':N, Z) :-
     N #> 0,
     label([N]),
@@ -123,20 +146,22 @@ brachylog_math_prime_decomposition_2(N, SN, D, L, LF) :-
 brachylog_math_prime_decomposition_append_integer([],[]).
 brachylog_math_prime_decomposition_append_integer([H|T],['integer':H|T2]) :-
 	brachylog_math_prime_decomposition_append_integer(T,T2).
+
     
-/*
-BRACHYLOG_MATH_ROOT
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_ROOT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_root('integer':I,Root) :-
     label([I]),
     Root is sqrt(I).
 brachylog_math_root('float':F,Root) :-
     nonvar(F),
     Root is sqrt(F).
+
     
-/*
-BRACHYLOG_MATH_FACTORIAL
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_FACTORIAL
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_factorial('integer':I,'integer':J) :-
     brachylog_math_factorial_(I,J),
     label([I,J]).
@@ -148,25 +173,28 @@ brachylog_math_factorial_(I,J) :-
     brachylog_math_factorial_(A,B),
     J #= I * B.
 
-/*
-BRACHYLOG_MATH_CEIL
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_CEIL
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */    
 brachylog_math_ceil('integer':I,'integer':I).
 brachylog_math_ceil('float':I,'integer':J) :-
     nonvar(I),
     J is ceil(I).
-    
-/*
-BRACHYLOG_MATH_FLOOR
-*/
+ 
+ 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_FLOOR
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_floor('integer':I,'integer':I).
 brachylog_math_floor('float':I,'integer':J) :-
     nonvar(I),
     J is floor(I).
 
-/*
-BRACHYLOG_MATH_ARCCOS
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_ARCCOS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_arccos('integer':I,ACos) :-
     label([I]),
     ACos is acos(I).
@@ -174,19 +202,21 @@ brachylog_math_arccos('float':F,ACos) :-
     nonvar(F),
     ACos is acos(F).
     
-/*
-BRACHYLOG_MATH_ARCSIN
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_ARCSIN
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_arcsin('integer':I,ASin) :-
     label([I]),
     ASin is asin(I).
 brachylog_math_arcsin('float':F,ASin) :-
     nonvar(F),
     ASin is asin(F).
-    
-/*
-BRACHYLOG_MATH_ARCTAN
-*/
+  
+  
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_ARCTAN
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_arctan('integer':I,ATan) :-
     label([I]),
     ATan is atan(I).
@@ -194,59 +224,65 @@ brachylog_math_arctan('float':F,ATan) :-
     nonvar(F),
     ATan is atan(F).    
     
-/*
-BRACHYLOG_MATH_COSH
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_COSH
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_cosh('integer':I,Cosh) :-
     label([I]),
     Cosh is cosh(I).
 brachylog_math_cosh('float':F,Cosh) :-
     nonvar(F),
     Cosh is cosh(F).
-    
-/*
-BRACHYLOG_MATH_SINH
-*/
+  
+  
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_SINH
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_sinh('integer':I,Sinh) :-
     label([I]),
     Sinh is sinh(I).
 brachylog_math_sinh('float':F,Sinh) :-
     nonvar(F),
     Sinh is sinh(F).
-    
-/*
-BRACHYLOG_MATH_TANH
-*/
+ 
+ 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_TANH
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_tanh('integer':I,Tanh) :-
     label([I]),
     Tanh is tanh(I).
 brachylog_math_tanh('float':F,Tanh) :-
     nonvar(F),
     Tanh is tanh(F).
+
     
-/*
-BRACHYLOG_MATH_ARGCOSH
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_ARGCOSH
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_argcosh('integer':I,ACosh) :-
     label([I]),
     ACosh is acosh(I).
 brachylog_math_argcosh('float':F,ACosh) :-
     nonvar(F),
     ACosh is acosh(F).
-    
-/*
-BRACHYLOG_MATH_ARGSINH
-*/
+  
+  
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_ARGSINH
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_argsinh('integer':I,ASinh) :-
     label([I]),
     ASinh is asinh(I).
 brachylog_math_argsinh('float':F,ASinh) :-
     nonvar(F),
     ASinh is asinh(F).
-    
-/*
-BRACHYLOG_MATH_ARGTANH
-*/
+  
+  
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_ARGTANH
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_argtanh('integer':I,ATanh) :-
     label([I]),
     ATanh is atanh(I).
@@ -254,25 +290,28 @@ brachylog_math_argtanh('float':F,ATanh) :-
     nonvar(F),
     ATanh is atanh(F).
     
-/*
-BRACHYLOG_MATH_TRANSPOSE
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_TRANSPOSE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_transpose(List,TransposedList) :-
     is_list(List),
     transpose(List,TransposedList).
     
-/*
-BRACHYLOG_MATH_ANTITRANSPOSE
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_ANTITRANPOSE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_antitranspose(List,TransposedList) :-
     is_list(List),
     maplist(reverse,List,A),
     transpose(A,B),
     maplist(reverse,B,TransposedList).
-    
-/*
-BRACHYLOG_MATH_CIRCULAR_PERMUTE_LEFT
-*/
+ 
+ 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_CIRCULAR_PERMUTE_LEFT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_circular_permute_left('string':[],'string':[]).
 brachylog_math_circular_permute_left('string':[H|T],'string':S) :-
     append(T,[H],S).
@@ -282,10 +321,11 @@ brachylog_math_circular_permute_left('integer':I,'integer':J) :-
     integer_value('integer':Sign:[H|T],I),
     append(T,[H],S),
     integer_value('integer':Sign:S,J).
-    
-/*
-BRACHYLOG_MATH_CIRCULAR_PERMUTE_RIGHT
-*/
+ 
+ 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_CIRCULAR_PERMUTE_RIGHT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_math_circular_permute_right('string':[],'string':[]).
 brachylog_math_circular_permute_right('string':L,'string':S) :-
     append(T,[H],L),

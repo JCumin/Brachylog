@@ -1,10 +1,27 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+____            ____
+\   \          /   /
+ \   \  ____  /   /
+  \   \/    \/   /
+   \     /\     /     BRACHYLOG       
+    \   /  \   /      A terse declarative logic programming language
+    /   \  /   \    
+   /     \/     \     Written by Julien Cumin - 2016
+  /   /\____/\   \    https://github.com/JCumin/Brachylog
+ /   /  ___   \   \
+/___/  /__/    \___\
+     
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
 :- module(tokenize, [tokenize/2]).
 
 :- use_module(symbols).
 
-/*
-TOKENIZE
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   TOKENIZE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 tokenize([],[]).
 
 tokenize([Variable|T], ['variable':Variable|T2]) :-
@@ -92,9 +109,9 @@ tokenize([ControlFlow|T],['control':ControlFlow|T2]) :-
     tokenize(T,T2).
     
 
-/*
-TOKENIZE_STRING
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   TOKENIZE_STRING
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 tokenize_string(['"'|T],Rest,'string':T2) :-
     tokenize_string_(T,Rest,T2).
     
@@ -119,9 +136,9 @@ tokenize_string_([X|T],Rest,L) :-
     ).
         
 
-/*
-TOKENIZE_NUMBER
-*/    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   TOKENIZE_NUMBER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */  
 tokenize_number(N,Rest,Type:Number) :-
     tokenize_number_(N,Rest,T2),
     (
@@ -158,9 +175,9 @@ tokenize_integer([X|T],[X|T],[]) :-
     \+ (is_digit(X)).
     
     
-/*
-TOKENIZE_LIST
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   TOKENIZE_LIST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 tokenize_list(['['|T],Rest,List) :-
     isolate_list(T,L,Rest),
     tokenize(L,List).

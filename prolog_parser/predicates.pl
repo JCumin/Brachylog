@@ -1,3 +1,19 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+____            ____
+\   \          /   /
+ \   \  ____  /   /
+  \   \/    \/   /
+   \     /\     /     BRACHYLOG       
+    \   /  \   /      A terse declarative logic programming language
+    /   \  /   \    
+   /     \/     \     Written by Julien Cumin - 2016
+  /   /\____/\   \    https://github.com/JCumin/Brachylog
+ /   /  ___   \   \
+/___/  /__/    \___\
+     
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
 :- module(predicates, [brachylog_apply/2,
                        brachylog_behead/2,
                        brachylog_concatenate/2,
@@ -28,16 +44,18 @@
                        brachylog_lessequal/2,
                        brachylog_greaterequal/2,
                        brachylog_equals/2,
-                       brachylog_modulo/2]).
+                       brachylog_modulo/2
+                      ]).
                        
 :- use_module(library(clpfd)).
 :- use_module(utils).
 
 :- dynamic brachylog_main/2.
     
-/*
-BRACHYLOG_APPLY
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_APPLY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_apply(L,Y) :-
 	is_list(L),
 	reverse(L,[PredName|Args]),
@@ -55,9 +73,10 @@ brachylog_apply_append_predname([],_,[]).
 brachylog_apply_append_predname([H|T],PredName,[[H,PredName,'ignore_calling_predicate']|T2]) :-
 	brachylog_apply_append_predname(T,PredName,T2).
     
-/*
-BRACHYLOG_BEHEAD
-*/                
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_BEHEAD
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */        
 brachylog_behead('string':[_|T],'string':T).
 brachylog_behead('integer':0,'integer':0).
 brachylog_behead('integer':I,'integer':J) :-
@@ -85,9 +104,9 @@ brachylog_behead_float_([H|T],[H|T2]) :-
     brachylog_behead_float_(T,T2).
 
 
-/*
-BRACHYLOG_CONCATENATE
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONCATENATE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_concatenate('string':L,'string':L).
 brachylog_concatenate('integer':I,'integer':I).
 brachylog_concatenate('float':F,'float':F).
@@ -137,9 +156,10 @@ brachylog_concatenate_(['integer':I|T],L,'integer':Z) :-
     append(L,[HI|TI],M),
     brachylog_concatenate_(T,M,'integer':Z).
 
-/*
-BRACHYLOG_DUPLICATES
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_DUPLICATES
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_duplicates('string':S,'string':T) :-
     list_to_set(S,T).
 brachylog_duplicates('integer':I,'integer':J) :-
@@ -155,9 +175,10 @@ brachylog_duplicates(L,M) :-
     is_list(L),
     list_to_set(L,M).
     
-/*
-BRACHYLOG_ENUMERATE
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_ENUMERATE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_enumerate('string':L,'string':[M]) :-
     nth0(_,L,M).
 brachylog_enumerate(['integer':Inf,'integer':'infinite'],'integer':I) :-
@@ -183,16 +204,18 @@ brachylog_enumerate(L,M) :-
     L \= ['integer':_,'integer':_],
     nth0(_,L,M).
 
-/*
-BRACHYLOG_FINDALL
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_FINDALL
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_findall(X,Y) :-
     append(X,['ignore_calling_predicate'],X2),
     findall(A,brachylog_call_predicate(X2,A),Y).
 
-/*
-BRACHYLOG_HEAD
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_HEAD
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_head('string':[H|_],'string':[H]).
 brachylog_head('integer':0,'integer':0).
 brachylog_head('integer':I,'integer':J) :-
@@ -223,9 +246,10 @@ brachylog_head_float([H|T],'integer':I) :-
         number_codes(I,[H])    
     ).
 
-/*
-BRACHYLOG_ITERATE
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_ITERATE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_iterate([Arg,'integer':I,PredName],Z) :-
     !,
     label([I]),
@@ -242,9 +266,10 @@ brachylog_iterate_(I,PredName,Arg,Z) :-
     J #= I - 1,
     brachylog_iterate_(J,PredName,X,Z).
 
-/*
-BRACHYLOG_LENGTH
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_LENGTH
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_length('string':S,'integer':Length) :-
     length(S,Length).
 brachylog_length('integer':0,'integer':1).
@@ -257,10 +282,11 @@ brachylog_length('float':F,'integer':Length) :-
     length(L,Length).
 brachylog_length([H|T],'integer':Length) :-
     length([H|T],Length).
-    
-/*
-BRACHYLOG_MEMBER
-*/
+  
+  
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MEMBER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_member('string':S,'string':C) :-
     member(C,S).
 brachylog_member('integer':I,'integer':J) :-
@@ -306,10 +332,11 @@ brachylog_member([L,'integer':I],M) :-
     I in 0.. Length2,
     label([I]),
     nth0(I,L,M).
-    
-/*
-BRACHYLOG_ORDER
-*/
+  
+  
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_ORDER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_order('string':S,'string':T) :-
     msort(S,T).
 brachylog_order('integer':I,'integer':J) :-
@@ -322,9 +349,9 @@ brachylog_order(List,OrderedList) :-
     msort(List,OrderedList).
     
     
-/*
-BRACHYLOG_PERMUTE
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_PERMUTE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_permute('string':S,'string':Permutation) :-
     permutation(S,Permutation).
 brachylog_permute(List, Permutation) :-
@@ -343,10 +370,11 @@ brachylog_permute('float':F, 'float':G) :-
         reverse(D,['.'|_])
     ),
     number_chars(G,D).
+
     
-/*
-BRACHYLOG_REVERSE
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_REVERSE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_reverse('string':S,'string':R) :-
     reverse(S,R).
 brachylog_reverse('integer':I,'integer':R) :-
@@ -367,9 +395,10 @@ brachylog_reverse('integer':I,'integer':R) :-
 brachylog_reverse(List,R) :-
     reverse(List,R).
     
-/*
-BRACHYLOG_SUBSET
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_SUBSET
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_subset('string':S,'string':T) :-
     brachylog_subset_recur(S,T).
 brachylog_subset('integer':I,'integer':J) :-
@@ -395,9 +424,10 @@ brachylog_subset_recur([H|T],[H|T2]) :-
 brachylog_subset_recur([_|T],T2) :-
     brachylog_subset_recur(T,T2).
     
-/*
-BRACHYLOG_TAIL
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_TAIL
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_tail('string':L,'string':[H]) :-
     reverse(L,[H|_]).
 brachylog_tail('integer':0,'integer':0).
@@ -433,18 +463,19 @@ brachylog_tail_float([H|T],'integer':I) :-
         number_codes(I,[H])    
     ).
     
-/*
-BRACHYLOG_VOID
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_VOID
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_void('string':[],_).
 brachylog_void('integer':I,_) :-
     I #= 0.
 brachylog_void('float':0.0,_).
 brachylog_void([],_).    
  
-/*
-BRACHYLOG_WRITE
-*/
+ 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_WRITE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_write([List,'string':F],_) :-
     is_list(List),
     atomic_list_concat(F,Format),
@@ -469,10 +500,11 @@ brachylog_write(List,_) :-
     \+ (reverse(List,['string':_|_])),
     brachylog_prolog_variable(List,PrologList),
     write(PrologList).
-    
-/*
-BRACHYLOG_XTERMINATE
-*/
+   
+   
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_XTERMINATE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_xterminate(['string':S,X],'string':T) :-
     \+ is_list(X),
     brachylog_xterminate_(X,'string':S,'string':T).
@@ -505,9 +537,10 @@ brachylog_xterminate_single(L,H,Z) :-
     is_list(H),
     delete(H,L,Z).
     
-/*
-BRACHYLOG_ZIP
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_ZIP
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_zip(L,Z) :-
     is_list(L),
     maplist(brachylog_length,L,Lengths),
@@ -522,9 +555,10 @@ brachylog_zip_(L,I,[Heads|Z]) :-
     J #= I - 1,
     brachylog_zip_(Tails,J,Z).
 
-/*
-BRACHYLOG_CALL_PREDICATE
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CALL_PREDICATE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_call_predicate(X,Output) :-
     (
         reverse(X,[CallingPredName,P|RArgs])
@@ -575,9 +609,10 @@ brachylog_call_predicate(X,Output) :-
     ),
     call(PredName,A,Output).
 
-/*
-BRACHYLOG_PLUS
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_PLUS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_plus('integer':I,'integer':AbsoluteValue) :-
     AbsoluteValue #= abs(I).
 brachylog_plus('float':F,'float':AbsoluteValue) :-
@@ -625,10 +660,11 @@ brachylog_plus_([TypeI:I|T],TypeS:Sum) :-
         ),
         Sum is I + F
     ).
-    
-/*
-BRACHYLOG_MINUS
-*/
+ 
+ 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MINUS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_minus('integer':I,'integer':J) :-
     J #= -I,
     label([I,J]).
@@ -651,9 +687,10 @@ brachylog_minus(['float':I1,'float':I2],'float':Sum) :-
     nonvar(I2),
     Sum is I1 - I2.
 
-/*
-BRACHYLOG_MULTIPLY
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MULTIPLY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_multiply(L,Product) :-
 	is_list(L),
 	\+ (maplist(is_list,L)),
@@ -698,9 +735,10 @@ brachylog_multiply_([TypeI:I|T],TypeS:Product) :-
 		Product is I * F
 	).
 
-/*
-BRACHYLOG_DIVIDE
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MULTIPLY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_divide('integer':I,'float':J) :-
 	label([I]),
 	J is 1/I.
@@ -723,9 +761,10 @@ brachylog_divide(['float':I1,'float':I2],'float':Division) :-
 	nonvar(I2),
 	Division is I1 / I2.
 
-/*
-BRACHYLOG_POWER
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_POWER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_power('integer':I,'float':J) :-
 	label([I]),
 	J is exp(I).
@@ -748,9 +787,10 @@ brachylog_power(['float':I1,'float':I2],'float':Power) :-
 	nonvar(I2),
 	Power is I1 ^ I2.
 
-/*
-BRACHYLOG_LESS
-*/
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_LESS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_less('integer':I1,'integer':I2) :-
     I1 #< I2.
 brachylog_less('float':I1,'integer':I2) :-
@@ -766,9 +806,10 @@ brachylog_less('float':I1,'float':I2) :-
     nonvar(I2),
     I1 < I2.
     
-/*
-BRACHYLOG_GREATER
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_GREATER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_greater('integer':I1,'integer':I2) :-
     I1 #> I2.
 brachylog_greater('float':I1,'integer':I2) :-
@@ -783,10 +824,11 @@ brachylog_greater('float':I1,'float':I2) :-
     nonvar(I1),
     nonvar(I2),
     I1 > I2.    
-    
-/*
-BRACHYLOG_LESSEQUAL
-*/
+   
+   
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_LESSEQUAL
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_lessequal('integer':I1,'integer':I2) :-
     I1 #=< I2.
 brachylog_lessequal('float':I1,'integer':I2) :-
@@ -801,10 +843,11 @@ brachylog_lessequal('float':I1,'float':I2) :-
     nonvar(I1),
     nonvar(I2),
     I1 =< I2.
-        
-/*
-BRACHYLOG_GREATEREQUAL
-*/
+     
+     
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_GREATEREQUAL
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_greaterequal('integer':I1,'integer':I2) :-
     I1 #>= I2.
 brachylog_greaterequal('float':I1,'integer':I2) :-
@@ -820,12 +863,13 @@ brachylog_greaterequal('float':I1,'float':I2) :-
     nonvar(I2),
     I1 >= I2.
     
-/*
-BRACHYLOG_EQUALS
 
-Credits to Markus Triska
-See: http://codereview.stackexchange.com/questions/129924/clpfd-labeling-on-possibly-infinite-domains/129945#129945
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_EQUALS
+   
+   Credits to Markus Triska
+   See: http://codereview.stackexchange.com/questions/129924/clpfd-labeling-on-possibly-infinite-domains/129945#129945
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_equals('integer':Z,'integer':Z) :-
     unsafe_indomain(Z).
 
@@ -867,9 +911,10 @@ unsafe_up_(n(Up), Low, X) :- between(Low, Up, X).
 
 positive_integer(N) :- length([_|_], N).
 
-/*
-BRACHYLOG_MODULO
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MODULO
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_modulo(['integer':I1,'integer':I2],'integer':Rem) :-
     Rem #= I1 mod I2,
     label([I1,I2,Rem]).

@@ -1,14 +1,32 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+____            ____
+\   \          /   /
+ \   \  ____  /   /
+  \   \/    \/   /
+   \     /\     /     BRACHYLOG       
+    \   /  \   /      A terse declarative logic programming language
+    /   \  /   \    
+   /     \/     \     Written by Julien Cumin - 2016
+  /   /\____/\   \    https://github.com/JCumin/Brachylog
+ /   /  ___   \   \
+/___/  /__/    \___\
+     
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
 :- module(symbols, [token_predicate/2,
                     token_variable/2,
                     is_modifier/1,
                     is_variable/1,
                     is_predicate/1,
                     is_digit/1,
-                    is_control_flow/1]).
-                    
-/*
-TOKEN_PREDICATE
-*/                    
+                    is_control_flow/1
+                   ]).
+              
+              
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   TOKEN_PREDICATE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */         
 token_predicate('a','brachylog_apply').
 token_predicate('b','brachylog_behead').
 token_predicate('c','brachylog_concatenate').
@@ -186,9 +204,10 @@ token_predicate('@$','').
 token_predicate('@@','').
 token_predicate('@#','').
 
-/*
-TOKEN_VARIABLE
-*/
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   TOKEN_VARIABLE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 token_variable('@':'A','\'string\':[a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z]').
 token_variable('@':'B','').
 token_variable('@':'C','\'string\':[b,c,d,f,g,h,j,k,l,m,n,p,q,r,s,t,v,w,x,y,z]').
@@ -244,9 +263,9 @@ token_variable('$':'Y','').
 token_variable('$':'Z','').
 
 
-/*
-IS_MODIFIER
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   IS_MODIFIER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 is_modifier(X) :-
     X = '@'
     ;
@@ -254,34 +273,37 @@ is_modifier(X) :-
     ;
     X = '#'.
 
-/*
-IS_VARIABLE
-*/    
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   IS_VARIABLE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 is_variable(X) :-
     member(X, ['A', 'B', 'C', 'D', 'E', 'F',
                'G', 'H', 'I', 'J', 'K', 'L',
                'M', 'N', 'O', 'P', 'Q', 'R',
                'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']).
         
-/*
-IS_PREDICATE
-*/        
+        
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   IS_PREDICATE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */  
 is_predicate(X) :-
     member(X, ['a', 'b', 'c', 'd', 'e', 'f',
                'g', 'h', 'i', 'j', 'k', 'l',
                'm', 'n', 'o', 'p', 'q', 'r',
                's', 't', 'u', 'v', 'w', 'x', 'y', 'z']).
         
-/*
-IS_DIGIT
-*/        
+        
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   IS_DIGIT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */      
 is_digit(X) :-
     member(X, ['0', '1', '2', '3', '4', 
                '5', '6', '7', '8', '9']).
                
-/*
-IS_CONTROL_FLOW
-*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   IS_CONTROL_FLOW
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 is_control_flow(X) :-
     member(X, [',', ';', ':', '!', '\\',
                '\'', '~', '(', ')', '\n',
