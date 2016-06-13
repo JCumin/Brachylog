@@ -181,8 +181,8 @@ token_predicate('@%','').
 token_predicate('@=','').
 token_predicate('@<','').
 token_predicate('@>','').
-token_predicate('$(','brachylog_math_circular_permutate_left').
-token_predicate('$)','brachylog_math_circular_permutate_right').
+token_predicate('$(','brachylog_math_circular_permute_left').
+token_predicate('$)','brachylog_math_circular_permute_right').
 token_predicate('$[','brachylog_math_floor').
 token_predicate('$]','brachylog_math_ceil').
 token_predicate('@{','').
