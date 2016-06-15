@@ -12,7 +12,7 @@ Brachylog uses [SWI-Prolog](http://www.swi-prolog.org/) as Prolog engine.
 
 ###The language itself
 
-Check [Brachylog's Wiki](https://github.com/JCumin/Brachylog/wiki) if you want to learn how to write programs in this language.
+Check out [Brachylog's Wiki](https://github.com/JCumin/Brachylog/wiki) if you want to learn how to write programs in this language.
 
 As an example, this predicate:
 
