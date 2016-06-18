@@ -17,7 +17,8 @@ ____            ____
 :- module(utils, [integer_value/2,
                   brachylog_prolog_variable/2,
                   length_/2,
-                  prepend_string/2
+                  prepend_string/2,
+                  prepend_integer/2
                  ]).
 
 :- use_module(library(clpfd)).
@@ -85,3 +86,9 @@ length_(Length,List) :-
    PREPEND_STRING
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 prepend_string(S,'string':S).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   PREPEND_INTEGER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+prepend_integer(I,'integer':I).

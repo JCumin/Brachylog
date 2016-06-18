@@ -207,7 +207,7 @@ token_predicate('$#','').
 token_predicate('#a','').
 token_predicate('#b','').
 token_predicate('#c','').
-token_predicate('#d','').
+token_predicate('#d','brachylog_constraint_different').
 token_predicate('#e','').
 token_predicate('#f','').
 token_predicate('#g','').
