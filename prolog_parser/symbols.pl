@@ -331,6 +331,33 @@ token_variable('$':'X','').
 token_variable('$':'Y','').
 token_variable('$':'Z','').
 
+token_variable('#':'A','').
+token_variable('#':'B','').
+token_variable('#':'C','').
+token_variable('#':'D','').
+token_variable('#':'E','').
+token_variable('#':'F','').
+token_variable('#':'G','').
+token_variable('#':'H','').
+token_variable('#':'I','').
+token_variable('#':'J','').
+token_variable('#':'K','').
+token_variable('#':'L','').
+token_variable('#':'M','').
+token_variable('#':'N','').
+token_variable('#':'O','').
+token_variable('#':'P','').
+token_variable('#':'Q','').
+token_variable('#':'R','').
+token_variable('#':'S','').
+token_variable('#':'T','').
+token_variable('#':'U','').
+token_variable('#':'V','').
+token_variable('#':'W','').
+token_variable('#':'X','').
+token_variable('#':'Y','').
+token_variable('#':'Z','').
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    IS_MODIFIER
