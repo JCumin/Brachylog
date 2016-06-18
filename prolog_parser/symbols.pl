@@ -269,9 +269,9 @@ token_predicate('#~','').
 token_predicate('#"','').
 token_predicate('#\'','').
 token_predicate('#`','').
-token_predicate('#$','').
-token_predicate('#@','').
-token_predicate('##','').
+token_predicate('#$','brachylog_constraint_coerce_to_integer').
+token_predicate('#@','brachylog_constraint_coerce_to_string').
+token_predicate('##','brachylog_constraint_coerce_to_list').
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
