@@ -46,8 +46,6 @@ You can then run Brachylog programs using different predicates:
  
  Note that the first two run predicates also exist with either no `Output` argument, or with no `Input` nor `Output` argument, if necessary. For example, `run_from_file('code.brachylog')` is equivalent to `run_from_file('code.brachylog', _, _)`.
  
- ###Brachylog's cheatsheet
+ ###[Brachylog's cheatsheet](https://github.com/JCumin/Brachylog/blob/master/cheatsheet/poster.pdf)
 
 There is no guarantee that this is up to date.
-
-<p align="center"><img src="https://github.com/JCumin/Brachylog/blob/master/cheatsheet/poster.pdf" alt="Brachylog" width="600"/></p>
