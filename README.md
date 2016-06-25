@@ -42,10 +42,11 @@ You can then run Brachylog programs using different predicates:
 
  - `run(Input, Output)`: This will run a Brachylog program that has already been transpiled to Prolog using either of the two previous predicates. More precisely, this will query `brachylog_main/2` in the file `compiled_brachylog.pl`.
 
- The first two predicates will transpile your Brachylog program into Prolog, subsequently generating a file called `compiled_brachylog.pl` in the same directory that contains `brachylog.pl`. The three run predicates will then consult it and query `brachylog_main/2`.
+The first two predicates will transpile your Brachylog program into Prolog, subsequently generating a file called `compiled_brachylog.pl` in the same directory that contains `brachylog.pl`. The three run predicates will then consult it and query `brachylog_main/2`.
  
- Note that the first two run predicates also exist with either no `Output` argument, or with no `Input` nor `Output` argument, if necessary. For example, `run_from_file('code.brachylog')` is equivalent to `run_from_file('code.brachylog', _, _)`.
+Note that the first two run predicates also exist with either no `Output` argument, or with no `Input` nor `Output` argument, if necessary. For example, `run_from_file('code.brachylog')` is equivalent to `run_from_file('code.brachylog', _, _)`.
  
- ###[Brachylog's cheatsheet](https://github.com/JCumin/Brachylog/blob/master/cheatsheet/poster.pdf)
+ 
+###[Brachylog's cheatsheet](https://github.com/JCumin/Brachylog/blob/master/cheatsheet/poster.pdf)
 
 There is no guarantee that this is up to date.
