@@ -8,3 +8,8 @@ hs_err_pid*
 
 compiled_brachylog.pl
 *.brachylog
+*.aux
+*.bbl
+*.blg
+*.log
+*.gz
