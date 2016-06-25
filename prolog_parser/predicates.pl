@@ -294,7 +294,7 @@ brachylog_length([H|T],'integer':Length) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MEMBER
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_member('string':S,'string':C) :-
+brachylog_member('string':S,'string':[C]) :-
     member(C,S).
 brachylog_member('integer':I,'integer':J) :-
     H #\= 0,
@@ -307,7 +307,7 @@ brachylog_member('float':F,'integer':I) :-
     C \= 45,
     C \= 46,
     number_codes(I,[C]).
-brachylog_member(['string':S,'integer':I],'string':C) :-
+brachylog_member(['string':S,'integer':I],'string':[C]) :-
     length(S,L),
     L2 #= L - 1,
     I in 0..L2,
