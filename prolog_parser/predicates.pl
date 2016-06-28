@@ -50,8 +50,6 @@ ____            ____
                        
 :- use_module(library(clpfd)).
 :- use_module(utils).
-
-:- dynamic brachylog_main/2.
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
