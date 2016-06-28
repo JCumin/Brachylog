@@ -106,21 +106,21 @@ brachylog_math_ln('float':F,Ln) :-
 brachylog_math_prime_decomposition('integer':N, Z) :-
     N #> 0,
     label([N]),
-    SN is sqrt(N),
+    brachylog_math_prime_decomposition_ceiled_square_root(N,SN),
     brachylog_math_prime_decomposition_1(N, SN, 2, [], L),
     brachylog_math_prime_decomposition_append_integer(L,Z).
  
 brachylog_math_prime_decomposition_1(1, _, _, L, L) :- !.
 brachylog_math_prime_decomposition_1(N, SN, D, L, LF) :-
     (   
-        0 is N mod D ->
-        Q is N / D,
-        SQ is sqrt(Q),
+        0 #= N mod D ->
+        Q #= N // D,
+        brachylog_math_prime_decomposition_ceiled_square_root(Q,SQ),
         brachylog_math_prime_decomposition_1(Q, SQ, D, [D |L], LF)
         ;
-        D1 is D+1,
+        D1 #= D+1,
         (    
-            D1 > SN ->
+            D1 #> SN ->
             LF = [N |L]
             ;
             brachylog_math_prime_decomposition_2(N, SN, D1, L, LF)
@@ -130,13 +130,13 @@ brachylog_math_prime_decomposition_1(N, SN, D, L, LF) :-
 brachylog_math_prime_decomposition_2(1, _, _, L, L) :- !.
 brachylog_math_prime_decomposition_2(N, SN, D, L, LF) :-
     (   
-        0 is N mod D ->
-        Q is N / D,
-        SQ is sqrt(Q),
+        0 #= N mod D ->
+        Q #= N // D,
+        brachylog_math_prime_decomposition_ceiled_square_root(Q,SQ),
         brachylog_math_prime_decomposition_2(Q, SQ, D, [D |L], LF);
-        D1 is D+2,
+        D1 #= D+2,
         (    
-            D1 > SN ->
+            D1 #> SN ->
             LF = [N |L]
             ;
             brachylog_math_prime_decomposition_2(N, SN, D1, L, LF)
@@ -146,6 +146,14 @@ brachylog_math_prime_decomposition_2(N, SN, D, L, LF) :-
 brachylog_math_prime_decomposition_append_integer([],[]).
 brachylog_math_prime_decomposition_append_integer([H|T],['integer':H|T2]) :-
 	brachylog_math_prime_decomposition_append_integer(T,T2).
+    
+brachylog_math_prime_decomposition_ceiled_square_root(0, 0).
+brachylog_math_prime_decomposition_ceiled_square_root(N0, Root) :-
+        N1 #= N0 - 1,
+        Max in 0..N1,
+        R0^2 #= Max,
+        Root #= Root0 + 1,
+        fd_sup(R0, Root0).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
