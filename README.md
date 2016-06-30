@@ -20,7 +20,7 @@ As an example, this predicate:
     
 will successively unify its Input variable with a prime number, starting from `2`:
 
-    ?- run_from_atom('>,?=$pl1',Z).
+    ?- run_from_atom('>0,?=$pl1',Z).
     Z = 2 ;
     Z = 3 ;
     Z = 5 ;
