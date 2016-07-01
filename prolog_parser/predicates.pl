@@ -56,11 +56,11 @@ ____            ____
    BRACHYLOG_APPLY
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_apply(L,Y) :-
-	is_list(L),
+	is_brachylog_list(L),
 	reverse(L,[PredName|Args]),
 	(
 		Args = [Arg],
-		is_list(Arg)
+		is_brachylog_list(Arg)
 		-> true
 		;
 		Arg = Args
@@ -117,8 +117,8 @@ brachylog_concatenate(['string':H|T],'string':S,L) :-
     append(S,H,I),
     brachylog_concatenate(T,'string':I,L).
 brachylog_concatenate([L|T],L2,L3) :-
-    is_list(L),
-    is_list(L2),
+    is_brachylog_list(L),
+    is_brachylog_list(L2),
     append(L2,L,M),
     brachylog_concatenate(T,M,L3).
 brachylog_concatenate(L,'integer':I,Z) :-
@@ -171,7 +171,7 @@ brachylog_duplicates('float':F,'float':G) :-
     list_to_set(C,S),
     number_codes(G,S).
 brachylog_duplicates(L,M) :-
-    is_list(L),
+    is_brachylog_list(L),
     list_to_set(L,M).
     
     
@@ -331,7 +331,7 @@ brachylog_member(['float':F,'integer':I],'integer':J) :-
     nth0(I,L3,D),
     number_codes(J,[D]).
 brachylog_member([L,'integer':I],M) :-
-    is_list(L),
+    is_brachylog_list(L),
     length(L,Length),
     Length2 #= Length - 1,
     I in 0.. Length2,
@@ -350,7 +350,7 @@ brachylog_order('integer':I,'integer':J) :-
     msort(C,D),
     number_codes(J,D).
 brachylog_order(List,OrderedList) :-
-    is_list(List),
+    is_brachylog_list(List),
     msort(List,OrderedList).
     
     
@@ -360,7 +360,7 @@ brachylog_order(List,OrderedList) :-
 brachylog_permute('string':S,'string':Permutation) :-
     permutation(S,Permutation).
 brachylog_permute(List, Permutation) :-
-    is_list(List),
+    is_brachylog_list(List),
     permutation(List, Permutation).
 brachylog_permute('integer':I, 'integer':J) :-
     H #\= 0,
@@ -424,7 +424,7 @@ brachylog_subset('float':F,'float':G) :-
     ),
     number_chars(G,D).
 brachylog_subset(L,S) :-
-    is_list(L),
+    is_brachylog_list(L),
     brachylog_subset_recur(L,S).
     
 brachylog_subset_recur([],[]).
@@ -449,7 +449,7 @@ brachylog_tail('float':F,'integer':I) :-
     reverse(L,R),
     brachylog_tail_float(R,'integer':I).
 brachylog_tail(L,H) :-
-    is_list(L),
+    is_brachylog_list(L),
     reverse(L,[H|_]).
 
 brachylog_tail_float([H|T],'integer':I) :-
@@ -486,12 +486,12 @@ brachylog_void([],_).
    BRACHYLOG_WRITE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_write([List,'string':F],_) :-
-    is_list(List),
+    is_brachylog_list(List),
     atomic_list_concat(F,Format),
     brachylog_prolog_variable(List,PrologList),
     format(Format,PrologList).
 brachylog_write(Args,_) :-
-    is_list(Args),
+    is_brachylog_list(Args),
     reverse(Args,['string':F|R]),
     reverse(R,S),
     brachylog_prolog_variable(S,PrologS),
@@ -505,7 +505,7 @@ brachylog_write('integer':I,_) :-
 brachylog_write('float':F,_) :-
     write(F).
 brachylog_write(List,_) :-
-    is_list(List),
+    is_brachylog_list(List),
     \+ (reverse(List,['string':_|_])),
     brachylog_prolog_variable(List,PrologList),
     write(PrologList).
@@ -515,14 +515,14 @@ brachylog_write(List,_) :-
    BRACHYLOG_XTERMINATE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_xterminate(['string':S,X],'string':T) :-
-    \+ is_list(X),
+    \+ is_brachylog_list(X),
     brachylog_xterminate_(X,'string':S,'string':T).
 brachylog_xterminate([L,[]],L).
 brachylog_xterminate(['string':S,[H|T]],L3) :-
     brachylog_xterminate_(H,'string':S,L2),
     brachylog_xterminate([L2,T],L3).
 brachylog_xterminate([L,[H|T]],L3) :-
-    is_list(L),
+    is_brachylog_list(L),
     maplist(brachylog_xterminate_(H),L,L2),
     brachylog_xterminate([L2,T],L3).
     
@@ -543,7 +543,7 @@ brachylog_xterminate_single('string':L,'string':H,'string':Z) :-
         Z = H
     ).
 brachylog_xterminate_single(L,H,Z) :-
-    is_list(H),
+    is_brachylog_list(H),
     delete(H,L,Z).
     
 
@@ -551,7 +551,7 @@ brachylog_xterminate_single(L,H,Z) :-
    BRACHYLOG_ZIP
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_zip(L,Z) :-
-    is_list(L),
+    is_brachylog_list(L),
     maplist(brachylog_length,L,Lengths),
     brachylog_order(Lengths,['integer':MinLength|_]),
     brachylog_zip_(L,MinLength,Z).
@@ -627,11 +627,11 @@ brachylog_plus('integer':I,'integer':AbsoluteValue) :-
 brachylog_plus('float':F,'float':AbsoluteValue) :-
     AbsoluteValue is abs(F).
 brachylog_plus(L,Sum) :-
-    is_list(L),
-    \+ (maplist(is_list,L)),
+    is_brachylog_list(L),
+    \+ (maplist(is_brachylog_list,L)),
     brachylog_plus_(L,Sum).
 brachylog_plus(ListOfLists,Sums) :-
-    maplist(is_list,ListOfLists),
+    maplist(is_brachylog_list,ListOfLists),
     ListOfLists = [H|_],
     length(H,Length),
     (
@@ -701,11 +701,11 @@ brachylog_minus(['float':I1,'float':I2],'float':Sum) :-
    BRACHYLOG_MULTIPLY
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_multiply(L,Product) :-
-	is_list(L),
-	\+ (maplist(is_list,L)),
+	is_brachylog_list(L),
+	\+ (maplist(is_brachylog_list,L)),
 	brachylog_multiply_(L,Product).
 brachylog_multiply(ListOfLists,Products) :-
-	maplist(is_list,ListOfLists),
+	maplist(is_brachylog_list,ListOfLists),
 	ListOfLists = [H|_],
 	length(H,Length),
 	(
@@ -883,7 +883,7 @@ brachylog_equals('integer':Z,'integer':Z) :-
     unsafe_indomain(Z).
 
 brachylog_equals(Z,Z) :-
-	is_list(Z),
+	is_brachylog_list(Z),
 	maplist(brachylog_equals,Z,_).
 
 unsafe_indomain(X) :-
