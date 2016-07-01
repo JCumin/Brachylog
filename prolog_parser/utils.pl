@@ -18,7 +18,8 @@ ____            ____
                   brachylog_prolog_variable/2,
                   length_/2,
                   prepend_string/2,
-                  prepend_integer/2
+                  prepend_integer/2,
+                  is_brachylog_list/1
                  ]).
 
 :- use_module(library(clpfd)).
@@ -92,3 +93,10 @@ prepend_string(S,'string':S).
    PREPEND_INTEGER
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 prepend_integer(I,'integer':I).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   IS_BRACHYLOG_LIST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+is_brachylog_list([]).
+is_brachylog_list([_|_]).
