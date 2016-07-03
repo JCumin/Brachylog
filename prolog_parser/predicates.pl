@@ -275,6 +275,9 @@ brachylog_iterate_(I,PredName,Arg,Z) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_LENGTH
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_length([],'integer':0).
+brachylog_length([H|T],'integer':Length) :-
+    length([H|T],Length).
 brachylog_length('string':S,'integer':Length) :-
     length(S,Length).
 brachylog_length('integer':0,'integer':1).
@@ -285,9 +288,6 @@ brachylog_length('integer':I,'integer':Length) :-
 brachylog_length('float':F,'integer':Length) :-
     number_codes(F,L),
     length(L,Length).
-brachylog_length([H|T],'integer':Length) :-
-    length([H|T],Length).
-  
   
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MEMBER
