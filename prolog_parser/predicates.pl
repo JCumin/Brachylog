@@ -290,7 +290,7 @@ brachylog_length('integer':I,'integer':Length) :-
     integer_value('integer':_:[H|T],I).
 brachylog_length('float':F,'integer':Length) :-
     length(L,Length),
-    number_codes(F,L).
+    catch(number_codes(F,L),E,(print_message(error,E),false)).
   
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MEMBER
