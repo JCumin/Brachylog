@@ -67,7 +67,7 @@ token_predicate('<=','brachylog_lessequal').
 token_predicate('>=','brachylog_greaterequal').
 
 token_predicate('@a','').
-token_predicate('@b','').
+token_predicate('@b','brachylog_string_blocks').
 token_predicate('@c','').
 token_predicate('@d','').
 token_predicate('@e','').
