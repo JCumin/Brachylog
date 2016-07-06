@@ -558,10 +558,11 @@ brachylog_xterminate_single(L,H,Z) :-
    http://stackoverflow.com/a/20866206/2554145
    http://stackoverflow.com/a/11400256/2554145
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_yield(['integer':I,PredName],Z) :-
-    brachylog_yield([_,'integer':I,PredName],Z).
-brachylog_yield([Args,'integer':I,PredName],Z) :-
-    findall(X,call_firstn(brachylog_call_predicate([Args,PredName,'ignore_calling_predicate'],X),I),Z).
+brachylog_yield([A,B|T],Z) :-
+    reverse([A,B|T],[PredName,'integer':I|RArgs]),
+    reverse(RArgs,Args),
+    append([Args,[PredName,'ignore_calling_predicate']],L),
+    findall(X,call_firstn(brachylog_call_predicate(L,X),I),Z).
 
 call_firstn(Goal_0, N) :-
     N + N mod 1 >= 0,         % ensures that N >=0 and N is an integer
