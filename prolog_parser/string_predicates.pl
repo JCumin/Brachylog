@@ -14,7 +14,8 @@ ____            ____
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-:- module(string_predicates, [brachylog_string_lowercase/2,
+:- module(string_predicates, [brachylog_string_blocks/2,
+                              brachylog_string_lowercase/2,
                               brachylog_string_uppercase/2,
                               brachylog_string_dichotomize/2,
                               brachylog_string_trichotomize/2,
@@ -29,7 +30,21 @@ ____            ____
 :- use_module(library(clpfd)).
 :- use_module(utils).
  
- 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_BLOCKS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_blocks([],[]).
+brachylog_string_blocks([H|T],Blocks) :-
+    brachylog_string_blocks([H|T],H,Blocks).
+
+brachylog_string_blocks([],_,[[]]).
+brachylog_string_blocks([H|T],H,[[H|T2]|T3]) :-
+    brachylog_string_blocks(T,H,[T2|T3]).
+brachylog_string_blocks([H|T],I,[[],[H|T2]|T3]) :-
+    dif(H,I),
+    brachylog_string_blocks(T,H,[T2|T3]).
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_STRING_LOWERCASE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
