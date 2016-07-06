@@ -558,6 +558,8 @@ brachylog_xterminate_single(L,H,Z) :-
    http://stackoverflow.com/a/20866206/2554145
    http://stackoverflow.com/a/11400256/2554145
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_yield('integer':I,Z) :-
+    findall(X,brachylog_enumerate(['integer':0,'integer':I],X),Z).
 brachylog_yield([A,B|T],Z) :-
     reverse([A,B|T],[PredName,'integer':I|RArgs]),
     reverse(RArgs,Args),
