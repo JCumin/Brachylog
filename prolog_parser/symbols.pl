@@ -51,7 +51,7 @@ token_predicate('u','').
 token_predicate('v','brachylog_void').
 token_predicate('w','brachylog_write').
 token_predicate('x','brachylog_xterminate').
-token_predicate('y','').
+token_predicate('y','brachylog_yield').
 token_predicate('z','brachylog_zip').
 token_predicate('&','brachylog_call_predicate').
 token_predicate('=','brachylog_equals').
