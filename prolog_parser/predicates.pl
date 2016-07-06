@@ -734,6 +734,10 @@ brachylog_minus(['float':I1,'float':I2],'float':Sum) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MULTIPLY
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_multiply('integer':I,'integer':J) :-
+    J #= 2*I.
+brachylog_multiply('float':F,'float':G) :-
+    G is 2*F.
 brachylog_multiply(L,Product) :-
 	is_brachylog_list(L),
 	\+ (maplist(is_brachylog_list,L)),
@@ -748,7 +752,7 @@ brachylog_multiply(ListOfLists,Products) :-
 		maplist(brachylog_multiply_,Transpose,Products)
 		;
 		\+ (maplist(length_(Length),ListOfLists)),
-		throw('Lists must have have the same length to be added')
+		throw('Lists must have have the same length to be multiplied')
 	).
 	
 brachylog_multiply_([],'integer':1).
@@ -780,7 +784,7 @@ brachylog_multiply_([TypeI:I|T],TypeS:Product) :-
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   BRACHYLOG_MULTIPLY
+   BRACHYLOG_DIVIDE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_divide('integer':I,'float':J) :-
 	label([I]),
