@@ -33,6 +33,7 @@ ____            ____
                        brachylog_void/2,
                        brachylog_write/2,
                        brachylog_xterminate/2,
+                       brachylog_yield/2,
                        brachylog_zip/2,
                        brachylog_call_predicate/2,
                        brachylog_plus/2,
@@ -548,6 +549,32 @@ brachylog_xterminate_single('string':L,'string':H,'string':Z) :-
 brachylog_xterminate_single(L,H,Z) :-
     is_brachylog_list(H),
     delete(H,L,Z).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_YIELD
+   
+   Credits to @false
+   http://stackoverflow.com/a/20866206/2554145
+   http://stackoverflow.com/a/11400256/2554145
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_yield(['integer':I,PredName],Z) :-
+    brachylog_yield([_,'integer':I,PredName],Z).
+brachylog_yield([Args,'integer':I,PredName],Z) :-
+    findall(X,call_firstn(brachylog_call_predicate([Args,PredName,'ignore_calling_predicate'],X),I),Z).
+
+call_firstn(Goal_0, N) :-
+    N + N mod 1 >= 0,         % ensures that N >=0 and N is an integer
+    call_nth(Goal_0, Nth),
+    ( Nth == N -> ! ; true ).
+
+call_nth(Goal_0, C) :-
+    State = count(0,_),
+    Goal_0,
+    arg(1, State, C1),
+    C2 is C1+1,
+    nb_setarg(1, State, C2),
+    C = C2.
     
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
