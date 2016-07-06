@@ -36,6 +36,10 @@ ____            ____
 brachylog_string_blocks([],[]).
 brachylog_string_blocks([H|T],Blocks) :-
     brachylog_string_blocks([H|T],H,Blocks).
+brachylog_string_blocks('string':[H|T],StringBlocks) :-
+    maplist(prepend_string,Blocks,StringBlocks),
+    brachylog_string_blocks([H|T],H,Blocks),
+    !.
 
 brachylog_string_blocks([],_,[[]]).
 brachylog_string_blocks([H|T],H,[[H|T2]|T3]) :-
