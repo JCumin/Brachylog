@@ -518,16 +518,20 @@ brachylog_write(List,_) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_XTERMINATE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_xterminate([L,[]],L).
 brachylog_xterminate(['string':S,X],'string':T) :-
     \+ is_brachylog_list(X),
     brachylog_xterminate_(X,'string':S,'string':T).
-brachylog_xterminate([L,[]],L).
 brachylog_xterminate(['string':S,[H|T]],L3) :-
     brachylog_xterminate_(H,'string':S,L2),
     brachylog_xterminate([L2,T],L3).
+brachylog_xterminate([L,H|T],L3) :-
+    is_brachylog_list(L),
+    \+ is_brachylog_list(H),
+    brachylog_xterminate([L,[H|T]],L3).
 brachylog_xterminate([L,[H|T]],L3) :-
     is_brachylog_list(L),
-    maplist(brachylog_xterminate_(H),L,L2),
+    delete(L,H,L2),
     brachylog_xterminate([L2,T],L3).
     
 brachylog_xterminate_(X,'string':S,'string':T) :-
@@ -546,9 +550,6 @@ brachylog_xterminate_single('string':L,'string':H,'string':Z) :-
         \+ append([_,L,_],H),
         Z = H
     ).
-brachylog_xterminate_single(L,H,Z) :-
-    is_brachylog_list(H),
-    delete(H,L,Z).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
