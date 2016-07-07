@@ -341,6 +341,8 @@ brachylog_member([L,'integer':I],M) :-
     I in 0.. Length2,
     label([I]),
     nth0(I,L,M).
+brachylog_member([A,B,C|T],M) :-
+    brachylog_member([[A,B,C|T],'integer':_],M).
   
   
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
