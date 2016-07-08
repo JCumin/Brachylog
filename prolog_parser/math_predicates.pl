@@ -326,6 +326,7 @@ brachylog_math_circular_permute_left('string':[H|T],'string':S) :-
 brachylog_math_circular_permute_left([H|T],S) :-
     append(T,[H],S).
 brachylog_math_circular_permute_left('integer':I,'integer':J) :-
+    dif(H,0),
     integer_value('integer':Sign:[H|T],I),
     append(T,[H],S),
     integer_value('integer':Sign:S,J).
@@ -342,8 +343,8 @@ brachylog_math_circular_permute_right([A|B],S) :-
     append(T,[H],[A|B]),
     S = [H|T].
 brachylog_math_circular_permute_right('integer':I,'integer':J) :-
-    integer_value('integer':Sign:L,I),
-    append(T,[H],L),
+    dif(H2,0),
+    integer_value('integer':Sign:[H2|T2],I),
+    append(T,[H],[H2|T2]),
     S = [H|T],
     integer_value('integer':Sign:S,J).
-    
