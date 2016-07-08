@@ -30,12 +30,12 @@ ____            ____
  brachylog_constraint_different([],[]).
  brachylog_constraint_different([H|T],[H|T]) :-
     maplist(prepend_integer,L,[H|T]),
-    all_different(L).
+    all_distinct(L).
 brachylog_constraint_different('integer':0,'integer':0).
 brachylog_constraint_different('integer':I,'integer':I) :-
     H #\= 0,
     integer_value('integer':_:[H|T],I),
-    all_different([H|T]).
+    all_distinct([H|T]).
  
  
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
