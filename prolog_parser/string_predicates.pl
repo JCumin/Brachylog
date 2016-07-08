@@ -16,6 +16,7 @@ ____            ____
 
 :- module(string_predicates, [brachylog_string_blocks/2,
                               brachylog_string_lowercase/2,
+                              brachylog_string_split_lines/2,
                               brachylog_string_uppercase/2,
                               brachylog_string_dichotomize/2,
                               brachylog_string_trichotomize/2,
@@ -54,6 +55,20 @@ brachylog_string_blocks([H|T],I,[[],[H|T2]|T3]) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_string_lowercase('string':Ls0,'string':Ls) :-
     maplist(downcase_atom, Ls0, Ls).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_SPLIT_LINES
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_split_lines('string':[],['string':[]]).
+brachylog_string_split_lines('string':['\r','\r\n'|T],['string':[]|T3]) :-
+    brachylog_string_split_lines('string':T,T3).
+brachylog_string_split_lines('string':['\n'|T],['string':[]|T3]) :-
+    brachylog_string_split_lines('string':T,T3).
+brachylog_string_split_lines('string':[H|T],['string':[H|T2]|T3]) :-
+    dif(H,'\n'),
+    dif(H,'\r\n'),
+    brachylog_string_split_lines('string':T,['string':T2|T3]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
