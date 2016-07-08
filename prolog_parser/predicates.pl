@@ -589,14 +589,15 @@ call_nth(Goal_0, C) :-
 brachylog_zip(L,Z) :-
     is_brachylog_list(L),
     maplist(brachylog_length,L,Lengths),
-    brachylog_order(Lengths,['integer':MinLength|_]),
-    brachylog_zip_(L,MinLength,Z).
+    brachylog_order(Lengths,OrderedLengths),
+    reverse(OrderedLengths,['integer':MaxLength|_]),
+    brachylog_zip_(L,MaxLength,Z).
     
 brachylog_zip_(_,0,[]).
 brachylog_zip_(L,I,[Heads|Z]) :-
     I #> 0,
     maplist(brachylog_head,L,Heads),
-    maplist(brachylog_behead,L,Tails),
+    maplist(brachylog_math_circular_permute_left,L,Tails),
     J #= I - 1,
     brachylog_zip_(Tails,J,Z).
 
