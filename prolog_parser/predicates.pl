@@ -23,6 +23,7 @@ ____            ____
                        brachylog_group/2,
                        brachylog_head/2,
                        brachylog_iterate/2,
+                       brachylog_juxtapose/2,
                        brachylog_length/2,
                        brachylog_member/2,
                        brachylog_order/2,
@@ -272,6 +273,51 @@ brachylog_iterate_(I,PredName,Arg,Z) :-
     brachylog_call_predicate([Arg,PredName,'ignore_calling_predicate'],X),
     J #= I - 1,
     brachylog_iterate_(J,PredName,X,Z).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_JUXTAPOSE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_juxtapose([[],'integer':_],[]).
+brachylog_juxtapose([[H|T],'integer':0],[H|T]).
+brachylog_juxtapose([[H|T],'integer':I],Z) :-
+    var(Z),
+    Z = [HZ|TZ],
+    I #> 0,
+    length([H|T],L),
+    LZ #= (I+1)*L,
+    length([HZ|TZ],LZ),
+    append([H|T],T2,[HZ|TZ]),
+    J #= I-1,
+    brachylog_juxtapose([[H|T],'integer':J],T2).
+brachylog_juxtapose([[H|T],'integer':I],Z) :-
+    nonvar(Z),
+    Z = [HZ|TZ],
+    I #> 0,
+    length([HZ|TZ],LZ),
+    LZ #= (I+1)*L,
+    indomain(L),
+    length([H|T],L),
+    append([H|T],T2,[HZ|TZ]),
+    J #= I-1,
+    brachylog_juxtapose([[H|T],'integer':J],T2).
+brachylog_juxtapose(['string':S,'integer':I],'string':Z) :-
+    brachylog_juxtapose([S,'integer':I],Z).
+brachylog_juxtapose(['integer':I,'integer':J],'integer':Z) :-
+    var(Z),
+    dif(H,0),
+    integer_value('integer':Sign:[H|T],I),
+    brachylog_juxtapose([[H|T],'integer':J],LZ),
+    LZ = [HZ|_],
+    dif(HZ,0),
+    integer_value('integer':Sign:LZ,Z).
+brachylog_juxtapose(['integer':I,'integer':J],'integer':Z) :-
+    nonvar(Z),
+    dif(H,0),
+    dif(HZ,0),
+    integer_value('integer':Sign:[HZ|TZ],Z),
+    brachylog_juxtapose([[H|T],'integer':J],[HZ|TZ]),
+    integer_value('integer':Sign:[H|T],I).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
