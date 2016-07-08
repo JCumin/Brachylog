@@ -79,7 +79,7 @@ token_predicate('@j','').
 token_predicate('@k','').
 token_predicate('@l','brachylog_string_lowercase').
 token_predicate('@m','').
-token_predicate('@n','').
+token_predicate('@n','brachylog_string_split_lines').
 token_predicate('@o','').
 token_predicate('@p','').
 token_predicate('@q','').
