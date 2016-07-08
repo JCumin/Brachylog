@@ -50,7 +50,6 @@ brachylog_constraint_coerce_to_integer('integer':I,'integer':I).
 brachylog_constraint_coerce_to_string('string':I,'string':I).
 
 
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_CONSTRAINT_COERCE_TO_LIST
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
