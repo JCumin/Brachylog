@@ -17,6 +17,10 @@ ____            ____
 :- use_module(transpile).
 :- use_module(symbols).
 :- use_module(utils).
+:- use_module(predicates).
+:- use_module(math_predicates).
+:- use_module(string_predicates).
+:- use_module(constraint_predicates).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -87,6 +91,70 @@ run(Input,Output) :-
         ;
         true
     ).
+    
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   RUN_FROM_ATOM_NO_FILE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+run_from_file_no_file(FilePath) :-
+    run_from_file_no_file(FilePath,'ignore','ignore').
+run_from_file_no_file(FilePath,Input) :-
+    run_from_file_no_file(FilePath,Input, 'ignore').
+run_from_file_no_file(FilePath,Input,Output) :-
+    read_file(FilePath,Code),
+    !,
+    run_from_atom_no_file(Code,Input,Output).
+    
+run_from_atom_no_file(Code) :-
+    run_from_atom_no_file(Code,'ignore','ignore').
+run_from_atom_no_file(Code,Input) :-
+    run_from_atom_no_file(Code,Input,'ignore').
+run_from_atom_no_file(Atom,Input,Output) :-
+    parse_no_file(Atom,Predicates),
+    !,
+    set_prolog_flag(answer_write_options,[quoted(true),
+                                          portray(true),
+                                          max_depth(10),
+                                          spacing(next_argument),
+                                          max_depth(0)]),
+    set_prolog_flag(print_write_options,[portray(true),
+                                         quoted(true),
+                                         numbervars(true),
+                                         max_depth(0)]),
+    maplist(atomic_list_concat,Predicates,ConcatenatedPredicates),
+    maplist(read_term_from_atom_,ConcatenatedPredicates,AssertablePredicates),
+    maplist(asserta,AssertablePredicates),
+    (
+        \+ var(Input),
+		Input \= 'ignore',
+        parse_argument(Input,ParsedInput)
+        ;
+        true
+    ),
+    (
+        \+ var(Output),
+		Output \= 'ignore',
+        parse_argument(Output,ParsedOutput)
+        ;
+        true
+    ),
+    !,
+    call(brachylog_main,ParsedInput,ParsedOutput),
+    (
+        var(Input)
+        -> brachylog_prolog_variable(ParsedInput,Input)
+        ;
+        true
+    ),
+    (
+        var(Output)
+        -> brachylog_prolog_variable(ParsedOutput,Output)
+        ;
+        true
+    ).
+
+read_term_from_atom_(A,B) :-
+    read_term_from_atom(A,B,[]).
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

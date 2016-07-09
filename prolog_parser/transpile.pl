@@ -15,6 +15,7 @@ ____            ____
 
 
 :- module(transpile, [parse/2,
+                      parse_no_file/2,
                       parse_argument/2
                      ]).
 
@@ -26,16 +27,19 @@ ____            ____
    PARSE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 parse(Code,TranspiledPath) :-
+    parse_no_file(Code,Predicates),
+    open(TranspiledPath, write, File),
+    maplist(write_to_file(File),Predicates),
+    close(File).
+    
+parse_no_file(Code,Predicates) :-
     atom_chars(Code,SplittedCode),
     tokenize(SplittedCode,Tokens),
     fix_predicates(Tokens,FixedPredicates),
     fill_implicit_variables(FixedPredicates,FilledTokens),
     fix_lists(FilledTokens,Program),
     transpile(Program,Predicates),
-    !,
-    open(TranspiledPath, write, File),
-    maplist(write_to_file(File),Predicates),
-    close(File).
+    !.
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,9 +56,10 @@ parse_argument(Arg,Term) :-
     atom_chars(AtomArg,SplittedArg),
     tokenize(SplittedArg,Token),
     fix_lists(Token,Program),
-    transpile(Program,[TempMainPredicate]),
+    transpile(Program,Parsed),
     !,
-    nth0(2,TempMainPredicate,Atom),
+    reverse(Parsed,[TempMainPredicate|_]),
+    nth0(1,TempMainPredicate,Atom),
     atom_concat(',\n    ',AtomT,Atom),
     atom_concat(ParsedArg,' = Input',AtomT),
     term_to_atom(Term,ParsedArg)
@@ -172,7 +177,7 @@ fix_list([X|T],[Y|T2]) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    TRANSPILE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-transpile(Program,[[':- style_check(-singleton).\n:- use_module(library(clpfd)).\n:- use_module(predicates).\n:- use_module(math_predicates).\n:- use_module(string_predicates).\n:- use_module(constraint_predicates).\n\n','brachylog_main(Input,Output) :-\n    Name = brachylog_main,\n    (1=1'|T]|OtherPredicates]) :-
+transpile(Program,[[':- style_check(-singleton).'],[':- use_module(library(clpfd)).'],[':- use_module(predicates).'],[':- use_module(math_predicates).'],[':- use_module(string_predicates).'],[':- use_module(constraint_predicates).\n'],['brachylog_main(Input,Output) :-\n    Name = brachylog_main,\n    (1=1'|T]|OtherPredicates]) :-
     transpile_(Program,['Input'],no,no,0,[T|OtherPredicates]).
     
 transpile_([],_,_,_,_,[['\n    ).\n']]).
