@@ -52,6 +52,7 @@ ____            ____
                        
 :- use_module(library(clpfd)).
 :- use_module(math_predicates).
+:- use_module(constraint_predicates).
 :- use_module(utils).
     
     
@@ -109,54 +110,84 @@ brachylog_behead_float_([H|T],[H|T2]) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_CONCATENATE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_concatenate('string':L,'string':L).
-brachylog_concatenate('integer':I,'integer':I).
-brachylog_concatenate('float':F,'float':F).
 brachylog_concatenate([H|T],L) :-
-    brachylog_concatenate(T,H,L).
-
-brachylog_concatenate([],L,L).
-brachylog_concatenate(['string':H|T],'string':S,L) :-
-    append(S,H,I),
-    brachylog_concatenate(T,'string':I,L).
-brachylog_concatenate([L|T],L2,L3) :-
-    is_brachylog_list(L),
-    is_brachylog_list(L2),
-    append(L2,L,M),
-    brachylog_concatenate(T,M,L3).
-brachylog_concatenate(L,'integer':I,Z) :-
-    AI #= abs(I),
+    var(L),
     (
-        I #= 0,
-        HI #= 0,
-        TI = []
+        (H = [] ; H = [_|_]),
+        brachylog_constraint_coerce_to_list(L,L),
+        List = L,
+        ListOfLists = [H|T]
         ;
-        HI #\= 0
+        H = 'string':_,
+        brachylog_constraint_coerce_to_string('string':List,L),
+        maplist(prepend_string,ListOfLists,[H|T])
+        ;
+        H = 'integer':_,
+        maplist(brachylog_concatenate_integer_value,ListOfLists,[H|T])
     ),
-    integer_value('integer':'positive':[HI|TI],AI),
-    brachylog_concatenate_(L,[HI|TI],Z).
+    brachylog_concatenate_(ListOfLists,List),
+    (
+        H = 'integer':_,
+        List = [0],
+        L = 'integer':0
+        ;
+        H = 'integer':_,
+        List = [J|TList],
+        J #\= 0,
+        integer_value('integer':'positive':[J|TList],I),
+        L = 'integer':I
+        ;
+        H \= 'integer':_
+    ).
     
-brachylog_concatenate_([],[HZ|TZ],'integer':Z) :-
+brachylog_concatenate([H|T],L) :-
+    nonvar(L),
+    brachylog_length(L,'integer':Length),
+    LengthList #> 0,
+    LengthList #=< Length,
+    indomain(LengthList),
+    length([H|T],LengthList),
     (
-        Z #= 0,
-        HZ #= 0,
-        TZ = []
+        (L = [] ; L = [_|_]),
+        maplist(brachylog_constraint_coerce_to_list,[H|T],[H|T]),
+        List = L,
+        ListOfLists = [H|T]
         ;
-        HZ #\= 0
-    ),
-    integer_value('integer':'positive':[HZ|TZ],Z).
-brachylog_concatenate_(['integer':I|T],L,'integer':Z) :-
-    AI #= abs(I),
-    (
-        I #= 0,
-        HI #= 0,
-        TI = []
+        L = 'string':List,
+        maplist(brachylog_constraint_coerce_to_string,[H|T],[H|T]),
+        maplist(prepend_string,ListOfLists,[H|T])
         ;
-        HI #\= 0
+        L = 'integer':I,
+        (   
+            I = 0,
+            List = [0]
+            ;
+            I #\= 0,
+            J #\= 0,
+            integer_value('integer':_:[J|TList],I),
+            List = [J|TList]
+        ),
+        maplist(brachylog_constraint_coerce_to_integer,[H|T],[H|T]),
+        maplist(brachylog_concatenate_limit_length(Length),[H|T]),
+        maplist(brachylog_concatenate_integer_value,ListOfLists,[H|T])
     ),
-    integer_value('integer':'positive':[HI|TI],AI),
-    append(L,[HI|TI],M),
-    brachylog_concatenate_(T,M,'integer':Z).
+    maplist(brachylog_concatenate_limit_length(Length),[H|T]),
+    brachylog_concatenate_(ListOfLists,List).
+
+brachylog_concatenate_limit_length(Max,H) :-
+    Length #>= 0,
+    Length #=< Max,
+    indomain(Length),
+    brachylog_length(H,'integer':Length).
+
+brachylog_concatenate_integer_value([0],'integer':0).
+brachylog_concatenate_integer_value([H|T],'integer':I) :-
+    H #\= 0,
+    integer_value('integer':_:[H|T],I).
+
+brachylog_concatenate_([L|T],L2) :-
+    is_brachylog_list(L2),
+    append([L|T],L2).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
