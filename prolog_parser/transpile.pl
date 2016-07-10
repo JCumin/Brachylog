@@ -226,6 +226,8 @@ transpile_(['variable':B|T],A,Reverse,Negate,PredNumber,[[Unification|T2]|OtherP
         atomic_list_concat([',\n    ',Var1,UnificationAtom,Var2],Unification),
         transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates])
     ).
+transpile_(['variable':[B|TB]|T],[],_,_,PredNumber,[T2|OtherPredicates]) :-
+    transpile_(T,[B|TB],no,no,PredNumber,[T2|OtherPredicates]). 
 transpile_(['variable':B|T],[],_,_,PredNumber,[T2|OtherPredicates]) :-
     transpile_(T,[B],no,no,PredNumber,[T2|OtherPredicates]). 
 transpile_(['predicate':P,'variable':B|T],A,Reverse,Negate,PredNumber,[[Predicate|T2]|OtherPredicates]) :-
