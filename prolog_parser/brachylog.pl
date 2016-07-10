@@ -127,19 +127,29 @@ run_from_atom_no_file(Atom,Input,Output) :-
     (
         \+ var(Input),
 		Input \= 'ignore',
-        parse_argument(Input,ParsedInput)
+        parse_argument(Input,ParsedInput),
+        ReportInput = 'no'
         ;
+        Input == 'ignore',
+        ReportInput = 'no'
+        ;
+        ReportInput = 'yes',
         true
     ),
     (
         \+ var(Output),
 		Output \= 'ignore',
-        parse_argument(Output,ParsedOutput)
+        parse_argument(Output,ParsedOutput),
+        ReportOutput = 'no'
         ;
+        Output == 'ignore',
+        ReportOutput = 'no'
+        ;
+        ReportOutput = 'yes',
         true
     ),
     !,
-    call(brachylog_main,ParsedInput,ParsedOutput),
+    call(brachylog_main,ParsedInput,ParsedOutput) ->
     (
         var(Input)
         -> brachylog_prolog_variable(ParsedInput,Input)
@@ -151,12 +161,56 @@ run_from_atom_no_file(Atom,Input,Output) :-
         -> brachylog_prolog_variable(ParsedOutput,Output)
         ;
         true
-    ).
+    ),
+    (
+        ReportInput = 'yes',
+        Bindings = ['Input'=Input]
+        ;
+        Bindings = []
+    ),
+    (
+        ReportOutput = 'yes',
+        BindingsFinal = ['Output'=Output|Bindings]
+        ;
+        BindingsFinal = Bindings,
+        true
+    ),
+    write('\n'),
+    reverse(BindingsFinal,RBindings),
+    report_bindings(RBindings),
+    (
+        ReportInput = 'no',
+        ReportOutput = 'no',
+        write('true.')
+        ;
+        true
+    )
+    ;
+    write('\nfalse.').
 
 read_term_from_atom_(A,B) :-
     read_term_from_atom(A,B,[]).
-    
-    
+
+% Credits to M. Triska
+% See: http://stackoverflow.com/a/38284692/2554145
+report_bindings(NameVars) :-
+    phrase(bindings(NameVars),Bs),
+    format("~s",[Bs]).
+
+bindings([])           --> [].
+bindings([E])          --> name_var(E).
+bindings([E1,E2|Rest]) --> name_var(E1),",\n",bindings([E2|Rest]).
+
+name_var(Name=Var) -->
+    format_("~w = ~q", [Name,Var]).
+
+format_(Format,Ls) -->
+    call(format_codes(Format,Ls)).
+
+format_codes(Format,Ls,Cs0,Cs) :-
+    format(codes(Cs0,Cs),Format,Ls).
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    READ_FILE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
