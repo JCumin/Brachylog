@@ -641,8 +641,16 @@ brachylog_xterminate_single('string':L,'string':H,'string':Z) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_yield('integer':I,Z) :-
     findall(X,brachylog_enumerate(['integer':0,'integer':I],X),Z).
+brachylog_yield(['string':[C],'string':[D]],Z) :-
+    atom_codes(C,[CC]),
+    atom_codes(D,[DC]),
+    findall([X],brachylog_enumerate(['integer':CC,'integer':DC],'integer':X),LC),
+    maplist(atom_codes,L,LC),
+    maplist(brachylog_group,L,LG),
+    maplist(prepend_string,LG,Z).
 brachylog_yield([A,B|T],Z) :-
     reverse([A,B|T],[PredName,'integer':I|RArgs]),
+    atom(PredName),
     reverse(RArgs,Args),
     append([Args,[PredName,'ignore_calling_predicate']],L),
     findall(X,call_firstn(brachylog_call_predicate(L,X),I),Z).
