@@ -780,12 +780,12 @@ brachylog_plus_([TypeI:I|T],TypeS:Sum) :-
         (
             TypeF = 'float',
             TypeI = 'integer',
-            label([I])
+            indomain(I)
             ;
             TypeI = 'float',
             nonvar(I),
             TypeF = 'integer',
-            label([F])
+            indomain(F)
             ;
             TypeF = 'float',
             TypeI = 'float',
@@ -799,20 +799,18 @@ brachylog_plus_([TypeI:I|T],TypeS:Sum) :-
    BRACHYLOG_MINUS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_minus('integer':I,'integer':J) :-
-    J #= -I,
-    label([I,J]).
+    J #= -I.
 brachylog_minus('float':I,'float':J) :-
     J is -I.
 brachylog_minus([],'integer':[0]).
 brachylog_minus(['integer':I1,'integer':I2],'integer':Sum) :-
-    Sum #= I1 - I2,
-    label([Sum,I1,I2]).
+    Sum #= I1 - I2.
 brachylog_minus(['float':I1,'integer':I2],'float':Sum) :-
-    label([I2]),
+    indomain(I2),
     nonvar(I1),
     Sum is I1 - I2.
 brachylog_minus(['integer':I1,'float':I2],'float':Sum) :-
-    label([I1]),
+    indomain(I1),
     nonvar(I2),
     Sum is I1 - I2.
 brachylog_minus(['float':I1,'float':I2],'float':Sum) :-
@@ -858,12 +856,12 @@ brachylog_multiply_([TypeI:I|T],TypeS:Product) :-
 		(
 			TypeF = 'float',
 			TypeI = 'integer',
-			label([I])
+			indomain(I)
 			;
 			TypeI = 'float',
 			nonvar(I),
 			TypeF = 'integer',
-			label([F])
+			indomain(F)
 			;
 			TypeF = 'float',
 			TypeI = 'float',
@@ -877,20 +875,19 @@ brachylog_multiply_([TypeI:I|T],TypeS:Product) :-
    BRACHYLOG_DIVIDE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_divide('integer':I,'float':J) :-
-	label([I]),
+	indomain(I),
 	J is 1/I.
 brachylog_divide('float':I,'float':J) :-
 	J is 1/I.
 brachylog_divide([],'integer':1).
 brachylog_divide(['integer':I1,'integer':I2],'integer':Division) :-
-	Division #= I1 // I2,
-	label([Division,I1,I2]).
+	Division #= I1 // I2.
 brachylog_divide(['float':I1,'integer':I2],'float':Division) :-
-	label([I2]),
+	indomain(I2),
 	nonvar(I1),
 	Division is I1 / I2.
 brachylog_divide(['integer':I1,'float':I2],'float':Division) :-
-	label([I1]),
+	indomain(I1),
 	nonvar(I2),
 	Division is I1 / I2.
 brachylog_divide(['float':I1,'float':I2],'float':Division) :-
@@ -908,14 +905,13 @@ brachylog_power('float':I,'float':J) :-
     J is I^2.
 brachylog_power([],'integer':1).
 brachylog_power(['integer':I1,'integer':I2],'integer':Power) :-
-    Power #= I1 ^ I2,
-    label([Power,I1,I2]).
+    Power #= I1 ^ I2.
 brachylog_power(['float':I1,'integer':I2],'float':Power) :-
-    label([I2]),
+    indomain(I2),
     nonvar(I1),
     Power is I1 ^ I2.
 brachylog_power(['integer':I1,'float':I2],'float':Power) :-
-    label([I1]),
+    indomain(I1),
     nonvar(I2),
     Power is I1 ^ I2.
 brachylog_power(['float':I1,'float':I2],'float':Power) :-
@@ -930,11 +926,11 @@ brachylog_power(['float':I1,'float':I2],'float':Power) :-
 brachylog_less('integer':I1,'integer':I2) :-
     I1 #< I2.
 brachylog_less('float':I1,'integer':I2) :-
-    label([I2]),
+    indomain(I2),
     nonvar(I1),
     I1 < I2.
 brachylog_less('integer':I1,'float':I2) :-
-    label([I1]),
+    indomain(I1),
     nonvar(I2),
     I1 < I2.
 brachylog_less('float':I1,'float':I2) :-
@@ -949,11 +945,11 @@ brachylog_less('float':I1,'float':I2) :-
 brachylog_greater('integer':I1,'integer':I2) :-
     I1 #> I2.
 brachylog_greater('float':I1,'integer':I2) :-
-    label([I2]),
+    indomain(I2),
     nonvar(I1),
     I1 > I2.
 brachylog_greater('integer':I1,'float':I2) :-
-    label([I1]),
+    indomain(I1),
     nonvar(I2),
     I1 > I2.
 brachylog_greater('float':I1,'float':I2) :-
@@ -968,11 +964,11 @@ brachylog_greater('float':I1,'float':I2) :-
 brachylog_lessequal('integer':I1,'integer':I2) :-
     I1 #=< I2.
 brachylog_lessequal('float':I1,'integer':I2) :-
-    label([I2]),
+    indomain(I2),
     nonvar(I1),
     I1 =< I2.
 brachylog_lessequal('integer':I1,'float':I2) :-
-    label([I1]),
+    indomain(I1),
     nonvar(I2),
     I1 =< I2.
 brachylog_lessequal('float':I1,'float':I2) :-
@@ -987,17 +983,24 @@ brachylog_lessequal('float':I1,'float':I2) :-
 brachylog_greaterequal('integer':I1,'integer':I2) :-
     I1 #>= I2.
 brachylog_greaterequal('float':I1,'integer':I2) :-
-    label([I2]),
+    indomain(I2),
     nonvar(I1),
     I1 >= I2.
 brachylog_greaterequal('integer':I1,'float':I2) :-
-    label([I1]),
+    indomain(I1),
     nonvar(I2),
     I1 >= I2.
 brachylog_greaterequal('float':I1,'float':I2) :-
     nonvar(I1),
     nonvar(I2),
     I1 >= I2.
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MODULO
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_modulo(['integer':I1,'integer':I2],'integer':Rem) :-
+    Rem #= I1 mod I2.
     
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1046,11 +1049,3 @@ unsafe_up_(sup, Low, X) :-
 unsafe_up_(n(Up), Low, X) :- between(Low, Up, X).
 
 positive_integer(N) :- length([_|_], N).
-
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   BRACHYLOG_MODULO
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_modulo(['integer':I1,'integer':I2],'integer':Rem) :-
-    Rem #= I1 mod I2,
-    label([I1,I2,Rem]).
