@@ -393,6 +393,7 @@ brachylog_member(['string':S,'integer':I],'string':[C]) :-
     I in 0..L2,
     label([I]),
     nth0(I,S,C).
+brachylog_member(['integer':0,'integer':0],'integer':0).
 brachylog_member(['integer':J,'integer':I],'integer':K) :-
     H #\= 0,
     integer_value('integer':_:[H|T],J),
@@ -401,7 +402,7 @@ brachylog_member(['integer':J,'integer':I],'integer':K) :-
     I in 0..Length2,
     label([I]),
     nth0(I,[H|T],M),
-    integer_value('integer':'positive':M,K).
+    integer_value('integer':'positive':[M],K).
 brachylog_member(['float':F,'integer':I],'integer':J) :-
     number_codes(F,L),
     length(L,Length),
