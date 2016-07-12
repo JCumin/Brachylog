@@ -651,7 +651,6 @@ brachylog_yield(['string':[C],'string':[D]],Z) :-
     maplist(prepend_string,LG,Z).
 brachylog_yield([A,B|T],Z) :-
     reverse([A,B|T],[PredName,'integer':I|RArgs]),
-    atom(PredName),
     reverse(RArgs,Args),
     append([Args,[PredName,'ignore_calling_predicate']],L),
     findall(X,call_firstn(brachylog_call_predicate(L,X),I),Z).
