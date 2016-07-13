@@ -283,7 +283,8 @@ transpile_(['predicate':P,'variable':B|T],A,Reverse,Negate,PredNumber,[[Predicat
     ).
 transpile_(['control':','|T],_,_,_,PredNumber,[T2|OtherPredicates]) :-
     transpile_(T,[],no,no,PredNumber,[T2|OtherPredicates]).
-    
+transpile_(['control':'`'|T],B,_,_,PredNumber,[['\n    ->\n    1=1'|T2]|OtherPredicates]) :-
+    transpile_(T,B,no,no,PredNumber,[T2|OtherPredicates]).    
 transpile_(['control':';'|T],_,_,_,PredNumber,[['\n    ;\n    1=1'|T2]|OtherPredicates]) :-
     transpile_(T,[],no,no,PredNumber,[T2|OtherPredicates]).
 transpile_(['control':'('|T],B,_,Negate,PredNumber,[[Parenthesis|T2]|OtherPredicates]) :-
