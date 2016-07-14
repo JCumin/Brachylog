@@ -17,6 +17,7 @@ ____            ____
 :- module(string_predicates, [brachylog_string_blocks/2,
                               brachylog_string_lowercase/2,
                               brachylog_string_split_lines/2,
+                              brachylog_string_pad/2,
                               brachylog_string_uppercase/2,
                               brachylog_string_dichotomize/2,
                               brachylog_string_trichotomize/2,
@@ -69,6 +70,27 @@ brachylog_string_split_lines('string':[H|T],['string':[H|T2]|T3]) :-
     dif(H,'\n'),
     dif(H,'\r\n'),
     brachylog_string_split_lines('string':T,['string':T2|T3]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_PAD
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_pad([],[]).
+brachylog_string_pad([H|T],Padded) :-
+    length([H|T],L),
+    length(Padded,L),
+    maplist(brachylog_length,[H|T],Lengths),
+    brachylog_order(Lengths,OrderedLengths),
+    reverse(OrderedLengths,['integer':MaxLength|_]),
+    maplist(brachylog_string_pad_(MaxLength),[H|T],Padded).
+
+brachylog_string_pad_(MaxL,'string':S,'string':Z) :-
+    length(Z,MaxL),
+    length(S,L),
+    L2 #= MaxL - L,
+    length(T,L2),
+    maplist(=(' '),T),
+    brachylog_concatenate(['string':S,'string':T],'string':Z).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
