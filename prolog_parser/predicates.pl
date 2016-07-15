@@ -745,10 +745,10 @@ brachylog_call_predicate(X,Output) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_PLUS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_plus('integer':I,'integer':AbsoluteValue) :-
-    AbsoluteValue #= abs(I).
-brachylog_plus('float':F,'float':AbsoluteValue) :-
-    AbsoluteValue is abs(F).
+brachylog_plus('integer':I,'integer':J) :-
+    J #= I + 1.
+brachylog_plus('float':F,'float':J) :-
+    J is I + 1.
 brachylog_plus(L,Sum) :-
     is_brachylog_list(L),
     \+ (maplist(is_brachylog_list,L)),
@@ -798,9 +798,9 @@ brachylog_plus_([TypeI:I|T],TypeS:Sum) :-
    BRACHYLOG_MINUS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_minus('integer':I,'integer':J) :-
-    J #= -I.
+    J #= I - 1.
 brachylog_minus('float':I,'float':J) :-
-    J is -I.
+    J is I - 1.
 brachylog_minus([],'integer':[0]).
 brachylog_minus(['integer':I1,'integer':I2],'integer':Sum) :-
     Sum #= I1 - I2.
