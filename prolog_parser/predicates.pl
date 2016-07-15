@@ -747,7 +747,7 @@ brachylog_call_predicate(X,Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_plus('integer':I,'integer':J) :-
     J #= I + 1.
-brachylog_plus('float':F,'float':J) :-
+brachylog_plus('float':I,'float':J) :-
     J is I + 1.
 brachylog_plus(L,Sum) :-
     is_brachylog_list(L),

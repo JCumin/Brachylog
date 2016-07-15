@@ -36,7 +36,9 @@ ____            ____
                             brachylog_math_transpose/2,
                             brachylog_math_antitranspose/2,
                             brachylog_math_circular_permute_left/2,
-                            brachylog_math_circular_permute_right/2
+                            brachylog_math_circular_permute_right/2,
+                            brachylog_math_norm/2,
+                            brachylog_math_negate/2
                            ]).
                        
 :- use_module(library(clpfd)).
@@ -348,3 +350,21 @@ brachylog_math_circular_permute_right('integer':I,'integer':J) :-
     append(T,[H],[H2|T2]),
     S = [H|T],
     integer_value('integer':Sign:S,J).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_NORM
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_math_norm('integer':I,'integer':J) :-
+    J #= abs(I).
+brachylog_math_norm('float':I,'float':J) :-
+    J is abs(I).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_NEGATE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_math_negate('integer':I,'integer':J) :-
+    J #= -I.
+brachylog_math_negate('float':I,'float':J) :-
+    J is -I.

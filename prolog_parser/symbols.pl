@@ -193,8 +193,8 @@ token_predicate('$:','').
 token_predicate('$?','').
 token_predicate('$.','').
 token_predicate('$!','brachylog_math_factorial').
-token_predicate('$|','').
-token_predicate('$_','').
+token_predicate('$|','brachylog_math_norm').
+token_predicate('$_','brachylog_math_negate').
 token_predicate('$&','').
 token_predicate('$~','').
 token_predicate('$"','').
