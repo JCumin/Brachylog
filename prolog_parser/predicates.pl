@@ -362,15 +362,16 @@ brachylog_length('string':S,'integer':Length) :-
 brachylog_length('integer':0,'integer':1).
 brachylog_length('integer':I,'integer':Length) :-
     H #\= 0,
-    abs(10 * I) #> Length,
     Length #>= 0,
-    indomain(Length),
-    length([H|T],Length),
-    integer_value('integer':_:[H|T],I).
+    abs(10 * I) #> Length,
+    abs(I) #< 10^Length,
+    integer_value('integer':_:[H|T],I),
+    length([H|T],Length).
 brachylog_length('float':F,'integer':Length) :-
     length(L,Length),
     catch(number_codes(F,L),E,(print_message(error,E),false)).
-  
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MEMBER
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
