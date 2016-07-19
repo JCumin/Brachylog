@@ -755,6 +755,7 @@ brachylog_plus('integer':I,'integer':J) :-
     J #= I + 1.
 brachylog_plus('float':I,'float':J) :-
     J is I + 1.
+brachylog_plus([],'integer':0).
 brachylog_plus(L,Sum) :-
     is_brachylog_list(L),
     \+ (maplist(is_brachylog_list,L)),
