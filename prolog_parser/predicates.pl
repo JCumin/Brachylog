@@ -361,10 +361,15 @@ brachylog_length('string':S,'integer':Length) :-
     length(S,Length).
 brachylog_length('integer':0,'integer':1).
 brachylog_length('integer':I,'integer':Length) :-
+    nonvar(Length),
+    H #\= 0,
+    abs(I) #< 10^Length,
+    integer_value('integer':_:[H|T],I),
+    length([H|T],Length).
+brachylog_length('integer':I,'integer':Length) :-
+    var(Length),
     H #\= 0,
     Length #>= 0,
-    abs(10 * I) #> Length,
-    abs(I) #< 10^Length,
     integer_value('integer':_:[H|T],I),
     length([H|T],Length).
 brachylog_length('float':F,'integer':Length) :-
