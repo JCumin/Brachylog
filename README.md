@@ -28,6 +28,10 @@ will successively unify its Input variable with a prime number, starting from `2
     Z = 11 ;
     ...
 
+###Try it online!
+
+You can try out Brachylog on [Try it online!](http://brachylog.tryitonline.net/), thanks to @DennisMitchell.
+
 ###The interpreter
 
 Brachylog's interpreter is entirely written in Prolog. Therefore, installing [SWI-Prolog](http://www.swi-prolog.org/) (version 7 and up) is mandatory to use Brachylog (We do not guarantee that Brachylog's interpreter will be compatible with any other Prolog engines).
