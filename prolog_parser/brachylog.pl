@@ -105,6 +105,23 @@ run_from_file_no_file(FilePath,Input,Output) :-
     !,
     run_from_atom_no_file(Code,Input,Output).
     
+run_from_files_no_file(FilePath,InputPath,OutputPath) :-
+    read_file(FilePath,Code),!,
+    (
+        read_file(InputPath,Input),
+        Input \= ''
+        ;
+        Input = 'ignore'
+    ),!,
+    (
+        read_file(OutputPath,Output),
+        Output \= ''
+        ;
+        Output = 'ignore'
+    ),
+    !,
+    run_from_atom_no_file(Code,Input,Output).
+    
 run_from_atom_no_file(Code) :-
     run_from_atom_no_file(Code,'ignore','ignore').
 run_from_atom_no_file(Code,Input) :-
@@ -125,9 +142,9 @@ run_from_atom_no_file(Atom,Input,Output) :-
     maplist(read_term_from_atom_,ConcatenatedPredicates,AssertablePredicates),
     maplist(asserta,AssertablePredicates),
     (
-        \+ var(Input),
 		Input \= 'ignore',
         parse_argument(Input,ParsedInput),
+        \+ var(ParsedInput),
         ReportInput = 'no'
         ;
         Input == 'ignore',
@@ -137,9 +154,10 @@ run_from_atom_no_file(Atom,Input,Output) :-
         true
     ),
     (
-        \+ var(Output),
+        
 		Output \= 'ignore',
         parse_argument(Output,ParsedOutput),
+        \+ var(ParsedOutput),
         ReportOutput = 'no'
         ;
         Output == 'ignore',
@@ -151,26 +169,26 @@ run_from_atom_no_file(Atom,Input,Output) :-
     !,
     call(brachylog_main,ParsedInput,ParsedOutput) ->
     (
-        var(Input)
-        -> brachylog_prolog_variable(ParsedInput,Input)
+        ReportInput = 'yes'
+        -> brachylog_prolog_variable(ParsedInput,InputProlog)
         ;
         true
     ),
     (
-        var(Output)
-        -> brachylog_prolog_variable(ParsedOutput,Output)
+        ReportOutput = 'yes'
+        -> brachylog_prolog_variable(ParsedOutput,OutputProlog)
         ;
         true
     ),
     (
         ReportInput = 'yes',
-        Bindings = ['Input'=Input]
+        Bindings = [Input=InputProlog]
         ;
         Bindings = []
     ),
     (
         ReportOutput = 'yes',
-        BindingsFinal = ['Output'=Output|Bindings]
+        BindingsFinal = [Output=OutputProlog|Bindings]
         ;
         BindingsFinal = Bindings,
         true
@@ -223,7 +241,7 @@ read_file(FilePath,Code) :-
         atomic_list_concat(Chars,Code)
         ;
         throw('The file does not exist.')
-    ).
+    ),!.
 
 read_file_(File,[]) :-
     at_end_of_stream(File).
