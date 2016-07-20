@@ -931,6 +931,11 @@ brachylog_power(['float':I1,'float':I2],'float':Power) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_less('integer':I1,'integer':I2) :-
     I1 #< I2.
+brachylog_less([],[]).
+brachylog_less(['integer':I],['integer':I]).
+brachylog_less(['integer':I,'integer':J|T],['integer':I,'integer':J|T]) :-
+    I #< J,
+    brachylog_less(['integer':J|T],['integer':J|T]).
 brachylog_less('float':I1,'integer':I2) :-
     indomain(I2),
     nonvar(I1),
@@ -950,6 +955,11 @@ brachylog_less('float':I1,'float':I2) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_greater('integer':I1,'integer':I2) :-
     I1 #> I2.
+brachylog_greater([],[]).
+brachylog_greater(['integer':I],['integer':I]).
+brachylog_greater(['integer':I,'integer':J|T],['integer':I,'integer':J|T]) :-
+    I #> J,
+    brachylog_greater(['integer':J|T],['integer':J|T]).
 brachylog_greater('float':I1,'integer':I2) :-
     indomain(I2),
     nonvar(I1),
@@ -969,6 +979,11 @@ brachylog_greater('float':I1,'float':I2) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_lessequal('integer':I1,'integer':I2) :-
     I1 #=< I2.
+brachylog_lessequal([],[]).
+brachylog_lessequal(['integer':I],['integer':I]).
+brachylog_lessequal(['integer':I,'integer':J|T],['integer':I,'integer':J|T]) :-
+    I #=< J,
+    brachylog_lessequal(['integer':J|T],['integer':J|T]).
 brachylog_lessequal('float':I1,'integer':I2) :-
     indomain(I2),
     nonvar(I1),
@@ -988,6 +1003,11 @@ brachylog_lessequal('float':I1,'float':I2) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_greaterequal('integer':I1,'integer':I2) :-
     I1 #>= I2.
+brachylog_greaterequal([],[]).
+brachylog_greaterequal(['integer':I],['integer':I]).
+brachylog_greaterequal(['integer':I,'integer':J|T],['integer':I,'integer':J|T]) :-
+    I #>= J,
+    brachylog_greaterequal(['integer':J|T],['integer':J|T]).
 brachylog_greaterequal('float':I1,'integer':I2) :-
     indomain(I2),
     nonvar(I1),
