@@ -94,19 +94,10 @@ run(Input,Output) :-
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   RUN_FROM_ATOM_NO_FILE
+   RUN_FROM_FILES_NO_FILE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-run_from_file_no_file(FilePath) :-
-    run_from_file_no_file(FilePath,'ignore','ignore').
-run_from_file_no_file(FilePath,Input) :-
-    run_from_file_no_file(FilePath,Input, 'ignore').
-run_from_file_no_file(FilePath,Input,Output) :-
-    read_file(FilePath,Code),
-    !,
-    run_from_atom_no_file(Code,Input,Output).
-    
 run_from_files_no_file(FilePath,InputPath,OutputPath) :-
-    read_file(FilePath,Code),!,
+    read_file(FilePath,Atom),!,
     (
         read_file(InputPath,Input),
         Input \= ''
@@ -120,13 +111,6 @@ run_from_files_no_file(FilePath,InputPath,OutputPath) :-
         Output = 'ignore'
     ),
     !,
-    run_from_atom_no_file(Code,Input,Output).
-    
-run_from_atom_no_file(Code) :-
-    run_from_atom_no_file(Code,'ignore','ignore').
-run_from_atom_no_file(Code,Input) :-
-    run_from_atom_no_file(Code,Input,'ignore').
-run_from_atom_no_file(Atom,Input,Output) :-
     parse_no_file(Atom,Predicates),
     !,
     set_prolog_flag(answer_write_options,[quoted(true),
@@ -140,7 +124,7 @@ run_from_atom_no_file(Atom,Input,Output) :-
                                          max_depth(0)]),
     maplist(atomic_list_concat,Predicates,ConcatenatedPredicates),
     maplist(read_term_from_atom_,ConcatenatedPredicates,AssertablePredicates),
-    maplist(asserta,AssertablePredicates),
+    maplist(assertz,AssertablePredicates),
     (
 		Input \= 'ignore',
         parse_argument(Input,ParsedInput),
