@@ -109,10 +109,15 @@ run_from_files_no_file(FilePath,InputPath,OutputPath) :-
         Output \= ''
         ;
         Output = 'ignore'
-    ),
-    !,
+    ),!,
     parse_no_file(Atom,Predicates),
     !,
+    (
+        contains_write(Atom) ->
+        ContainsWrite = 'yes'
+        ;
+        ContainsWrite = 'no'
+    ),!,
     set_prolog_flag(answer_write_options,[quoted(true),
                                           portray(true),
                                           max_depth(10),
@@ -151,44 +156,52 @@ run_from_files_no_file(FilePath,InputPath,OutputPath) :-
         true
     ),
     !,
-    call(brachylog_main,ParsedInput,ParsedOutput) ->
     (
-        ReportInput = 'yes'
-        -> brachylog_prolog_variable(ParsedInput,InputProlog)
+        call(brachylog_main,ParsedInput,ParsedOutput) ->
+        (
+            ReportInput = 'yes'
+            -> brachylog_prolog_variable(ParsedInput,InputProlog)
+            ;
+            true
+        ),
+        (
+            ReportOutput = 'yes'
+            -> brachylog_prolog_variable(ParsedOutput,OutputProlog)
+            ;
+            true
+        ),
+        (
+            ReportInput = 'yes',
+            Bindings = [Input=InputProlog]
+            ;
+            Bindings = []
+        ),
+        (
+            ReportOutput = 'yes',
+            BindingsFinal = [Output=OutputProlog|Bindings]
+            ;
+            BindingsFinal = Bindings,
+            true
+        ),
+        write('\n'),
+        reverse(BindingsFinal,RBindings),
+        report_bindings(RBindings),
+        (
+            ReportInput = 'no',
+            ReportOutput = 'no',
+            ContainsWrite = 'no',
+            write('true.')
+            ;
+            true
+        )
         ;
-        true
-    ),
-    (
-        ReportOutput = 'yes'
-        -> brachylog_prolog_variable(ParsedOutput,OutputProlog)
-        ;
-        true
-    ),
-    (
-        ReportInput = 'yes',
-        Bindings = [Input=InputProlog]
-        ;
-        Bindings = []
-    ),
-    (
-        ReportOutput = 'yes',
-        BindingsFinal = [Output=OutputProlog|Bindings]
-        ;
-        BindingsFinal = Bindings,
-        true
-    ),
-    write('\n'),
-    reverse(BindingsFinal,RBindings),
-    report_bindings(RBindings),
-    (
-        ReportInput = 'no',
-        ReportOutput = 'no',
-        write('true.')
-        ;
-        true
-    )
-    ;
-    write('\nfalse.').
+        (
+            ContainsWrite = 'no',
+            write('\nfalse.')
+            ;
+            true
+        )
+    ).
 
 read_term_from_atom_(A,B) :-
     read_term_from_atom(A,B,[]).

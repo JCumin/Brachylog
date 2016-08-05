@@ -16,7 +16,8 @@ ____            ____
 
 :- module(transpile, [parse/2,
                       parse_no_file/2,
-                      parse_argument/2
+                      parse_argument/2,
+                      contains_write/1
                      ]).
 
 :- use_module(tokenize).
@@ -346,6 +347,16 @@ transpile_(['control':'|'|T],_,_,_,PredNumber,[['\n    ).\n'],[PredHead|T2]|Othe
     ),
     atomic_list_concat([PredName,'(Input,Output) :-\n    Name = ',PredName,',\n    (1=1'],PredHead),
     transpile_(T,['Input'],no,no,PredNumber,[T2|OtherPredicates]).
+    
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   CONTAINS_WRITE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+contains_write(Code) :-
+    atom_chars(Code,SplittedCode),
+    tokenize(SplittedCode,Tokens),
+    fix_predicates(Tokens,FixedPredicates),
+    member(predicate:brachylog_write,FixedPredicates).
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
