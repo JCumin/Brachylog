@@ -61,7 +61,8 @@ ____            ____
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_apply(L,Y) :-
 	is_brachylog_list(L),
-	reverse(L,[PredName|Args]),
+	reverse(L,[PredName|RArgs]),
+    reverse(RArgs,Args),
 	(
 		Args = [Arg],
 		is_brachylog_list(Arg)
