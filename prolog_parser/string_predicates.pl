@@ -62,9 +62,9 @@ brachylog_string_lowercase('string':Ls0,'string':Ls) :-
    BRACHYLOG_STRING_SPLIT_LINES
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_string_split_lines('string':[],['string':[]]).
-brachylog_string_split_lines('string':['\r','\r\n'|T],['string':[]|T3]) :-
-    brachylog_string_split_lines('string':T,T3).
 brachylog_string_split_lines('string':['\n'|T],['string':[]|T3]) :-
+    brachylog_string_split_lines('string':T,T3).
+brachylog_string_split_lines('string':['\r','\r\n'|T],['string':[]|T3]) :-
     brachylog_string_split_lines('string':T,T3).
 brachylog_string_split_lines('string':[H|T],['string':[H|T2]|T3]) :-
     dif(H,'\n'),
