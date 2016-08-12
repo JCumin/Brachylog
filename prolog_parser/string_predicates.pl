@@ -27,7 +27,8 @@ ____            ____
                               brachylog_string_hexachotomize/2,
                               brachylog_string_heptachotomize/2,
                               brachylog_string_octachotomize/2,
-                              brachylog_string_enneachotomize/2
+                              brachylog_string_enneachotomize/2,
+                              brachylog_string_to_number/2
                              ]).
                        
 :- use_module(library(clpfd)).
@@ -159,3 +160,17 @@ brachylog_string_Nchotomize(L,L2) :-
     Length #= LengthL//LengthL2,
     reverse(L2,[_|T]),
     maplist(length_(Length),T).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_TO_NUMBER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_to_number('string':S,Type:N) :-
+    atomic_list_concat(S,A),
+    atom_number(A,N),
+    (
+        member('.',S)
+        -> Type = 'float'
+        ;
+        Type = 'integer'
+    ).
