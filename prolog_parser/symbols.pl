@@ -285,7 +285,7 @@ token_variable('@':'E','').
 token_variable('@':'F','').
 token_variable('@':'G','').
 token_variable('@':'H','\'string\':[\'H\',e,l,l,o,\',\',\' \',\'W\',o,r,l,d,\'!\']').
-token_variable('@':'I','').
+token_variable('@':'I','\'string\':[0,1,2,3,4,5,6,7,8,9]').
 token_variable('@':'J','').
 token_variable('@':'K','').
 token_variable('@':'L','').
