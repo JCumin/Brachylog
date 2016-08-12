@@ -38,7 +38,8 @@ ____            ____
                             brachylog_math_circular_permute_left/2,
                             brachylog_math_circular_permute_right/2,
                             brachylog_math_norm/2,
-                            brachylog_math_negate/2
+                            brachylog_math_negate/2,
+                            brachylog_math_to_string/2
                            ]).
                        
 :- use_module(library(clpfd)).
@@ -368,3 +369,15 @@ brachylog_math_negate('integer':I,'integer':J) :-
     J #= -I.
 brachylog_math_negate('float':I,'float':J) :-
     J is -I.
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_TO_STRING
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_math_to_string('integer':I,'string':S) :-
+    brachylog_equals('integer':I,'integer':I),
+    atom_number(A,I),
+    atom_chars(A,S).
+brachylog_math_to_string('float':F,'string':S) :-
+    atom_number(A,F),
+    atom_chars(A,S).
