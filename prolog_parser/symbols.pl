@@ -70,7 +70,7 @@ token_predicate('@a','').
 token_predicate('@b','brachylog_string_blocks').
 token_predicate('@c','').
 token_predicate('@d','').
-token_predicate('@e','').
+token_predicate('@e','brachylog_string_elements').
 token_predicate('@f','').
 token_predicate('@g','').
 token_predicate('@h','').
