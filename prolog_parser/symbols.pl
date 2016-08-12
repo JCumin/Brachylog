@@ -131,7 +131,7 @@ token_predicate('@~','').
 token_predicate('@"','').
 token_predicate('@\'','').
 token_predicate('@`','').
-token_predicate('@$','').
+token_predicate('@$','brachylog_string_to_number').
 token_predicate('@@','').
 token_predicate('@#','').
 
@@ -201,7 +201,7 @@ token_predicate('$"','').
 token_predicate('$\'','').
 token_predicate('$`','').
 token_predicate('$$','').
-token_predicate('$@','').
+token_predicate('$@','brachylog_math_to_string').
 token_predicate('$#','').
 
 token_predicate('#a','').
