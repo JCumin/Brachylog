@@ -15,11 +15,12 @@ ____            ____
 
 
 :- module(string_predicates, [brachylog_string_blocks/2,
+                              brachylog_string_elements/2,
                               brachylog_string_lowercase/2,
                               brachylog_string_split_lines/2,
                               brachylog_string_pad/2,
                               brachylog_string_uppercase/2,
-                              brachylog_string_elements/2,
+                              brachylog_string_writeln/2,
                               brachylog_string_dichotomize/2,
                               brachylog_string_trichotomize/2,
                               brachylog_string_tetrachotomize/2,
@@ -52,6 +53,18 @@ brachylog_string_blocks([H|T],H,[[H|T2]|T3]) :-
 brachylog_string_blocks([H|T],I,[[],[H|T2]|T3]) :-
     dif(H,I),
     brachylog_string_blocks(T,H,[T2|T3]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_ELEMENTS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_elements([],[]).
+brachylog_string_elements([H|T],L) :-
+    maplist(brachylog_string_elements,[H|T],L).
+brachylog_string_elements('string':S,L) :-
+    brachylog_findall(['string':S,brachylog_enumerate],L).
+brachylog_string_elements('integer':I,L) :-
+    brachylog_findall(['integer':I,brachylog_enumerate],L).    
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,18 +114,14 @@ brachylog_string_pad_(MaxL,'string':S,'string':Z) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_string_uppercase('string':Ls0,'string':Ls) :-
     maplist(upcase_atom, Ls0, Ls).
-
+    
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   BRACHYLOG_STRING_ELEMENTS
+   BRACHYLOG_STRING_WRITELN
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_string_elements([],[]).
-brachylog_string_elements([H|T],L) :-
-    maplist(brachylog_string_elements,[H|T],L).
-brachylog_string_elements('string':S,L) :-
-    brachylog_findall(['string':S,brachylog_enumerate],L).
-brachylog_string_elements('integer':I,L) :-
-    brachylog_findall(['integer':I,brachylog_enumerate],L).
+brachylog_string_writeln(X,_) :-
+    brachylog_write(X,_),
+    brachylog_write('string':['\n'],_).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,7 +170,7 @@ brachylog_string_Nchotomize(L,L2) :-
     reverse(L2,[_|T]),
     maplist(length_(Length),T).
 
-
+    
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_STRING_TO_NUMBER
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
