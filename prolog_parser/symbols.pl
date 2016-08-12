@@ -88,7 +88,7 @@ token_predicate('@s','').
 token_predicate('@t','').
 token_predicate('@u','brachylog_string_uppercase').
 token_predicate('@v','').
-token_predicate('@w','').
+token_predicate('@w','brachylog_string_writeln').
 token_predicate('@x','').
 token_predicate('@y','').
 token_predicate('@z','').
