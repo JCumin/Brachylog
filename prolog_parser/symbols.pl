@@ -247,7 +247,7 @@ token_predicate('#/','').
 token_predicate('#\\','').
 token_predicate('#^','').
 token_predicate('#%','').
-token_predicate('#=','').
+token_predicate('#=','brachylog_constraint_all_equal').
 token_predicate('#<','').
 token_predicate('#>','').
 token_predicate('#(','').
