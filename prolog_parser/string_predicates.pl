@@ -19,6 +19,7 @@ ____            ____
                               brachylog_string_split_lines/2,
                               brachylog_string_pad/2,
                               brachylog_string_uppercase/2,
+                              brachylog_string_elements/2,
                               brachylog_string_dichotomize/2,
                               brachylog_string_trichotomize/2,
                               brachylog_string_tetrachotomize/2,
@@ -30,6 +31,7 @@ ____            ____
                              ]).
                        
 :- use_module(library(clpfd)).
+:- use_module(predicates).
 :- use_module(utils).
  
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -62,9 +64,9 @@ brachylog_string_lowercase('string':Ls0,'string':Ls) :-
    BRACHYLOG_STRING_SPLIT_LINES
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_string_split_lines('string':[],['string':[]]).
-brachylog_string_split_lines('string':['\n'|T],['string':[]|T3]) :-
-    brachylog_string_split_lines('string':T,T3).
 brachylog_string_split_lines('string':['\r','\r\n'|T],['string':[]|T3]) :-
+    brachylog_string_split_lines('string':T,T3).
+brachylog_string_split_lines('string':['\n'|T],['string':[]|T3]) :-
     brachylog_string_split_lines('string':T,T3).
 brachylog_string_split_lines('string':[H|T],['string':[H|T2]|T3]) :-
     dif(H,'\n'),
@@ -98,6 +100,18 @@ brachylog_string_pad_(MaxL,'string':S,'string':Z) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_string_uppercase('string':Ls0,'string':Ls) :-
     maplist(upcase_atom, Ls0, Ls).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_ELEMENTS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_elements([],[]).
+brachylog_string_elements([H|T],L) :-
+    maplist(brachylog_string_elements,[H|T],L).
+brachylog_string_elements('string':S,L) :-
+    brachylog_findall(['string':S,brachylog_enumerate],L).
+brachylog_string_elements('integer':I,L) :-
+    brachylog_findall(['integer':I,brachylog_enumerate],L).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
