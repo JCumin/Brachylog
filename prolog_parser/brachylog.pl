@@ -183,7 +183,12 @@ run_from_files_no_file(FilePath,InputPath,OutputPath) :-
             BindingsFinal = Bindings,
             true
         ),
-        write('\n'),
+        (
+            (ReportInput = 'yes' ; ReportOutput = 'yes'),
+            write('\n')
+            ;
+            true  
+        ),
         reverse(BindingsFinal,RBindings),
         report_bindings(RBindings),
         (
@@ -197,7 +202,7 @@ run_from_files_no_file(FilePath,InputPath,OutputPath) :-
         ;
         (
             ContainsWrite = 'no',
-            write('\nfalse.')
+            write('false.')
             ;
             true
         )
