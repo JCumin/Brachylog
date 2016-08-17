@@ -18,7 +18,13 @@ ____            ____
                                   brachylog_constraint_all_equal/2,
                                   brachylog_constraint_coerce_to_integer/2,
                                   brachylog_constraint_coerce_to_string/2,
-                                  brachylog_constraint_coerce_to_list/2
+                                  brachylog_constraint_coerce_to_list/2,
+                                  brachylog_constraint_positive/2,
+                                  brachylog_constraint_negative/2,
+                                  brachylog_constraint_strictly_positive/2,
+                                  brachylog_constraint_strictly_negative/2,
+                                  brachylog_constraint_digit/2,
+                                  brachylog_constraint_nonzero_digit/2
                                  ]).
                        
 :- use_module(library(clpfd)).
@@ -71,3 +77,57 @@ brachylog_constraint_coerce_to_string('string':S,'string':S).
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_constraint_coerce_to_list([],[]).
 brachylog_constraint_coerce_to_list([H|T],[H|T]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONSTRAINT_POSITIVE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_constraint_positive('integer':I,'integer':I) :-
+    I #>= 0.
+brachylog_constraint_positive([H|T],[H|T]) :-
+    maplist(brachylog_constraint_positive,[H|T],[H|T]).
+    
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONSTRAINT_NEGATIVE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_constraint_negative('integer':I,'integer':I) :-
+    I #=< 0.
+brachylog_constraint_negative([H|T],[H|T]) :-
+    maplist(brachylog_constraint_negative,[H|T],[H|T]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONSTRAINT_STRICTLY_POSITIVE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_constraint_strictly_positive('integer':I,'integer':I) :-
+    I #> 0.
+brachylog_constraint_strictly_positive([H|T],[H|T]) :-
+    maplist(brachylog_constraint_strictly_positive,[H|T],[H|T]).
+    
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONSTRAINT_STRICTLY_NEGATIVE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_constraint_strictly_negative('integer':I,'integer':I) :-
+    I #< 0.
+brachylog_constraint_strictly_negative([H|T],[H|T]) :-
+    maplist(brachylog_constraint_strictly_negative,[H|T],[H|T]).
+    
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONSTRAINT_DIGIT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_constraint_digit('integer':I,'integer':I) :-
+    I in 0..9.
+brachylog_constraint_digit([H|T],[H|T]) :-
+    maplist(brachylog_constraint_digit,[H|T],[H|T]).
+    
+    
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONSTRAINT_NONZERO_DIGIT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_constraint_nonzero_digit('integer':I,'integer':I) :-
+    I in 1..9.
+brachylog_constraint_nonzero_digit([H|T],[H|T]) :-
+    maplist(brachylog_constraint_nonzero_digit,[H|T],[H|T]).
