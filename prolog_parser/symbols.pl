@@ -230,8 +230,8 @@ token_predicate('#w','').
 token_predicate('#x','').
 token_predicate('#y','').
 token_predicate('#z','').
-token_predicate('#0','').
-token_predicate('#1','').
+token_predicate('#0','brachylog_constraint_digit').
+token_predicate('#1','brachylog_constraint_nonzero_digit').
 token_predicate('#2','').
 token_predicate('#3','').
 token_predicate('#4','').
@@ -240,7 +240,7 @@ token_predicate('#6','').
 token_predicate('#7','').
 token_predicate('#8','').
 token_predicate('#9','').
-token_predicate('#+','').
+token_predicate('#+','brachylog_constraint_positive').
 token_predicate('#-','').
 token_predicate('#*','').
 token_predicate('#/','').
@@ -248,8 +248,8 @@ token_predicate('#\\','').
 token_predicate('#^','').
 token_predicate('#%','').
 token_predicate('#=','brachylog_constraint_all_equal').
-token_predicate('#<','').
-token_predicate('#>','').
+token_predicate('#<','brachylog_constraint_strictly_negative').
+token_predicate('#>','brachylog_constraint_strictly_positive').
 token_predicate('#(','').
 token_predicate('#)','').
 token_predicate('#[','').
@@ -263,7 +263,7 @@ token_predicate('#?','').
 token_predicate('#.','').
 token_predicate('#!','').
 token_predicate('#|','').
-token_predicate('#_','').
+token_predicate('#_','brachylog_constraint_negative').
 token_predicate('#&','').
 token_predicate('#~','').
 token_predicate('#"','').
