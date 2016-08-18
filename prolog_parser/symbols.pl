@@ -190,7 +190,7 @@ token_predicate('$}','').
 token_predicate('$,','').
 token_predicate('$;','').
 token_predicate('$:','').
-token_predicate('$?','').
+token_predicate('$?','brachylog_math_random_number').
 token_predicate('$.','').
 token_predicate('$!','brachylog_math_factorial').
 token_predicate('$|','brachylog_math_norm').
