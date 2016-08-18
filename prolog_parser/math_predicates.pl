@@ -39,7 +39,8 @@ ____            ____
                             brachylog_math_circular_permute_right/2,
                             brachylog_math_norm/2,
                             brachylog_math_negate/2,
-                            brachylog_math_to_string/2
+                            brachylog_math_to_string/2,
+                            brachylog_math_random_number
                            ]).
                        
 :- use_module(library(clpfd)).
@@ -381,3 +382,28 @@ brachylog_math_to_string('integer':I,'string':S) :-
 brachylog_math_to_string('float':F,'string':S) :-
     atom_number(A,F),
     atom_chars(A,S).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_RANDOM_NUMBER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_math_random_number('integer':I,'integer':R) :-
+    brachylog_math_random_number(['integer':0,'integer':I],'integer':R).
+brachylog_math_random_number(['integer':I,'integer':J],'integer':R) :-
+    brachylog_equals(['integer':I,'integer':J],_),
+    (
+        I #=< J
+        -> random_between(I,J,R)
+        ;
+        random_between(J,I,R)
+    ).
+brachylog_math_random_number('float':I,'float':R) :-
+    brachylog_math_random_number(['float':0.0,'float':I],'float':R).
+brachylog_math_random_number(['float':I,'float':J],'float':R) :-
+    random(K),
+    (
+        I =< J
+        -> R is I + K*(J - I)
+        ;
+        R is J + K*(I - J)
+    ).
