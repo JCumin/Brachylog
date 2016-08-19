@@ -16,11 +16,11 @@ Check out [Brachylog's Wiki](https://github.com/JCumin/Brachylog/wiki) if you wa
 
 As an example, this predicate:
 
-    >0,?=$pl1
+    =$pl1
     
 will successively unify its Input variable with a prime number, starting from `2`:
 
-    ?- run_from_atom('>0,?=$pl1',Z).
+    ?- run_from_atom('=$pl1',Z).
     Z = 2 ;
     Z = 3 ;
     Z = 5 ;
