@@ -170,20 +170,16 @@ brachylog_math_root('float':F,Root) :-
     nonvar(F),
     Root is sqrt(F).
 
-    
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MATH_FACTORIAL
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_math_factorial('integer':0,'integer':1).
 brachylog_math_factorial('integer':I,'integer':J) :-
-    brachylog_math_factorial_(I,J),
-    label([I,J]).
-    
-brachylog_math_factorial_(0,1).
-brachylog_math_factorial_(I,J) :-
     I #> 0,
     A #= I - 1,
-    brachylog_math_factorial_(A,B),
-    J #= I * B.
+    J #= I * B,
+    brachylog_math_factorial('integer':A,'integer':B).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
