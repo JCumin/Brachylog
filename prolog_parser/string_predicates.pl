@@ -29,7 +29,9 @@ ____            ____
                               brachylog_string_heptachotomize/2,
                               brachylog_string_octachotomize/2,
                               brachylog_string_enneachotomize/2,
-                              brachylog_string_to_number/2
+                              brachylog_string_to_number/2,
+                              brachylog_string_random_element/2,
+                              brachylog_string_shuffle/2
                              ]).
                        
 :- use_module(library(clpfd)).
@@ -182,4 +184,42 @@ brachylog_string_to_number('string':S,Type:N) :-
         -> Type = 'float'
         ;
         Type = 'integer'
+    ).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_RANDOM_ELEMENT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_random_element([],[]).
+brachylog_string_random_element([H|T],R) :-
+    length([H|T],L),
+    M #= L - 1,
+    random_between(0,M,I),
+    nth0(I,[H|T],R).
+brachylog_string_random_element('string':S,'string':R) :-
+    brachylog_string_random_element(S,R).
+brachylog_string_random_element('integer':0,'integer':0).
+brachylog_string_random_element('integer':I,'integer':R) :-
+    H #\= 0,
+    integer_value('integer':_:[H|T],I),
+    brachylog_string_random_element([H|T],R).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_SHUFFLE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_shuffle([],[]).
+brachylog_string_shuffle([H|T],[H2|T2]) :-
+    random_permutation([H|T],[H2|T2]).
+brachylog_string_shuffle('string':S,'string':T) :-
+    brachylog_string_shuffle(S,T).
+brachylog_string_shuffle('integer':I,'integer':J) :-
+    H #\= 0,
+    integer_value('integer':Sign:[H|T],I),
+    (
+        H2 #\= 0,
+        brachylog_string_shuffle([H|T],[H2|T2])
+        -> integer_value('integer':Sign:[H2|T2],J)
+        ;
+        brachylog_string_shuffle('integer':I,'integer':J)
     ).
