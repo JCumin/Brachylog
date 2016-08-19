@@ -121,13 +121,13 @@ token_predicate('@}','').
 token_predicate('@,','').
 token_predicate('@;','').
 token_predicate('@:','').
-token_predicate('@?','').
+token_predicate('@?','brachylog_string_random_element').
 token_predicate('@.','').
 token_predicate('@!','').
 token_predicate('@|','').
 token_predicate('@_','').
 token_predicate('@&','').
-token_predicate('@~','').
+token_predicate('@~','brachylog_string_shuffle').
 token_predicate('@"','').
 token_predicate('@\'','').
 token_predicate('@`','').
