@@ -163,12 +163,18 @@ brachylog_math_prime_decomposition_ceiled_square_root(N0, Root) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MATH_ROOT
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_math_root('integer':I,Root) :-
-    label([I]),
-    Root is sqrt(I).
-brachylog_math_root('float':F,Root) :-
+brachylog_math_root('integer':I,Type:R) :-
+    (
+        I #= R*R
+        -> Type = 'integer'
+        ;
+        indomain(I),
+        R is sqrt(I),
+        Type = 'float'
+    ).
+brachylog_math_root('float':F,'float':R) :-
     nonvar(F),
-    Root is sqrt(F).
+    R is sqrt(F).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
