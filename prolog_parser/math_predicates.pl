@@ -40,7 +40,7 @@ ____            ____
                             brachylog_math_norm/2,
                             brachylog_math_negate/2,
                             brachylog_math_to_string/2,
-                            brachylog_math_random_number
+                            brachylog_math_random_number/2
                            ]).
                        
 :- use_module(library(clpfd)).
