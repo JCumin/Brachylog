@@ -35,7 +35,8 @@ parse(Code,TranspiledPath) :-
     
 parse_no_file(Code,Predicates) :-
     atom_chars(Code,SplittedCode),
-    tokenize(SplittedCode,Tokens),
+    tokenize(SplittedCode,TokensNoOutputs),
+    append_trailing_output(TokensNoOutputs,Tokens),
     fix_predicates(Tokens,FixedPredicates),
     fill_implicit_variables(FixedPredicates,FilledTokens),
     fix_lists(FilledTokens,Program),
@@ -67,7 +68,24 @@ parse_argument(Arg,Term) :-
     ;
     throw('Incorrect variable format.').
 
-    
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   APPEND_TRAILING_OUTPUT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+append_trailing_output([],['variable':'Output']).
+append_trailing_output(['control':'\n'|T],['variable':'Output','control':'\n'|T2]) :-
+    append_trailing_output(T,T2).
+append_trailing_output(['control':'}'|T],['variable':'Output','control':'}'|T2]) :-
+    append_trailing_output(T,T2).
+append_trailing_output(['control':'|'|T],['variable':'Output','control':'|'|T2]) :-
+    append_trailing_output(T,T2).
+append_trailing_output([H|T],[H|T2]) :-
+    H \= 'control':'\n',
+    H \= 'control':'}',
+    H \= 'control':'|',
+    append_trailing_output(T,T2).
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    FIX_PREDICATES
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
