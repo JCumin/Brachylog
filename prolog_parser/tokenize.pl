@@ -117,12 +117,9 @@ tokenize_string(['"'|T],Rest,'string':T2) :-
     
 tokenize_string_([],[],[]).
 tokenize_string_([X,'"'|Rest],Rest,[X]) :-
-    X \= '\\',
     X \= '"',
     Rest \= ['"'|_],
     !.
-tokenize_string_(['\\','"'|T],Rest,['"'|T2]) :-
-    tokenize_string_(T,Rest,T2).
 tokenize_string_(['"','"'|T],Rest,['"'|T2]) :-
     tokenize_string_(T,Rest,T2).
 tokenize_string_([X|T],Rest,L) :-
@@ -134,7 +131,7 @@ tokenize_string_([X|T],Rest,L) :-
         Rest = T,
         L = []
     ).
-        
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    TOKENIZE_NUMBER
