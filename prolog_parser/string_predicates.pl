@@ -154,25 +154,20 @@ brachylog_string_enneachotomize(X,[A,B,C,D,E,F,G,H,I]) :-
     brachylog_string_Nchotomize(X,[A,B,C,D,E,F,G,H,I]).
     
 brachylog_string_Nchotomize('string':L,L2) :-
-    (
-        var(L)
-        -> maplist(prepend_string,M,L2),
-        brachylog_string_Nchotomize(L,M)
-        ;
-        length(L2,Length),
-        length(M,Length),
-        brachylog_string_Nchotomize(L,M),
-        maplist(prepend_string,M,L2)
-    ). 
+    maplist(prepend_string,M,L2),
+    brachylog_string_Nchotomize(L,M).
 brachylog_string_Nchotomize(L,L2) :-
-    append(L2,L),
-    length(L,LengthL),
-    length(L2,LengthL2),
+    is_brachylog_list(L),
+    maplist(is_brachylog_list,L2),
     Length #= LengthL//LengthL2,
+    length(L2,LengthL2),
+    length(L,LengthL),
     reverse(L2,[_|T]),
-    maplist(length_(Length),T).
+    maplist(length_(Length),T),
+    append(L2,L),
+    !.
 
-    
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_STRING_TO_NUMBER
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
