@@ -144,10 +144,16 @@ brachylog_concatenate([H|T],L) :-
 brachylog_concatenate([H|T],L) :-
     nonvar(L),
     brachylog_length(L,'integer':Length),
-    LengthList #> 0,
-    LengthList #=< Length,
-    indomain(LengthList),
-    length([H|T],LengthList),
+    (
+        var(T)
+        -> LengthList #> 0,
+        LengthList #=< Length,
+        indomain(LengthList),
+        length([H|T],LengthList),
+        CanContainEmpty = 'no'
+        ;
+        CanContainEmpty = 'yes'
+    ),
     (
         (L = [] ; L = [_|_]),
         maplist(brachylog_constraint_coerce_to_list,[H|T],[H|T]),
@@ -169,14 +175,24 @@ brachylog_concatenate([H|T],L) :-
             List = [J|TList]
         ),
         maplist(brachylog_constraint_coerce_to_integer,[H|T],[H|T]),
-        maplist(brachylog_concatenate_limit_length(Length),[H|T]),
+        (
+            CanContainEmpty = 'no'
+            -> maplist(brachylog_concatenate_limit_length(1,Length),[H|T])
+            ;
+            maplist(brachylog_concatenate_limit_length(0,Length),[H|T])
+        ),
         maplist(brachylog_concatenate_integer_value,ListOfLists,[H|T])
     ),
-    maplist(brachylog_concatenate_limit_length(Length),[H|T]),
+    (
+            CanContainEmpty = 'no'
+            -> maplist(brachylog_concatenate_limit_length(1,Length),[H|T])
+            ;
+            maplist(brachylog_concatenate_limit_length(0,Length),[H|T])
+    ),
     brachylog_concatenate_(ListOfLists,List).
 
-brachylog_concatenate_limit_length(Max,H) :-
-    Length #>= 0,
+brachylog_concatenate_limit_length(Min,Max,H) :-
+    Length #>= Min,
     Length #=< Max,
     indomain(Length),
     brachylog_length(H,'integer':Length).
