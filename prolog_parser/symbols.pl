@@ -93,7 +93,7 @@ token_predicate('@x','').
 token_predicate('@y','').
 token_predicate('@z','').
 token_predicate('@0','').
-token_predicate('@1','').
+token_predicate('@1','brachylog_string_Nchotomize').
 token_predicate('@2','brachylog_string_dichotomize').
 token_predicate('@3','brachylog_string_trichotomize').
 token_predicate('@4','brachylog_string_tetrachotomize').
