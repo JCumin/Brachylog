@@ -583,11 +583,11 @@ brachylog_tail_float([H|T],'integer':I) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_VOID
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_void([],_).
 brachylog_void('string':[],_).
 brachylog_void('integer':I,_) :-
     I #= 0.
 brachylog_void('float':0.0,_).
-brachylog_void([],_).    
  
  
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
