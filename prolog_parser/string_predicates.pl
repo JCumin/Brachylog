@@ -37,6 +37,7 @@ ____            ____
 :- use_module(library(clpfd)).
 :- use_module(predicates).
 :- use_module(utils).
+
  
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_STRING_BLOCKS
@@ -55,6 +56,23 @@ brachylog_string_blocks([H|T],H,[[H|T2]|T3]) :-
 brachylog_string_blocks([H|T],I,[[],[H|T2]|T3]) :-
     dif(H,I),
     brachylog_string_blocks(T,H,[T2|T3]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_TO_CODES
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_to_codes('string':[],[]).
+brachylog_string_to_codes('string':[H|T],['integer':I|T2]) :-
+    (
+        var(T)
+        -> length(T2,Length),
+        length(T,Length)
+        ;
+        length(T,Length),
+        length(T2,Length)
+    ),
+    maplist(prepend_integer,L,['integer':I|T2]),
+    maplist(single_atom_code,[H|T],L).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
