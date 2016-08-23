@@ -19,7 +19,8 @@ ____            ____
                   length_/2,
                   prepend_string/2,
                   prepend_integer/2,
-                  is_brachylog_list/1
+                  is_brachylog_list/1,
+                  single_atom_code/2
                  ]).
 
 :- use_module(library(clpfd)).
@@ -100,3 +101,10 @@ prepend_integer(I,'integer':I).
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 is_brachylog_list([]).
 is_brachylog_list([_|_]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   SINGLE_ATOM_CODE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+single_atom_code(A,C) :-
+    atom_codes(A,[C]).
