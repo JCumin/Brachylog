@@ -147,6 +147,20 @@ brachylog_string_writeln(X,_) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_STRING_NCHOTOMIZE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_Nchotomize(L,L2) :-
+    is_brachylog_list(L),
+	   reverse(L,['integer':I|RArgs]),
+    reverse(RArgs,Args),
+    (
+        Args = [A]
+        -> RealArgs = A
+        ;
+        RealArgs = Args
+    ),
+    brachylog_equals('integer':I,_),
+    length(L2,I),
+    brachylog_string_Nchotomize_(RealArgs,L2).
+
 brachylog_string_dichotomize(X,[A,B]) :-
     brachylog_string_Nchotomize(X,[A,B]).
 
