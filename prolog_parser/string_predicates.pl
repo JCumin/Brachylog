@@ -149,7 +149,7 @@ brachylog_string_writeln(X,_) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_string_Nchotomize(L,L2) :-
     is_brachylog_list(L),
-	   reverse(L,['integer':I|RArgs]),
+    reverse(L,['integer':I|RArgs]),
     reverse(RArgs,Args),
     (
         Args = [A]
@@ -162,33 +162,33 @@ brachylog_string_Nchotomize(L,L2) :-
     brachylog_string_Nchotomize_(RealArgs,L2).
 
 brachylog_string_dichotomize(X,[A,B]) :-
-    brachylog_string_Nchotomize(X,[A,B]).
+    brachylog_string_Nchotomize_(X,[A,B]).
 
 brachylog_string_trichotomize(X,[A,B,C]) :-
-    brachylog_string_Nchotomize(X,[A,B,C]).
+    brachylog_string_Nchotomize_(X,[A,B,C]).
 
 brachylog_string_tetrachotomize(X,[A,B,C,D]) :-
-    brachylog_string_Nchotomize(X,[A,B,C,D]).
+    brachylog_string_Nchotomize_(X,[A,B,C,D]).
 
 brachylog_string_pentachotomize(X,[A,B,C,D,E]) :-
-    brachylog_string_Nchotomize(X,[A,B,C,D,E]).
+    brachylog_string_Nchotomize_(X,[A,B,C,D,E]).
 
 brachylog_string_hexachotomize(X,[A,B,C,D,E,F]) :-
-    brachylog_string_Nchotomize(X,[A,B,C,D,E,F]).
+    brachylog_string_Nchotomize_(X,[A,B,C,D,E,F]).
 
 brachylog_string_heptachotomize(X,[A,B,C,D,E,F,G]) :-
-    brachylog_string_Nchotomize(X,[A,B,C,D,E,F,G]).
+    brachylog_string_Nchotomize_(X,[A,B,C,D,E,F,G]).
 
 brachylog_string_octachotomize(X,[A,B,C,D,E,F,G,H]) :-
-    brachylog_string_Nchotomize(X,[A,B,C,D,E,F,G,H]).
+    brachylog_string_Nchotomize_(X,[A,B,C,D,E,F,G,H]).
 
 brachylog_string_enneachotomize(X,[A,B,C,D,E,F,G,H,I]) :-
-    brachylog_string_Nchotomize(X,[A,B,C,D,E,F,G,H,I]).
+    brachylog_string_Nchotomize_(X,[A,B,C,D,E,F,G,H,I]).
     
-brachylog_string_Nchotomize('string':L,L2) :-
+brachylog_string_Nchotomize_('string':L,L2) :-
     maplist(prepend_string,M,L2),
-    brachylog_string_Nchotomize(L,M).
-brachylog_string_Nchotomize(L,L2) :-
+    brachylog_string_Nchotomize_(L,M).
+brachylog_string_Nchotomize_(L,L2) :-
     is_brachylog_list(L),
     maplist(is_brachylog_list,L2),
     Length #= LengthL//LengthL2,
