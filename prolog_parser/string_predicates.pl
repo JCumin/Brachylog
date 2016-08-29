@@ -15,6 +15,7 @@ ____            ____
 
 
 :- module(string_predicates, [brachylog_string_blocks/2,
+                              brachylog_string_to_codes/2,
                               brachylog_string_elements/2,
                               brachylog_string_lowercase/2,
                               brachylog_string_split_lines/2,
