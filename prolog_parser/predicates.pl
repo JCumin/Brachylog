@@ -1054,7 +1054,6 @@ brachylog_modulo(['integer':I1,'integer':I2],'integer':Rem) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_equals('integer':Z,'integer':Z) :-
     unsafe_indomain(Z).
-
 brachylog_equals(Z,Z) :-
 	is_brachylog_list(Z),
 	maplist(brachylog_equals,Z,_).
