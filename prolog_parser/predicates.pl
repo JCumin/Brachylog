@@ -1054,6 +1054,7 @@ brachylog_modulo(['integer':I1,'integer':I2],'integer':Rem) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_equals('integer':Z,'integer':Z) :-
     unsafe_indomain(Z).
+
 brachylog_equals(Z,Z) :-
 	is_brachylog_list(Z),
 	maplist(brachylog_equals,Z,_).
@@ -1074,13 +1075,15 @@ unsafe_indomain_(n(Low), Sup, X) :-
     unsafe_up_(Sup, Low, X).
 
 infinite_down(sup, X) :-
-    (   X = 0
-    ;   positive_integer(N),
+    (   X = 0 
+    ;   abs(X) #= abs(N),
+        positive_integer(N),
         ( X #= N ; X #= -N )
     ).
 infinite_down(n(Up), X ) :-
     (   between(0, Up, X)
-    ;   length([_|_], N),
+    ;   abs(X) #= abs(N),
+        positive_integer(N),
         X #= -N
     ).
 
@@ -1090,4 +1093,14 @@ unsafe_up_(sup, Low, X) :-
     ).
 unsafe_up_(n(Up), Low, X) :- between(Low, Up, X).
 
-positive_integer(N) :- length([_|_], N).
+% See: http://stackoverflow.com/a/39259871/2554145
+positive_integer(I) :-
+    I #> 0,
+    (   var(I) ->
+        fd_inf(I, Inf),
+        (   I #= Inf
+        ;   I #\= Inf,
+            positive_integer(I)
+        )
+    ;   true
+    ).
