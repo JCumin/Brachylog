@@ -114,8 +114,8 @@ token_predicate('@<','').
 token_predicate('@>','').
 token_predicate('@(','').
 token_predicate('@)','').
-token_predicate('@[','').
-token_predicate('@]','').
+token_predicate('@[','brachylog_string_prefix').
+token_predicate('@]','brachylog_string_suffix').
 token_predicate('@{','').
 token_predicate('@}','').
 token_predicate('@,','').
