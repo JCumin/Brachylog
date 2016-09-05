@@ -37,7 +37,7 @@ token_predicate('g','brachylog_group').
 token_predicate('h','brachylog_head').
 token_predicate('i','brachylog_iterate').
 token_predicate('j','brachylog_juxtapose').
-token_predicate('k','').
+token_predicate('k','brachylog_knife').
 token_predicate('l','brachylog_length').
 token_predicate('m','brachylog_member').
 token_predicate('n','').
