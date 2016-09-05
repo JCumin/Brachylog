@@ -24,6 +24,7 @@ ____            ____
                        brachylog_head/2,
                        brachylog_iterate/2,
                        brachylog_juxtapose/2,
+                       brachylog_knife/2,
                        brachylog_length/2,
                        brachylog_member/2,
                        brachylog_order/2,
@@ -366,6 +367,35 @@ brachylog_juxtapose(['integer':I,'integer':J],'integer':Z) :-
     integer_value('integer':Sign:[HZ|TZ],Z),
     brachylog_juxtapose([[H|T],'integer':J],[HZ|TZ]),
     integer_value('integer':Sign:[H|T],I).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_KNIFE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_knife([],[]).
+brachylog_knife([_],[]).
+brachylog_knife([H,I|T],[H2|T2]) :-
+    (
+        var(T)
+        -> reverse(T3,[H2|T2]),
+        reverse([H,I|T],[_|T3])
+        ;
+        reverse([H,I|T],[_|T3]),
+        reverse(T3,[H2|T2])
+    ).
+    
+brachylog_knife('string':S,'string':T) :-
+    brachylog_knife(S,T).
+brachylog_knife('integer':I,'integer':0) :-
+    I in -9..9.
+brachylog_knife('integer':I,'integer':J) :-
+    H #\= 0,
+    H2 #\= 0,
+    abs(J) #=< abs(I),
+    abs(I) #=< 10*(abs(J) + 1),
+    integer_value('integer':Sign:[H|T],I),
+    integer_value('integer':Sign:[H2|T2],J),
+    brachylog_knife([H|T],[H2|T2]).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
