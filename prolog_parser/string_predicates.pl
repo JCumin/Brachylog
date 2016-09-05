@@ -30,6 +30,8 @@ ____            ____
                               brachylog_string_heptachotomize/2,
                               brachylog_string_octachotomize/2,
                               brachylog_string_enneachotomize/2,
+                              brachylog_string_prefix/2,
+                              brachylog_string_suffix/2,
                               brachylog_string_to_number/2,
                               brachylog_string_random_element/2,
                               brachylog_string_shuffle/2
@@ -199,6 +201,43 @@ brachylog_string_Nchotomize_(L,L2) :-
     maplist(length_(Length),T),
     append(L2,L),
     !.
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_PREFIX
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_prefix([],[]).
+brachylog_string_prefix([H|T],[H2|T2]) :-
+    brachylog_concatenate([[H2|T2],[_|_]],[H|T])
+    ;
+    [H2|T2] = [H|T].
+brachylog_string_prefix('string':S,'string':P) :-
+    brachylog_string_prefix(S,P).
+brachylog_string_prefix('integer':0,'integer':0).
+brachylog_string_prefix('integer':I,'integer':P) :-
+    H #\= 0,
+    H2 #\= 0,
+    abs(P) #=< abs(I),
+    integer_value('integer':Sign:[H|T],I),
+    integer_value('integer':Sign:[H2|T2],P),
+    brachylog_string_prefix([H|T],[H2|T2]).
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_SUFFIX
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_suffix([],[]).
+brachylog_string_suffix([H|T],[H2|T2]) :-
+    brachylog_concatenate([_,[H2|T2]],[H|T]).
+brachylog_string_suffix('string':S,'string':P) :-
+    brachylog_string_suffix(S,P).
+brachylog_string_suffix('integer':0,'integer':0).
+brachylog_string_suffix('integer':I,'integer':P) :-
+    H #\= 0,
+    H2 #\= 0,
+    abs(P) #=< abs(I),
+    integer_value('integer':Sign:[H|T],I),
+    integer_value('integer':Sign:[H2|T2],P),
+    brachylog_string_suffix([H|T],[H2|T2]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
