@@ -487,9 +487,25 @@ brachylog_order('integer':I,'integer':J) :-
     number_codes(I,C),
     msort(C,D),
     number_codes(J,D).
-brachylog_order(List,OrderedList) :-
-    is_brachylog_list(List),
-    msort(List,OrderedList).
+brachylog_order([],[]).
+brachylog_order([H|T],OrderedList) :-
+    reverse([H|T],[PredName|RArgs]),
+    reverse(RArgs,Args),
+    (
+        Args = [SingleArg]
+        -> A = SingleArg
+        ;
+        A = Args
+    ),
+    (
+        atom(PredName)
+        -> brachylog_apply([H|T],L2),
+        brachylog_zip([L2,A],Z),
+        msort(Z,SZ),
+        brachylog_zip(SZ,[_,OrderedList])
+        ;
+        msort([H|T],OrderedList)
+    ).
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
