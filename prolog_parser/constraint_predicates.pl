@@ -15,6 +15,8 @@ ____            ____
 
 
 :- module(constraint_predicates, [brachylog_constraint_different/2,
+                                  brachylog_constraint_even/2,
+                                  brachylog_constraint_odd/2,
                                   brachylog_constraint_all_equal/2,
                                   brachylog_constraint_coerce_to_integer/2,
                                   brachylog_constraint_coerce_to_string/2,
@@ -43,8 +45,26 @@ brachylog_constraint_different('integer':I,'integer':I) :-
     H #\= 0,
     integer_value('integer':_:[H|T],I),
     all_distinct([H|T]).
-    
-    
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONSTRAINT_EVEN
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_constraint_even('integer':I,'integer':I) :-
+    I mod 2 #= 0.
+brachylog_constraint_even([H|T],[H|T]) :-
+    maplist(brachylog_constraint_even,[H|T],[H|T]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONSTRAINT_ODD
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_constraint_odd('integer':I,'integer':I) :-
+    I mod 2 #= 1.
+brachylog_constraint_odd([H|T],[H|T]) :-
+    maplist(brachylog_constraint_odd,[H|T],[H|T]).
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_CONSTRAINT_ALL_EQUAL
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
