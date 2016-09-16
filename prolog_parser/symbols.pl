@@ -208,7 +208,7 @@ token_predicate('#a','').
 token_predicate('#b','').
 token_predicate('#c','').
 token_predicate('#d','brachylog_constraint_different').
-token_predicate('#e','').
+token_predicate('#e','brachylog_constraint_even').
 token_predicate('#f','').
 token_predicate('#g','').
 token_predicate('#h','').
@@ -218,7 +218,7 @@ token_predicate('#k','').
 token_predicate('#l','').
 token_predicate('#m','').
 token_predicate('#n','').
-token_predicate('#o','').
+token_predicate('#o','brachylog_constraint_odd').
 token_predicate('#p','').
 token_predicate('#q','').
 token_predicate('#r','').
