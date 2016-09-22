@@ -219,7 +219,7 @@ token_predicate('#l','').
 token_predicate('#m','').
 token_predicate('#n','').
 token_predicate('#o','brachylog_constraint_odd').
-token_predicate('#p','').
+token_predicate('#p','brachylog_constraint_prime').
 token_predicate('#q','').
 token_predicate('#r','').
 token_predicate('#s','').
