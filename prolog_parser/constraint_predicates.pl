@@ -17,6 +17,7 @@ ____            ____
 :- module(constraint_predicates, [brachylog_constraint_different/2,
                                   brachylog_constraint_even/2,
                                   brachylog_constraint_odd/2,
+                                  brachylog_constraint_prime/2,
                                   brachylog_constraint_all_equal/2,
                                   brachylog_constraint_coerce_to_integer/2,
                                   brachylog_constraint_coerce_to_string/2,
@@ -31,7 +32,9 @@ ____            ____
                        
 :- use_module(library(clpfd)).
 :- use_module(utils).
- 
+
+:- multifile clpfd:run_propagator/2.
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_CONSTRAINT_DIFFERENT
@@ -63,6 +66,60 @@ brachylog_constraint_odd('integer':I,'integer':I) :-
     I mod 2 #= 1.
 brachylog_constraint_odd([H|T],[H|T]) :-
     maplist(brachylog_constraint_odd,[H|T],[H|T]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONSTRAINT_PRIME
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_constraint_prime('integer':N,'integer':N) :-
+    clpfd:make_propagator(prime(N), Prop),
+    clpfd:init_propagator(N, Prop),
+    clpfd:trigger_once(Prop).
+
+clpfd:run_propagator(prime(N), MState) :-
+    (
+        nonvar(N) -> clpfd:kill(MState), check_prime(N)
+        ;
+        clpfd:fd_get(N,ND,NL,NU,NPs),
+        clpfd:cis_max(NL,n(2),NNL),
+        clpfd:update_bounds(N,ND,NPs,NL,NU,NNL,NU),
+        N #= 2 #\/ N mod 2 #= 1
+    ).
+   
+check_prime(2).
+check_prime(N) :-
+    N #> 0,
+    indomain(N),
+    SN is ceiling(sqrt(N)),
+    check_prime_1(N, SN, 2, [], [_]).
+
+check_prime_1(1, _, _, L, L) :- !.
+check_prime_1(N, SN, D, L, LF) :-
+    (   
+        0 #= N mod D -> !, false
+        ;
+        D1 #= D+1,
+        (    
+            D1 #> SN ->
+            LF = [N |L]
+            ;
+            check_prime_2(N, SN, D1, L, LF)
+        )
+    ).
+
+check_prime_2(1, _, _, L, L) :- !.
+check_prime_2(N, SN, D, L, LF) :-
+    (   
+        0 #= N mod D -> !, false
+        ;
+        D1 #= D+2,
+        (    
+            D1 #> SN ->
+            LF = [N |L]
+            ;
+            check_prime_2(N, SN, D1, L, LF)
+        )
+    ).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
