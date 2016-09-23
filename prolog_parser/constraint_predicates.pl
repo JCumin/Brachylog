@@ -82,15 +82,14 @@ clpfd:run_propagator(prime(N), MState) :-
         ;
         clpfd:fd_get(N,ND,NL,NU,NPs),
         clpfd:cis_max(NL,n(2),NNL),
-        clpfd:update_bounds(N,ND,NPs,NL,NU,NNL,NU),
-        N #= 2 #\/ N mod 2 #= 1
+        clpfd:update_bounds(N,ND,NPs,NL,NU,NNL,NU)
     ).
-   
-check_prime(2).
+
 check_prime(N) :-
-    N #> 0,
-    indomain(N),
-    SN is ceiling(sqrt(N)),
+    N #= 2 -> !, true
+    ;
+    N #> 2,
+    ceiled_square_root(N,SN),
     check_prime_1(N, SN, 2, [], [_]).
 
 check_prime_1(1, _, _, L, L) :- !.
