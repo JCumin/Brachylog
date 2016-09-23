@@ -24,6 +24,7 @@ ____            ____
                        brachylog_head/2,
                        brachylog_iterate/2,
                        brachylog_juxtapose/2,
+                       brachylog_knife/2,
                        brachylog_length/2,
                        brachylog_member/2,
                        brachylog_order/2,
@@ -367,6 +368,35 @@ brachylog_juxtapose(['integer':I,'integer':J],'integer':Z) :-
     brachylog_juxtapose([[H|T],'integer':J],[HZ|TZ]),
     integer_value('integer':Sign:[H|T],I).
 
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_KNIFE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_knife([],[]).
+brachylog_knife([_],[]).
+brachylog_knife([H,I|T],[H2|T2]) :-
+    (
+        var(T)
+        -> reverse(T3,[H2|T2]),
+        reverse([H,I|T],[_|T3])
+        ;
+        reverse([H,I|T],[_|T3]),
+        reverse(T3,[H2|T2])
+    ).
+    
+brachylog_knife('string':S,'string':T) :-
+    brachylog_knife(S,T).
+brachylog_knife('integer':I,'integer':0) :-
+    I in -9..9.
+brachylog_knife('integer':I,'integer':J) :-
+    H #\= 0,
+    H2 #\= 0,
+    abs(J) #=< abs(I),
+    abs(I) #=< 10*(abs(J) + 1),
+    integer_value('integer':Sign:[H|T],I),
+    integer_value('integer':Sign:[H2|T2],J),
+    brachylog_knife([H|T],[H2|T2]).
+
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_LENGTH
@@ -457,9 +487,25 @@ brachylog_order('integer':I,'integer':J) :-
     number_codes(I,C),
     msort(C,D),
     number_codes(J,D).
-brachylog_order(List,OrderedList) :-
-    is_brachylog_list(List),
-    msort(List,OrderedList).
+brachylog_order([],[]).
+brachylog_order([H|T],OrderedList) :-
+    reverse([H|T],[PredName|RArgs]),
+    reverse(RArgs,Args),
+    (
+        Args = [SingleArg]
+        -> A = SingleArg
+        ;
+        A = Args
+    ),
+    (
+        atom(PredName)
+        -> brachylog_apply([H|T],L2),
+        brachylog_zip([L2,A],Z),
+        msort(Z,SZ),
+        brachylog_zip(SZ,[_,OrderedList])
+        ;
+        msort([H|T],OrderedList)
+    ).
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1054,6 +1100,7 @@ brachylog_modulo(['integer':I1,'integer':I2],'integer':Rem) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_equals('integer':Z,'integer':Z) :-
     unsafe_indomain(Z).
+
 brachylog_equals(Z,Z) :-
 	is_brachylog_list(Z),
 	maplist(brachylog_equals,Z,_).
@@ -1074,13 +1121,15 @@ unsafe_indomain_(n(Low), Sup, X) :-
     unsafe_up_(Sup, Low, X).
 
 infinite_down(sup, X) :-
-    (   X = 0
-    ;   positive_integer(N),
+    (   X = 0 
+    ;   abs(X) #= abs(N),
+        positive_integer(N),
         ( X #= N ; X #= -N )
     ).
 infinite_down(n(Up), X ) :-
     (   between(0, Up, X)
-    ;   length([_|_], N),
+    ;   abs(X) #= abs(N),
+        positive_integer(N),
         X #= -N
     ).
 
@@ -1090,4 +1139,14 @@ unsafe_up_(sup, Low, X) :-
     ).
 unsafe_up_(n(Up), Low, X) :- between(Low, Up, X).
 
-positive_integer(N) :- length([_|_], N).
+% See: http://stackoverflow.com/a/39259871/2554145
+positive_integer(I) :-
+    I #> 0,
+    (   var(I) ->
+        fd_inf(I, Inf),
+        (   I #= Inf
+        ;   I #\= Inf,
+            positive_integer(I)
+        )
+    ;   true
+    ).

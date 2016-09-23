@@ -20,7 +20,8 @@ ____            ____
                   prepend_string/2,
                   prepend_integer/2,
                   is_brachylog_list/1,
-                  single_atom_code/2
+                  single_atom_code/2,
+                  ceiled_square_root/2
                  ]).
 
 :- use_module(library(clpfd)).
@@ -108,3 +109,15 @@ is_brachylog_list([_|_]).
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 single_atom_code(A,C) :-
     atom_codes(A,[C]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   CEILED_SQUARE_ROOT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+ceiled_square_root(0, 0).
+ceiled_square_root(N0, Root) :-
+        N1 #= N0 - 1,
+        Max in 0..N1,
+        R0^2 #= Max,
+        Root #= Root0 + 1,
+        fd_sup(R0, Root0).

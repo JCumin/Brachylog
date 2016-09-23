@@ -37,7 +37,7 @@ token_predicate('g','brachylog_group').
 token_predicate('h','brachylog_head').
 token_predicate('i','brachylog_iterate').
 token_predicate('j','brachylog_juxtapose').
-token_predicate('k','').
+token_predicate('k','brachylog_knife').
 token_predicate('l','brachylog_length').
 token_predicate('m','brachylog_member').
 token_predicate('n','').
@@ -114,8 +114,8 @@ token_predicate('@<','').
 token_predicate('@>','').
 token_predicate('@(','').
 token_predicate('@)','').
-token_predicate('@[','').
-token_predicate('@]','').
+token_predicate('@[','brachylog_string_prefix').
+token_predicate('@]','brachylog_string_suffix').
 token_predicate('@{','').
 token_predicate('@}','').
 token_predicate('@,','').
@@ -208,7 +208,7 @@ token_predicate('#a','').
 token_predicate('#b','').
 token_predicate('#c','').
 token_predicate('#d','brachylog_constraint_different').
-token_predicate('#e','').
+token_predicate('#e','brachylog_constraint_even').
 token_predicate('#f','').
 token_predicate('#g','').
 token_predicate('#h','').
@@ -218,8 +218,8 @@ token_predicate('#k','').
 token_predicate('#l','').
 token_predicate('#m','').
 token_predicate('#n','').
-token_predicate('#o','').
-token_predicate('#p','').
+token_predicate('#o','brachylog_constraint_odd').
+token_predicate('#p','brachylog_constraint_prime').
 token_predicate('#q','').
 token_predicate('#r','').
 token_predicate('#s','').
