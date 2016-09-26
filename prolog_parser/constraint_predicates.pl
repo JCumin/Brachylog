@@ -86,7 +86,7 @@ clpfd:run_propagator(prime(N), MState) :-
     ).
 
 check_prime(N) :-
-    N #= 2 -> !, true
+    N #= 2 -> true
     ;
     N #> 2,
     ceiled_square_root(N,SN),
@@ -95,7 +95,7 @@ check_prime(N) :-
 check_prime_1(1, _, _, L, L) :- !.
 check_prime_1(N, SN, D, L, LF) :-
     (   
-        0 #= N mod D -> !, false
+        0 #= N mod D -> false
         ;
         D1 #= D+1,
         (    
@@ -109,7 +109,7 @@ check_prime_1(N, SN, D, L, LF) :-
 check_prime_2(1, _, _, L, L) :- !.
 check_prime_2(N, SN, D, L, LF) :-
     (   
-        0 #= N mod D -> !, false
+        0 #= N mod D -> false
         ;
         D1 #= D+2,
         (    
