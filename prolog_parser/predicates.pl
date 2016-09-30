@@ -777,7 +777,7 @@ brachylog_plus(ListOfLists, Sums) :-
         maplist(brachylog_plus_, Transpose, Sums)
     ;   \+ (maplist(length_(Length), ListOfLists)),
         throw('Lists must have have the same length to be added')
-)   .
+    ).
     
 brachylog_plus_([], 'integer':0).
 brachylog_plus_([TypeI:I|T], TypeS:Sum) :-
