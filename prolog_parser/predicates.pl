@@ -60,53 +60,51 @@ ____            ____
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_APPLY
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_apply(L,Y) :-
+brachylog_apply(L, Y) :-
 	is_brachylog_list(L),
-	reverse(L,[PredName|RArgs]),
-    reverse(RArgs,Args),
-	(
-		Args = [Arg],
-		is_brachylog_list(Arg)
-		-> true
-		;
-		Arg = Args
+	reverse(L, [PredName|RArgs]),
+    reverse(RArgs, Args),
+	(   Args = [Arg],
+		is_brachylog_list(Arg) ->
+		true
+    ;   Arg = Args
 	),
-	brachylog_apply_append_predname(Arg,PredName,NewArg),
-	maplist(brachylog_call_predicate,NewArg,Y).
+	brachylog_apply_append_predname(Arg, PredName, NewArg),
+	maplist(brachylog_call_predicate, NewArg, Y).
 	
-brachylog_apply_append_predname([],_,[]).
-brachylog_apply_append_predname([H|T],PredName,[[H,PredName,'ignore_calling_predicate']|T2]) :-
-	brachylog_apply_append_predname(T,PredName,T2).
+brachylog_apply_append_predname([], _, []).
+brachylog_apply_append_predname([H|T], PredName, [[H,PredName,'ignore_calling_predicate']|T2]) :-
+	brachylog_apply_append_predname(T, PredName, T2).
     
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_BEHEAD
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */        
-brachylog_behead('string':[_|T],'string':T).
-brachylog_behead('integer':0,'integer':0).
-brachylog_behead('integer':I,'integer':J) :-
+brachylog_behead('string':[_|T], 'string':T).
+brachylog_behead('integer':0, 'integer':0).
+brachylog_behead('integer':I, 'integer':J) :-
     H #\= 0,
-    integer_value('integer':Sign:[H|T],I),
-    integer_value('integer':Sign:T,J).
+    integer_value('integer':Sign:[H|T], I),
+    integer_value('integer':Sign:T, J).
 brachylog_behead('float':F,'float':G) :-
     number_codes(F,L),
     brachylog_behead_float(L,M),
     number_codes(G,M).
 brachylog_behead([_|T],T).
 
-brachylog_behead_float([],[]).
-brachylog_behead_float([48|T],[48|T2]) :-
-    brachylog_behead_float(T,T2).
-brachylog_behead_float([46|T],[46|T2]) :-
-    brachylog_behead_float(T,T2).
-brachylog_behead_float([H|T],[48|T2]) :-
+brachylog_behead_float([], []).
+brachylog_behead_float([48|T], [48|T2]) :-
+    brachylog_behead_float(T, T2).
+brachylog_behead_float([46|T], [46|T2]) :-
+    brachylog_behead_float(T, T2).
+brachylog_behead_float([H|T], [48|T2]) :-
     H \= 46,
     H \= 48,
-    brachylog_behead_float_(T,T2).
+    brachylog_behead_float_(T, T2).
 
-brachylog_behead_float_([],[]).
-brachylog_behead_float_([H|T],[H|T2]) :-
-    brachylog_behead_float_(T,T2).
+brachylog_behead_float_([], []).
+brachylog_behead_float_([H|T], [H|T2]) :-
+    brachylog_behead_float_(T, T2).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -114,590 +112,549 @@ brachylog_behead_float_([H|T],[H|T2]) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_concatenate([H|T],L) :-
     var(L),
-    (
-        (H = [] ; H = [_|_]),
-        brachylog_constraint_coerce_to_list(L,L),
+    (   is_brachylog_list(H),
+        brachylog_constraint_coerce_to_list(L, L),
         List = L,
         ListOfLists = [H|T]
-        ;
-        H = 'string':_,
-        brachylog_constraint_coerce_to_string('string':List,L),
-        maplist(prepend_string,ListOfLists,[H|T])
-        ;
-        H = 'integer':_,
-        maplist(brachylog_concatenate_integer_value,ListOfLists,[H|T])
+    ;   H = 'string':_,
+        brachylog_constraint_coerce_to_string('string':List, L),
+        maplist(prepend_string, ListOfLists, [H|T])
+    ;   H = 'integer':_,
+        maplist(brachylog_concatenate_integer_value, ListOfLists, [H|T])
     ),
-    brachylog_concatenate_(ListOfLists,List),
-    (
-        H = 'integer':_,
+    brachylog_concatenate_(ListOfLists, List),
+    (   H = 'integer':_,
         List = [0],
         L = 'integer':0
-        ;
-        H = 'integer':_,
+    ;   H = 'integer':_,
         List = [J|TList],
         J #\= 0,
-        integer_value('integer':'positive':[J|TList],I),
+        integer_value('integer':'positive':[J|TList], I),
         L = 'integer':I
-        ;
-        H \= 'integer':_
+    ;   H \= 'integer':_
     ).
-    
-brachylog_concatenate([H|T],L) :-
+brachylog_concatenate([H|T], L) :-
     nonvar(L),
-    brachylog_length(L,'integer':Length),
-    (
-        var(T)
-        -> LengthList #> 0,
+    brachylog_length(L, 'integer':Length),
+    (   var(T) ->
+        LengthList #> 0,
         LengthList #=< Length,
         indomain(LengthList),
-        length([H|T],LengthList),
+        length([H|T], LengthList),
         CanContainEmpty = 'no'
-        ;
-        CanContainEmpty = 'yes'
+    ;   CanContainEmpty = 'yes'
     ),
-    (
-        (L = [] ; L = [_|_]),
-        maplist(brachylog_constraint_coerce_to_list,[H|T],[H|T]),
+    (   is_brachylog_list(L),
+        maplist(brachylog_constraint_coerce_to_list, [H|T], [H|T]),
         List = L,
         ListOfLists = [H|T]
-        ;
-        L = 'string':List,
-        maplist(brachylog_constraint_coerce_to_string,[H|T],[H|T]),
-        maplist(prepend_string,ListOfLists,[H|T])
-        ;
-        L = 'integer':I,
-        (   
-            I = 0,
+    ;   L = 'string':List,
+        maplist(brachylog_constraint_coerce_to_string, [H|T], [H|T]),
+        maplist(prepend_string, ListOfLists, [H|T])
+    ;   L = 'integer':I,
+        (   I = 0,
             List = [0]
-            ;
-            I #\= 0,
+        ;   I #\= 0,
             J #\= 0,
-            integer_value('integer':_:[J|TList],I),
+            integer_value('integer':_:[J|TList], I),
             List = [J|TList]
         ),
-        maplist(brachylog_constraint_coerce_to_integer,[H|T],[H|T]),
+        maplist(brachylog_constraint_coerce_to_integer, [H|T], [H|T]),
         (
-            CanContainEmpty = 'no'
-            -> maplist(brachylog_concatenate_limit_length(1,Length),[H|T])
-            ;
-            maplist(brachylog_concatenate_limit_length(0,Length),[H|T])
+            CanContainEmpty = 'no' ->
+            maplist(brachylog_concatenate_limit_length(1, Length), [H|T])
+        ;   maplist(brachylog_concatenate_limit_length(0, Length), [H|T])
         ),
-        maplist(brachylog_concatenate_integer_value,ListOfLists,[H|T])
+        maplist(brachylog_concatenate_integer_value, ListOfLists, [H|T])
     ),
     (
-            CanContainEmpty = 'no'
-            -> maplist(brachylog_concatenate_limit_length(1,Length),[H|T])
-            ;
-            maplist(brachylog_concatenate_limit_length(0,Length),[H|T])
+        CanContainEmpty = 'no' ->
+        maplist(brachylog_concatenate_limit_length(1, Length), [H|T])
+    ;   maplist(brachylog_concatenate_limit_length(0, Length), [H|T])
     ),
-    brachylog_concatenate_(ListOfLists,List).
+    brachylog_concatenate_(ListOfLists, List).
 
-brachylog_concatenate_limit_length(Min,Max,H) :-
+brachylog_concatenate_limit_length(Min, Max, H) :-
     Length #>= Min,
     Length #=< Max,
     indomain(Length),
-    brachylog_length(H,'integer':Length).
+    brachylog_length(H, 'integer':Length).
 
-brachylog_concatenate_integer_value([0],'integer':0).
-brachylog_concatenate_integer_value([H|T],'integer':I) :-
+brachylog_concatenate_integer_value([0], 'integer':0).
+brachylog_concatenate_integer_value([H|T], 'integer':I) :-
     H #\= 0,
-    integer_value('integer':_:[H|T],I).
+    integer_value('integer':_:[H|T], I).
 
-brachylog_concatenate_([L|T],L2) :-
+brachylog_concatenate_([L|T], L2) :-
     is_brachylog_list(L2),
-    append([L|T],L2).
+    append([L|T], L2).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_DUPLICATES
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_duplicates('string':S,'string':T) :-
-    list_to_set(S,T).
-brachylog_duplicates('integer':I,'integer':J) :-
-    label([I]),
-    number_codes(I,C),
-    list_to_set(C,S),
-    number_codes(J,S).
-brachylog_duplicates('float':F,'float':G) :-
-    number_codes(F,C),
-    list_to_set(C,S),
-    number_codes(G,S).
-brachylog_duplicates(L,M) :-
+brachylog_duplicates('string':S, 'string':T) :-
+    list_to_set(S, T).
+brachylog_duplicates('integer':I, 'integer':J) :-
+    brachylog_equals('integer':I, 'integer':I),
+    number_codes(I, C),
+    list_to_set(C, S),
+    number_codes(J, S).
+brachylog_duplicates('float':F, 'float':G) :-
+    number_codes(F, C),
+    list_to_set(C, S),
+    number_codes(G, S).
+brachylog_duplicates(L, M) :-
     is_brachylog_list(L),
-    list_to_set(L,M).
+    list_to_set(L, M).
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_ENUMERATE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_enumerate('string':L,'string':[M]) :-
-    nth0(_,L,M).
-brachylog_enumerate(['integer':Inf,'integer':'infinite'],'integer':I) :-
-    label([Inf]),
-    between(Inf,infinite,I).
-brachylog_enumerate(['integer':Inf,'integer':Sup],'integer':I) :-
+brachylog_enumerate('string':L, 'string':[M]) :-
+    nth0(_, L, M).
+brachylog_enumerate(['integer':Inf, 'integer':'infinite'], 'integer':I) :-
+    brachylog_equals('integer':Inf, 'integer':Inf),
+    between(Inf, infinite, I).
+brachylog_enumerate(['integer':Inf, 'integer':Sup], 'integer':I) :-
     Sup \= 'infinite',
     Sup #>= Inf,
-    label([Sup,Inf]),
-    between(Inf,Sup,I).
-brachylog_enumerate(['integer':Sup,'integer':Inf],'integer':I) :-
+    brachylog_equals(['integer':Inf,'integer':Sup], _),
+    between(Inf, Sup, I).
+brachylog_enumerate(['integer':Sup,'integer':Inf], 'integer':I) :-
     Sup #> Inf,
-    label([Sup,Inf]),
-    between(Inf,Sup,N),
+    brachylog_equals(['integer':Sup,'integer':Inf], _),
+    between(Inf, Sup, N),
     I #= Inf + Sup - N.
-brachylog_enumerate('integer':0,'integer':0).
-brachylog_enumerate('integer':I,'integer':J) :-
+brachylog_enumerate('integer':0, 'integer':0).
+brachylog_enumerate('integer':I, 'integer':J) :-
     H #\= 0,
-    integer_value('integer':_:[H|T],I),
-    nth0(_,[H|T],M),
-    integer_value('integer':'positive':[M],J).
-brachylog_enumerate(L,M) :-
+    integer_value('integer':_:[H|T], I),
+    nth0(_, [H|T], M),
+    integer_value('integer':'positive':[M], J).
+brachylog_enumerate(L, M) :-
     L \= ['integer':_,'integer':_],
-    nth0(_,L,M).
+    nth0(_, L, M).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_FINDALL
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_findall(X,Y) :-
-    append(X,['ignore_calling_predicate'],X2),
-    findall(A,brachylog_call_predicate(X2,A),Y).
+brachylog_findall(X, Y) :-
+    append(X, ['ignore_calling_predicate'], X2),
+    findall(A, brachylog_call_predicate(X2, A), Y).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_GROUP
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_group(X,[X]).
+brachylog_group(X, [X]).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_HEAD
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_head('string':[H|_],'string':[H]).
-brachylog_head('integer':0,'integer':0).
-brachylog_head('integer':I,'integer':J) :-
+brachylog_head('string':[H|_], 'string':[H]).
+brachylog_head('integer':0, 'integer':0).
+brachylog_head('integer':I, 'integer':J) :-
     J #\= 0,
-    integer_value('integer':_:[J|_],I).
-brachylog_head('float':F,'integer':I) :-
+    integer_value('integer':_:[J|_], I).
+brachylog_head('float':F, 'integer':I) :-
     number_codes(F,L),
-    brachylog_head_float(L,'integer':I).
-brachylog_head([H|_],H).
+    brachylog_head_float(L, 'integer':I).
+brachylog_head([H|_], H).
 
-brachylog_head_float([H|T],'integer':I) :-
-    (
-        (
-            H = 48
-            ;
-            H = 46
+brachylog_head_float([H|T], 'integer':I) :-
+    (   (   H = 48
+        ;   H = 46
         ) ->
-        (
-            T = [],
+        (   T = [],
             I = 0
-            ;
-            T \= [],
-            brachylog_head_float(T,'integer':I)    
+        ;   T \= [],
+            brachylog_head_float(T, 'integer':I)    
         )
-        ;
-        H \= 48,
+    ;   H \= 48,
         H \= 46,
-        number_codes(I,[H])    
+        number_codes(I, [H])    
     ).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_ITERATE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_iterate([Arg,'integer':I,PredName],Z) :-
+brachylog_iterate([Arg,'integer':I,PredName], Z) :-
     !,
-    label([I]),
-    brachylog_iterate_(I,PredName,Arg,Z).
-brachylog_iterate(List,Z) :-
-    reverse(List,[PredName,'integer':I|Arg]),
-    label([I]),
-    brachylog_iterate_(I,PredName,Arg,Z).
+    brachylog_equals('integer':I, _),
+    brachylog_iterate_(I, PredName, Arg, Z).
+brachylog_iterate(List, Z) :-
+    reverse(List, [PredName,'integer':I|Arg]),
+    brachylog_equals('integer':I, _),
+    brachylog_iterate_(I, PredName, Arg, Z).
 
-brachylog_iterate_(0,_,Z,Z).
-brachylog_iterate_(I,PredName,Arg,Z) :-
+brachylog_iterate_(0, _, Z, Z).
+brachylog_iterate_(I, PredName, Arg, Z) :-
     I #> 0,
-    brachylog_call_predicate([Arg,PredName,'ignore_calling_predicate'],X),
+    brachylog_call_predicate([Arg,PredName,'ignore_calling_predicate'], X),
     J #= I - 1,
-    brachylog_iterate_(J,PredName,X,Z).
+    brachylog_iterate_(J, PredName, X, Z).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_JUXTAPOSE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_juxtapose([[],'integer':_],[]).
-brachylog_juxtapose([[H|T],'integer':0],[H|T]).
-brachylog_juxtapose([[H|T],'integer':I],Z) :-
+brachylog_juxtapose([[],'integer':_], []).
+brachylog_juxtapose([[H|T],'integer':0], [H|T]).
+brachylog_juxtapose([[H|T],'integer':I], Z) :-
     var(Z),
     Z = [HZ|TZ],
     I #> 0,
-    length([H|T],L),
+    length([H|T], L),
     LZ #= (I+1)*L,
-    length([HZ|TZ],LZ),
-    append([H|T],T2,[HZ|TZ]),
+    length([HZ|TZ], LZ),
+    append([H|T], T2, [HZ|TZ]),
     J #= I-1,
-    brachylog_juxtapose([[H|T],'integer':J],T2).
-brachylog_juxtapose([[H|T],'integer':I],Z) :-
+    brachylog_juxtapose([[H|T],'integer':J], T2).
+brachylog_juxtapose([[H|T],'integer':I], Z) :-
     nonvar(Z),
     Z = [HZ|TZ],
     I #> 0,
-    length([HZ|TZ],LZ),
+    length([HZ|TZ], LZ),
     LZ #= (I+1)*L,
     indomain(L),
-    length([H|T],L),
-    append([H|T],T2,[HZ|TZ]),
+    length([H|T], L),
+    append([H|T], T2, [HZ|TZ]),
     J #= I-1,
-    brachylog_juxtapose([[H|T],'integer':J],T2).
-brachylog_juxtapose(['string':S,'integer':I],'string':Z) :-
-    brachylog_juxtapose([S,'integer':I],Z).
-brachylog_juxtapose(['integer':I,'integer':J],'integer':Z) :-
+    brachylog_juxtapose([[H|T],'integer':J], T2).
+brachylog_juxtapose(['string':S,'integer':I], 'string':Z) :-
+    brachylog_juxtapose([S,'integer':I], Z).
+brachylog_juxtapose(['integer':I,'integer':J], 'integer':Z) :-
     var(Z),
-    dif(H,0),
-    integer_value('integer':Sign:[H|T],I),
-    brachylog_juxtapose([[H|T],'integer':J],LZ),
+    dif(H, 0),
+    integer_value('integer':Sign:[H|T], I),
+    brachylog_juxtapose([[H|T],'integer':J], LZ),
     LZ = [HZ|_],
-    dif(HZ,0),
-    integer_value('integer':Sign:LZ,Z).
-brachylog_juxtapose(['integer':I,'integer':J],'integer':Z) :-
+    dif(HZ, 0),
+    integer_value('integer':Sign:LZ, Z).
+brachylog_juxtapose(['integer':I,'integer':J], 'integer':Z) :-
     nonvar(Z),
-    dif(H,0),
-    dif(HZ,0),
-    integer_value('integer':Sign:[HZ|TZ],Z),
-    brachylog_juxtapose([[H|T],'integer':J],[HZ|TZ]),
-    integer_value('integer':Sign:[H|T],I).
+    dif(H, 0),
+    dif(HZ, 0),
+    integer_value('integer':Sign:[HZ|TZ], Z),
+    brachylog_juxtapose([[H|T],'integer':J], [HZ|TZ]),
+    integer_value('integer':Sign:[H|T], I).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_KNIFE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_knife([],[]).
-brachylog_knife([_],[]).
-brachylog_knife([H,I|T],[H2|T2]) :-
-    (
-        var(T)
-        -> reverse(T3,[H2|T2]),
-        reverse([H,I|T],[_|T3])
-        ;
-        reverse([H,I|T],[_|T3]),
-        reverse(T3,[H2|T2])
+brachylog_knife([], []).
+brachylog_knife([_], []).
+brachylog_knife([H,I|T], [H2|T2]) :-
+    (   var(T) ->
+        reverse(T3, [H2|T2]),
+        reverse([H,I|T], [_|T3])
+    ;   reverse([H,I|T], [_|T3]),
+        reverse(T3, [H2|T2])
     ).
     
-brachylog_knife('string':S,'string':T) :-
-    brachylog_knife(S,T).
-brachylog_knife('integer':I,'integer':0) :-
+brachylog_knife('string':S, 'string':T) :-
+    brachylog_knife(S, T).
+brachylog_knife('integer':I, 'integer':0) :-
     I in -9..9.
-brachylog_knife('integer':I,'integer':J) :-
+brachylog_knife('integer':I, 'integer':J) :-
     H #\= 0,
     H2 #\= 0,
     abs(J) #=< abs(I),
     abs(I) #=< 10*(abs(J) + 1),
-    integer_value('integer':Sign:[H|T],I),
-    integer_value('integer':Sign:[H2|T2],J),
-    brachylog_knife([H|T],[H2|T2]).
+    integer_value('integer':Sign:[H|T], I),
+    integer_value('integer':Sign:[H2|T2], J),
+    brachylog_knife([H|T], [H2|T2]).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_LENGTH
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_length([],'integer':0).
-brachylog_length([H|T],'integer':Length) :-
-    length([H|T],Length).
-brachylog_length('string':S,'integer':Length) :-
-    length(S,Length).
-brachylog_length('integer':0,'integer':1).
-brachylog_length('integer':I,'integer':Length) :-
+brachylog_length([], 'integer':0).
+brachylog_length([H|T], 'integer':Length) :-
+    length([H|T], Length).
+brachylog_length('string':S, 'integer':Length) :-
+    length(S, Length).
+brachylog_length('integer':0, 'integer':1).
+brachylog_length('integer':I, 'integer':Length) :-
     nonvar(Length),
     H #\= 0,
     abs(I) #< 10^Length,
-    integer_value('integer':_:[H|T],I),
-    length([H|T],Length).
-brachylog_length('integer':I,'integer':Length) :-
+    integer_value('integer':_:[H|T], I),
+    length([H|T], Length).
+brachylog_length('integer':I, 'integer':Length) :-
     var(Length),
     H #\= 0,
     Length #>= 0,
-    integer_value('integer':_:[H|T],I),
-    length([H|T],Length).
-brachylog_length('float':F,'integer':Length) :-
-    length(L,Length),
-    catch(number_codes(F,L),E,(print_message(error,E),false)).
+    integer_value('integer':_:[H|T], I),
+    length([H|T], Length).
+brachylog_length('float':F, 'integer':Length) :-
+    nonvar(F),
+    length(L, Length),
+    catch(number_codes(F, L), E, (print_message(error, E), false)).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MEMBER
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_member('string':S,'string':[C]) :-
-    member(C,S).
-brachylog_member('integer':I,'integer':J) :-
+brachylog_member('string':S, 'string':[C]) :-
+    member(C, S).
+brachylog_member('integer':I, 'integer':J) :-
     H #\= 0,
-    integer_value('integer':_:[H|T],I),
-    nth0(_,[H|T],M),
-    integer_value('integer':'positive':M,J).
-brachylog_member('float':F,'integer':I) :-
-    number_codes(F,L),
-    member(C,L),
+    integer_value('integer':_:[H|T], I),
+    nth0(_, [H|T], M),
+    integer_value('integer':'positive':M, J).
+brachylog_member('float':F, 'integer':I) :-
+    number_codes(F, L),
+    member(C, L),
     C \= 45,
     C \= 46,
-    number_codes(I,[C]).
-brachylog_member(['string':S,'integer':I],'string':[C]) :-
-    length(S,L),
+    number_codes(I, [C]).
+brachylog_member(['string':S,'integer':I], 'string':[C]) :-
+    length(S, L),
     L2 #= L - 1,
     I in 0..L2,
-    label([I]),
-    nth0(I,S,C).
-brachylog_member(['integer':0,'integer':0],'integer':0).
-brachylog_member(['integer':J,'integer':I],'integer':K) :-
+    brachylog_equals('integer':I, _),
+    nth0(I, S, C).
+brachylog_member(['integer':0,'integer':0], 'integer':0).
+brachylog_member(['integer':J,'integer':I], 'integer':K) :-
     H #\= 0,
-    integer_value('integer':_:[H|T],J),
-    length([H|T],Length),
+    integer_value('integer':_:[H|T], J),
+    length([H|T], Length),
     Length2 #= Length - 1,
     I in 0..Length2,
-    label([I]),
-    nth0(I,[H|T],M),
-    integer_value('integer':'positive':[M],K).
-brachylog_member(['float':F,'integer':I],'integer':J) :-
-    number_codes(F,L),
-    length(L,Length),
+    brachylog_equals('integer':I, _),
+    nth0(I, [H|T], M),
+    integer_value('integer':'positive':[M], K).
+brachylog_member(['float':F,'integer':I], 'integer':J) :-
+    number_codes(F, L),
+    length(L, Length),
     Length2 #= Length - 1,
     I in 0.. Length2,
-    label([I]),
-    delete(L,45,L2),
-    delete(L2,46,L3),
-    nth0(I,L3,D),
-    number_codes(J,[D]).
-brachylog_member([L,'integer':I],M) :-
+    brachylog_equals('integer':I, _),
+    delete(L, 45, L2),
+    delete(L2, 46, L3),
+    nth0(I, L3, D),
+    number_codes(J, [D]).
+brachylog_member([L,'integer':I], M) :-
     is_brachylog_list(L),
-    length(L,Length),
+    length(L, Length),
     Length2 #= Length - 1,
     I in 0.. Length2,
-    label([I]),
-    nth0(I,L,M).
-brachylog_member([A,B,C|T],M) :-
-    brachylog_member([[A,B,C|T],'integer':_],M).
+    brachylog_equals('integer':I, _),
+    nth0(I, L, M).
+brachylog_member([A,B,C|T], M) :-
+    brachylog_member([[A,B,C|T],'integer':_], M).
   
   
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_ORDER
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_order('string':S,'string':T) :-
-    msort(S,T).
-brachylog_order('integer':I,'integer':J) :-
-    label([I]),
-    number_codes(I,C),
-    msort(C,D),
-    number_codes(J,D).
-brachylog_order([],[]).
-brachylog_order([H|T],OrderedList) :-
-    reverse([H|T],[PredName|RArgs]),
-    reverse(RArgs,Args),
-    (
-        Args = [SingleArg]
-        -> A = SingleArg
-        ;
-        A = Args
+brachylog_order('string':S, 'string':T) :-
+    msort(S, T).
+brachylog_order('integer':I, 'integer':J) :-
+    brachylog_equals('integer':I, _),
+    number_codes(I, C),
+    msort(C, D),
+    number_codes(J, D).
+brachylog_order([], []).
+brachylog_order([H|T], OrderedList) :-
+    reverse([H|T], [PredName|RArgs]),
+    reverse(RArgs, Args),
+    (   Args = [SingleArg] ->
+        A = SingleArg
+    ;   A = Args
     ),
-    (
-        atom(PredName)
-        -> brachylog_apply([H|T],L2),
-        brachylog_zip([L2,A],Z),
-        msort(Z,SZ),
-        brachylog_zip(SZ,[_,OrderedList])
-        ;
-        msort([H|T],OrderedList)
+    (   atom(PredName) ->
+        brachylog_apply([H|T], L2),
+        brachylog_zip([L2,A], Z),
+        msort(Z, SZ),
+        brachylog_zip(SZ, [_,OrderedList])
+    ;   msort([H|T], OrderedList)
     ).
-    
-    
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_PERMUTE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_permute('string':S,'string':Permutation) :-
-    permutation(S,Permutation).
+brachylog_permute('string':S, 'string':Permutation) :-
+    permutation(S, Permutation).
 brachylog_permute(List, Permutation) :-
     is_brachylog_list(List),
     permutation(List, Permutation).
 brachylog_permute('integer':I, 'integer':J) :-
     H #\= 0,
-    integer_value('integer':Sign:[H|L],I),
-    permutation([H|L],M),
-    integer_value('integer':Sign:M,J).
+    integer_value('integer':Sign:[H|L], I),
+    permutation([H|L], M),
+    integer_value('integer':Sign:M, J).
 brachylog_permute('float':F, 'float':G) :-
-    number_chars(F,C),
-    permutation(C,D),
-    \+ (D = ['.'|_]
-        ;
-        reverse(D,['.'|_])
-    ),
-    number_chars(G,D).
+    number_chars(F, C),
+    permutation(C, D),
+    \+ ( D = ['.'|_] ; reverse(D, ['.'|_])),
+    number_chars(G, D).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_REVERSE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_reverse('string':S,'string':R) :-
-    reverse(S,R).
-brachylog_reverse('integer':I,'integer':R) :-
+brachylog_reverse('string':S, 'string':R) :-
+    reverse(S, R).
+brachylog_reverse('integer':I, 'integer':R) :-
     nonvar(I),
     H #\= 0,
     A #\= 0,
-    integer_value('integer':Sign:[H|T],I),
-    reverse([H|T],B),
-    append(Zeroes,[A|Rest],B),
-    maplist(=(0),Zeroes),
-    integer_value('integer':Sign:[A|Rest],R).
-brachylog_reverse('integer':0,'integer':0).
-brachylog_reverse('integer':I,'integer':R) :-
+    integer_value('integer':Sign:[H|T], I),
+    reverse([H|T], B),
+    append(Zeroes, [A|Rest], B),
+    maplist(=(0), Zeroes),
+    integer_value('integer':Sign:[A|Rest], R).
+brachylog_reverse('integer':0, 'integer':0).
+brachylog_reverse('integer':I, 'integer':R) :-
     var(I),
     H #\= 0,
     A #\= 0,
-    integer_value('integer':Sign:[A|B],R),
-    reverse(L,[A|B]),
-    append(Zeroes,[H|T],L),
-    maplist(=(0),Zeroes),
-    integer_value('integer':Sign:[H|T],I).
-brachylog_reverse(List,R) :-
-    reverse(List,R).
+    integer_value('integer':Sign:[A|B], R),
+    reverse(L, [A|B]),
+    append(Zeroes, [H|T], L),
+    maplist(=(0), Zeroes),
+    integer_value('integer':Sign:[H|T], I).
+brachylog_reverse(List, R) :-
+    reverse(List, R).
     
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_SUBSET
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_subset('string':S,'string':T) :-
-    brachylog_subset_recur(S,T).
-brachylog_subset('integer':I,'integer':J) :-
+brachylog_subset('string':S, 'string':T) :-
+    brachylog_subset_recur(S, T).
+brachylog_subset('integer':I, 'integer':J) :-
     H #\= 0,
-    integer_value('integer':Sign:[H|L],I),
-    brachylog_subset_recur([H|L],M),
-    integer_value('integer':Sign:M,J).
-brachylog_subset('float':F,'float':G) :-
-    number_chars(F,C),
-    brachylog_subset_recur(C,D),
-    \+ (D = ['.'|_]
-        ;
-        reverse(D,['.'|_])
-    ),
+    integer_value('integer':Sign:[H|L], I),
+    brachylog_subset_recur([H|L], M),
+    integer_value('integer':Sign:M, J).
+brachylog_subset('float':F, 'float':G) :-
+    number_chars(F, C),
+    brachylog_subset_recur(C, D),
+    \+ (D = ['.'|_] ; reverse(D, ['.'|_])),
     number_chars(G,D).
-brachylog_subset(L,S) :-
+brachylog_subset(L, S) :-
     is_brachylog_list(L),
-    brachylog_subset_recur(L,S).
+    brachylog_subset_recur(L, S).
     
-brachylog_subset_recur([],[]).
-brachylog_subset_recur([H|T],[H|T2]) :-
-    brachylog_subset_recur(T,T2).
-brachylog_subset_recur([_|T],T2) :-
-    brachylog_subset_recur(T,T2).
+brachylog_subset_recur([], []).
+brachylog_subset_recur([H|T], [H|T2]) :-
+    brachylog_subset_recur(T, T2).
+brachylog_subset_recur([_|T], T2) :-
+    brachylog_subset_recur(T, T2).
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_TAIL
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_tail('string':L,'string':[H]) :-
-    reverse(L,[H|_]).
-brachylog_tail('integer':0,'integer':0).
-brachylog_tail('integer':I,'integer':Z) :-
+brachylog_tail('string':L, 'string':[H]) :-
+    reverse(L, [H|_]).
+brachylog_tail('integer':0, 'integer':0).
+brachylog_tail('integer':I, 'integer':Z) :-
     J #\= 0,
-    integer_value('integer':_:[J|T],I),
-    reverse([J|T],[Z|_]).
-brachylog_tail('float':F,'integer':I) :-
-    number_codes(F,L),
-    reverse(L,R),
-    brachylog_tail_float(R,'integer':I).
-brachylog_tail(L,H) :-
+    integer_value('integer':_:[J|T], I),
+    reverse([J|T], [Z|_]).
+brachylog_tail('float':F, 'integer':I) :-
+    number_codes(F, L),
+    reverse(L, R),
+    brachylog_tail_float(R, 'integer':I).
+brachylog_tail(L, H) :-
     is_brachylog_list(L),
-    reverse(L,[H|_]).
+    reverse(L, [H|_]).
 
-brachylog_tail_float([H|T],'integer':I) :-
-    (
-        (
-            H = 48
-            ;
-            H = 46
+brachylog_tail_float([H|T], 'integer':I) :-
+    (   (   H = 48
+        ;   H = 46
         ) ->
-        (
-            T = [],
+        (   T = [],
             I = 0
-            ;
-            T \= [],
-            brachylog_tail_float(T,'integer':I)    
+        ;   T \= [],
+            brachylog_tail_float(T, 'integer':I)    
         )
-        ;
-        H \= 48,
+    ;   H \= 48,
         H \= 46,
-        number_codes(I,[H])    
+        number_codes(I, [H])
     ).
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_VOID
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_void([],_).
-brachylog_void('string':[],_).
-brachylog_void('integer':I,_) :-
+brachylog_void([], _).
+brachylog_void('string':[], _).
+brachylog_void('integer':I, _) :-
     I #= 0.
-brachylog_void('float':0.0,_).
+brachylog_void('float':0.0, _).
  
  
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_WRITE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_write([List,'string':F],_) :-
+brachylog_write([List,'string':F], _) :-
     is_brachylog_list(List),
-    atomic_list_concat(F,Format),
-    brachylog_prolog_variable(List,PrologList),
-    format(Format,PrologList).
-brachylog_write(Args,_) :-
+    atomic_list_concat(F, Format),
+    brachylog_prolog_variable(List, PrologList),
+    format(Format, PrologList).
+brachylog_write(Args, _) :-
     is_brachylog_list(Args),
-    reverse(Args,['string':F|R]),
-    reverse(R,S),
-    brachylog_prolog_variable(S,PrologS),
-    atomic_list_concat(F,Format),
-    format(Format,PrologS).
-brachylog_write('string':S,_) :-
-    atomic_list_concat(S,X),
+    reverse(Args, ['string':F|R]),
+    reverse(R, S),
+    brachylog_prolog_variable(S, PrologS),
+    atomic_list_concat(F, Format),
+    format(Format, PrologS).
+brachylog_write('string':S, _) :-
+    atomic_list_concat(S, X),
     write(X).
-brachylog_write('integer':I,_) :-
+brachylog_write('integer':I, _) :-
     write(I).
-brachylog_write('float':F,_) :-
+brachylog_write('float':F, _) :-
     write(F).
-brachylog_write(List,_) :-
+brachylog_write(List, _) :-
     is_brachylog_list(List),
-    \+ (reverse(List,['string':_|_])),
-    brachylog_prolog_variable(List,PrologList),
+    \+ (reverse(List, ['string':_|_])),
+    brachylog_prolog_variable(List, PrologList),
     write(PrologList).
    
    
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_XTERMINATE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_xterminate([L,[]],L).
-brachylog_xterminate(['string':S,X],'string':T) :-
+brachylog_xterminate([L,[]], L).
+brachylog_xterminate(['string':S,X], 'string':T) :-
     \+ is_brachylog_list(X),
-    brachylog_xterminate_(X,'string':S,'string':T).
-brachylog_xterminate(['string':S,[H|T]],L3) :-
-    brachylog_xterminate_(H,'string':S,L2),
-    brachylog_xterminate([L2,T],L3).
-brachylog_xterminate([L,H|T],L3) :-
+    brachylog_xterminate_(X, 'string':S, 'string':T).
+brachylog_xterminate(['string':S,[H|T]], L3) :-
+    brachylog_xterminate_(H,'string':S, L2),
+    brachylog_xterminate([L2,T], L3).
+brachylog_xterminate([L,H|T], L3) :-
     is_brachylog_list(L),
     \+ is_brachylog_list(H),
-    brachylog_xterminate([L,[H|T]],L3).
-brachylog_xterminate([L,[H|T]],L3) :-
+    brachylog_xterminate([L,[H|T]], L3).
+brachylog_xterminate([L,[H|T]], L3) :-
     is_brachylog_list(L),
-    delete(L,H,L2),
-    brachylog_xterminate([L2,T],L3).
+    delete(L, H, L2),
+    brachylog_xterminate([L2,T], L3).
     
-brachylog_xterminate_(X,'string':S,'string':T) :-
-    brachylog_xterminate_single(X,'string':S,'string':T).
-brachylog_xterminate_(_,[],[]).
-brachylog_xterminate_(X,[H|T],[H2|T2]) :-
-    brachylog_xterminate_single(X,H,H2),
-    brachylog_xterminate_(X,T,T2).
+brachylog_xterminate_(X, 'string':S, 'string':T) :-
+    brachylog_xterminate_single(X, 'string':S, 'string':T).
+brachylog_xterminate_(_, [], []).
+brachylog_xterminate_(X, [H|T], [H2|T2]) :-
+    brachylog_xterminate_single(X, H, H2),
+    brachylog_xterminate_(X, T, T2).
     
-brachylog_xterminate_single('string':L,'string':H,'string':Z) :-
-    (
-        append([A,L,B],H),
+brachylog_xterminate_single('string':L, 'string':H, 'string':Z) :-
+    (   append([A,L,B], H),
         append(A,B,H2),
-        brachylog_xterminate_single('string':L,'string':H2,'string':Z)
-        ;
-        \+ append([_,L,_],H),
+        brachylog_xterminate_single('string':L, 'string':H2, 'string':Z)
+    ;   \+ append([_,L,_], H),
         Z = H
     ).
 
@@ -705,24 +662,24 @@ brachylog_xterminate_single('string':L,'string':H,'string':Z) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_YIELD
    
-   Credits to @false
+   Credits to @false for call_firstf/2 and call_nth/2
    http://stackoverflow.com/a/20866206/2554145
    http://stackoverflow.com/a/11400256/2554145
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_yield('integer':I,Z) :-
-    findall(X,brachylog_enumerate(['integer':0,'integer':I],X),Z).
-brachylog_yield(['string':[C],'string':[D]],Z) :-
-    atom_codes(C,[CC]),
-    atom_codes(D,[DC]),
-    findall([X],brachylog_enumerate(['integer':CC,'integer':DC],'integer':X),LC),
-    maplist(atom_codes,L,LC),
-    maplist(brachylog_group,L,LG),
-    maplist(prepend_string,LG,Z).
-brachylog_yield([A,B|T],Z) :-
-    reverse([A,B|T],[PredName,'integer':I|RArgs]),
-    reverse(RArgs,Args),
-    append([Args,[PredName,'ignore_calling_predicate']],L),
-    findall(X,call_firstn(brachylog_call_predicate(L,X),I),Z).
+brachylog_yield('integer':I, Z) :-
+    findall(X, brachylog_enumerate(['integer':0,'integer':I], X), Z).
+brachylog_yield(['string':[C],'string':[D]], Z) :-
+    atom_codes(C, [CC]),
+    atom_codes(D, [DC]),
+    findall([X], brachylog_enumerate(['integer':CC,'integer':DC], 'integer':X), LC),
+    maplist(atom_codes, L, LC),
+    maplist(brachylog_group, L, LG),
+    maplist(prepend_string, LG, Z).
+brachylog_yield([A,B|T], Z) :-
+    reverse([A,B|T], [PredName,'integer':I|RArgs]),
+    reverse(RArgs, Args),
+    append([Args, [PredName,'ignore_calling_predicate']], L),
+    findall(X, call_firstn(brachylog_call_predicate(L, X), I), Z).
 
 call_firstn(Goal_0, N) :-
     N + N mod 1 >= 0,         % ensures that N >=0 and N is an integer
@@ -730,7 +687,7 @@ call_firstn(Goal_0, N) :-
     ( Nth == N -> ! ; true ).
 
 call_nth(Goal_0, C) :-
-    State = count(0,_),
+    State = count(0, _),
     Goal_0,
     arg(1, State, C1),
     C2 is C1+1,
@@ -743,72 +700,60 @@ call_nth(Goal_0, C) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_zip(L,Z) :-
     is_brachylog_list(L),
-    maplist(brachylog_length,L,Lengths),
-    brachylog_order(Lengths,OrderedLengths),
-    reverse(OrderedLengths,['integer':MaxLength|_]),
-    brachylog_zip_(L,MaxLength,Z).
+    maplist(brachylog_length, L, Lengths),
+    brachylog_order(Lengths, OrderedLengths),
+    reverse(OrderedLengths, ['integer':MaxLength|_]),
+    brachylog_zip_(L, MaxLength, Z).
     
-brachylog_zip_(_,0,[]).
-brachylog_zip_(L,I,[Heads|Z]) :-
+brachylog_zip_(_, 0, []).
+brachylog_zip_(L, I, [Heads|Z]) :-
     I #> 0,
-    maplist(brachylog_head,L,Heads),
-    maplist(brachylog_math_circular_permute_left,L,Tails),
+    maplist(brachylog_head, L, Heads),
+    maplist(brachylog_math_circular_permute_left, L, Tails),
     J #= I - 1,
-    brachylog_zip_(Tails,J,Z).
+    brachylog_zip_(Tails, J, Z).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_CALL_PREDICATE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_call_predicate(X,Output) :-
-    (
-        reverse(X,[CallingPredName,P|RArgs])
-        ;
-        X = [CallingPredName],
+brachylog_call_predicate(X, Output) :-
+    (   reverse(X, [CallingPredName,P|RArgs])
+    ;   X = [CallingPredName],
         P = 'no_args',
         RArgs = []
     ),
-    reverse(RArgs,Args),
-    (
-        P = 'integer':I,
-        (
-            I = 0,
+    reverse(RArgs, Args),
+    (   P = 'integer':I,
+        (   I = 0,
             PredName = 'brachylog_main'
-            ;
-            I #> 0,
-            atomic_list_concat(['brachylog_predicate_',I],PredName)
+        ;   I #> 0,
+            atomic_list_concat(['brachylog_predicate_',I], PredName)
         ),
         RealArgs = Args
-        ;
-        P \= 'integer':_,
+    ;   P \= 'integer':_,
         atom(P),
-        atom_concat('brachylog_',_,P),
+        atom_concat('brachylog_', _, P),
         PredName = P,
         RealArgs = Args
-        ;
-        P \= 'integer':_,
-        \+ (atom(P), atom_concat('brachylog_',_,P)),
+    ;   P \= 'integer':_,
+        \+ (atom(P), atom_concat('brachylog_', _, P)),
         PredName = CallingPredName,
-        (
-            P = 'no_args',
+        (   P = 'no_args',
             RealArgs = []
-            ;
-            P \= 'no_args',
-            reverse([P|RArgs],RealArgs)
+        ;   P \= 'no_args',
+            reverse([P|RArgs], RealArgs)
         )
     ),
-    (
-        RealArgs = [UniqueArg],
+    (   RealArgs = [UniqueArg],
         A = UniqueArg
-        ;
-        length(RealArgs,Length),
+    ;   length(RealArgs, Length),
         Length > 1,
         A = RealArgs
-        ;
-        RealArgs = [],
+    ;   RealArgs = [],
         A = _
     ),
-    call(PredName,A,Output).
+    call(PredName, A, Output).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -834,27 +779,22 @@ brachylog_plus(ListOfLists, Sums) :-
         throw('Lists must have have the same length to be added')
 )   .
     
-brachylog_plus_([],'integer':0).
-brachylog_plus_([TypeI:I|T],TypeS:Sum) :-
-    brachylog_plus_(T,TypeF:F),
-    (
-        TypeI = 'integer',
+brachylog_plus_([], 'integer':0).
+brachylog_plus_([TypeI:I|T], TypeS:Sum) :-
+    brachylog_plus_(T, TypeF:F),
+    (   TypeI = 'integer',
         TypeF = 'integer',
         Sum #= I + F,
         TypeS = 'integer'
-        ;
-        TypeS = 'float',
-        (
-            TypeF = 'float',
+    ;   TypeS = 'float',
+        (   TypeF = 'float',
             TypeI = 'integer',
-            indomain(I)
-            ;
-            TypeI = 'float',
+            brachylog_equals('integer':I, _)
+        ;   TypeI = 'float',
             nonvar(I),
             TypeF = 'integer',
-            indomain(F)
-            ;
-            TypeF = 'float',
+            brachylog_equals('integer':F, _)
+        ;   TypeF = 'float',
             TypeI = 'float',
             nonvar(I)
         ),
@@ -865,22 +805,22 @@ brachylog_plus_([TypeI:I|T],TypeS:Sum) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MINUS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_minus('integer':I,'integer':J) :-
+brachylog_minus('integer':I, 'integer':J) :-
     J #= I - 1.
-brachylog_minus('float':I,'float':J) :-
+brachylog_minus('float':I, 'float':J) :-
     J is I - 1.
-brachylog_minus([],'integer':[0]).
-brachylog_minus(['integer':I1,'integer':I2],'integer':Sum) :-
+brachylog_minus([], 'integer':[0]).
+brachylog_minus(['integer':I1,'integer':I2], 'integer':Sum) :-
     Sum #= I1 - I2.
-brachylog_minus(['float':I1,'integer':I2],'float':Sum) :-
-    indomain(I2),
+brachylog_minus(['float':I1,'integer':I2], 'float':Sum) :-
+    brachylog_equals('integer':I2, _),
     nonvar(I1),
     Sum is I1 - I2.
-brachylog_minus(['integer':I1,'float':I2],'float':Sum) :-
-    indomain(I1),
+brachylog_minus(['integer':I1, 'float':I2], 'float':Sum) :-
+    brachylog_equals('integer':I1, _),
     nonvar(I2),
     Sum is I1 - I2.
-brachylog_minus(['float':I1,'float':I2],'float':Sum) :-
+brachylog_minus(['float':I1,'float':I2], 'float':Sum) :-
     nonvar(I1),
     nonvar(I2),
     Sum is I1 - I2.
@@ -889,48 +829,41 @@ brachylog_minus(['float':I1,'float':I2],'float':Sum) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MULTIPLY
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_multiply('integer':I,'integer':J) :-
+brachylog_multiply('integer':I, 'integer':J) :-
     J #= 2*I.
-brachylog_multiply('float':F,'float':G) :-
+brachylog_multiply('float':F, 'float':G) :-
     G is 2*F.
-brachylog_multiply(L,Product) :-
+brachylog_multiply(L, Product) :-
 	is_brachylog_list(L),
-	\+ (maplist(is_brachylog_list,L)),
-	brachylog_multiply_(L,Product).
-brachylog_multiply(ListOfLists,Products) :-
-	maplist(is_brachylog_list,ListOfLists),
+	\+ (maplist(is_brachylog_list, L)),
+	brachylog_multiply_(L, Product).
+brachylog_multiply(ListOfLists, Products) :-
+	maplist(is_brachylog_list, ListOfLists),
 	ListOfLists = [H|_],
-	length(H,Length),
-	(
-		maplist(length_(Length),ListOfLists),
-		transpose(ListOfLists,Transpose),
-		maplist(brachylog_multiply_,Transpose,Products)
-		;
-		\+ (maplist(length_(Length),ListOfLists)),
+	length(H, Length),
+	(   maplist(length_(Length), ListOfLists),
+		transpose(ListOfLists, Transpose),
+		maplist(brachylog_multiply_, Transpose, Products)
+    ;   \+ (maplist(length_(Length), ListOfLists)),
 		throw('Lists must have have the same length to be multiplied')
 	).
 	
-brachylog_multiply_([],'integer':1).
-brachylog_multiply_([TypeI:I|T],TypeS:Product) :-
-	brachylog_multiply_(T,TypeF:F),
-	(
-		TypeI = 'integer',
+brachylog_multiply_([], 'integer':1).
+brachylog_multiply_([TypeI:I|T], TypeS:Product) :-
+	brachylog_multiply_(T, TypeF:F),
+	(   TypeI = 'integer',
 		TypeF = 'integer',
 		Product #= I * F,
 		TypeS = 'integer'
-		;
-		TypeS = 'float',
-		(
-			TypeF = 'float',
+    ;   TypeS = 'float',
+		(   TypeF = 'float',
 			TypeI = 'integer',
-			indomain(I)
-			;
-			TypeI = 'float',
+			brachylog_equals('integer':I, _)
+        ;   TypeI = 'float',
 			nonvar(I),
 			TypeF = 'integer',
-			indomain(F)
-			;
-			TypeF = 'float',
+			brachylog_equals('integer':F, _)
+        ;   TypeF = 'float',
 			TypeI = 'float',
 			nonvar(I)
 		),
@@ -941,23 +874,23 @@ brachylog_multiply_([TypeI:I|T],TypeS:Product) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_DIVIDE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_divide('integer':I,'float':J) :-
-	indomain(I),
+brachylog_divide('integer':I, 'float':J) :-
+	brachylog_equals('integer':I, _),
 	J is 1/I.
-brachylog_divide('float':I,'float':J) :-
+brachylog_divide('float':I, 'float':J) :-
 	J is 1/I.
-brachylog_divide([],'integer':1).
-brachylog_divide(['integer':I1,'integer':I2],'integer':Division) :-
+brachylog_divide([], 'integer':1).
+brachylog_divide(['integer':I1,'integer':I2], 'integer':Division) :-
 	Division #= I1 // I2.
-brachylog_divide(['float':I1,'integer':I2],'float':Division) :-
-	indomain(I2),
+brachylog_divide(['float':I1,'integer':I2], 'float':Division) :-
+	brachylog_equals('integer':I2, _),
 	nonvar(I1),
 	Division is I1 / I2.
-brachylog_divide(['integer':I1,'float':I2],'float':Division) :-
-	indomain(I1),
+brachylog_divide(['integer':I1,'float':I2], 'float':Division) :-
+	brachylog_equals('integer':I1, _),
 	nonvar(I2),
 	Division is I1 / I2.
-brachylog_divide(['float':I1,'float':I2],'float':Division) :-
+brachylog_divide(['float':I1,'float':I2], 'float':Division) :-
 	nonvar(I1),
 	nonvar(I2),
 	Division is I1 / I2.
@@ -966,22 +899,22 @@ brachylog_divide(['float':I1,'float':I2],'float':Division) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_POWER
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_power('integer':I,'integer':J) :-
+brachylog_power('integer':I, 'integer':J) :-
     J #= I^2.
-brachylog_power('float':I,'float':J) :-
+brachylog_power('float':I, 'float':J) :-
     J is I^2.
-brachylog_power([],'integer':1).
-brachylog_power(['integer':I1,'integer':I2],'integer':Power) :-
+brachylog_power([], 'integer':1).
+brachylog_power(['integer':I1,'integer':I2], 'integer':Power) :-
     Power #= I1 ^ I2.
-brachylog_power(['float':I1,'integer':I2],'float':Power) :-
-    indomain(I2),
+brachylog_power(['float':I1,'integer':I2], 'float':Power) :-
+    brachylog_equals('integer':I2, _),
     nonvar(I1),
     Power is I1 ^ I2.
-brachylog_power(['integer':I1,'float':I2],'float':Power) :-
-    indomain(I1),
+brachylog_power(['integer':I1,'float':I2], 'float':Power) :-
+    brachylog_equals('integer':I1, _),
     nonvar(I2),
     Power is I1 ^ I2.
-brachylog_power(['float':I1,'float':I2],'float':Power) :-
+brachylog_power(['float':I1,'float':I2], 'float':Power) :-
     nonvar(I1),
     nonvar(I2),
     Power is I1 ^ I2.
@@ -990,22 +923,22 @@ brachylog_power(['float':I1,'float':I2],'float':Power) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_LESS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_less('integer':I1,'integer':I2) :-
+brachylog_less('integer':I1, 'integer':I2) :-
     I1 #< I2.
-brachylog_less([],[]).
-brachylog_less(['integer':I],['integer':I]).
-brachylog_less(['integer':I,'integer':J|T],['integer':I,'integer':J|T]) :-
+brachylog_less([], []).
+brachylog_less(['integer':I], ['integer':I]).
+brachylog_less(['integer':I,'integer':J|T], ['integer':I,'integer':J|T]) :-
     I #< J,
-    brachylog_less(['integer':J|T],['integer':J|T]).
-brachylog_less('float':I1,'integer':I2) :-
-    indomain(I2),
+    brachylog_less(['integer':J|T], ['integer':J|T]).
+brachylog_less('float':I1, 'integer':I2) :-
+    brachylog_equals('integer':I2, _),
     nonvar(I1),
     I1 < I2.
-brachylog_less('integer':I1,'float':I2) :-
-    indomain(I1),
+brachylog_less('integer':I1, 'float':I2) :-
+    brachylog_equals('integer':I1, _),
     nonvar(I2),
     I1 < I2.
-brachylog_less('float':I1,'float':I2) :-
+brachylog_less('float':I1, 'float':I2) :-
     nonvar(I1),
     nonvar(I2),
     I1 < I2.
@@ -1014,22 +947,22 @@ brachylog_less('float':I1,'float':I2) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_GREATER
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_greater('integer':I1,'integer':I2) :-
+brachylog_greater('integer':I1, 'integer':I2) :-
     I1 #> I2.
-brachylog_greater([],[]).
-brachylog_greater(['integer':I],['integer':I]).
-brachylog_greater(['integer':I,'integer':J|T],['integer':I,'integer':J|T]) :-
+brachylog_greater([], []).
+brachylog_greater(['integer':I], ['integer':I]).
+brachylog_greater(['integer':I,'integer':J|T], ['integer':I,'integer':J|T]) :-
     I #> J,
-    brachylog_greater(['integer':J|T],['integer':J|T]).
-brachylog_greater('float':I1,'integer':I2) :-
-    indomain(I2),
+    brachylog_greater(['integer':J|T], ['integer':J|T]).
+brachylog_greater('float':I1, 'integer':I2) :-
+    brachylog_equals('integer':I2, _),
     nonvar(I1),
     I1 > I2.
-brachylog_greater('integer':I1,'float':I2) :-
-    indomain(I1),
+brachylog_greater('integer':I1, 'float':I2) :-
+    brachylog_equals('integer':I1, _),
     nonvar(I2),
     I1 > I2.
-brachylog_greater('float':I1,'float':I2) :-
+brachylog_greater('float':I1, 'float':I2) :-
     nonvar(I1),
     nonvar(I2),
     I1 > I2.    
@@ -1038,22 +971,22 @@ brachylog_greater('float':I1,'float':I2) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_LESSEQUAL
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_lessequal('integer':I1,'integer':I2) :-
+brachylog_lessequal('integer':I1, 'integer':I2) :-
     I1 #=< I2.
-brachylog_lessequal([],[]).
-brachylog_lessequal(['integer':I],['integer':I]).
-brachylog_lessequal(['integer':I,'integer':J|T],['integer':I,'integer':J|T]) :-
+brachylog_lessequal([], []).
+brachylog_lessequal(['integer':I], ['integer':I]).
+brachylog_lessequal(['integer':I,'integer':J|T], ['integer':I,'integer':J|T]) :-
     I #=< J,
-    brachylog_lessequal(['integer':J|T],['integer':J|T]).
-brachylog_lessequal('float':I1,'integer':I2) :-
-    indomain(I2),
+    brachylog_lessequal(['integer':J|T], ['integer':J|T]).
+brachylog_lessequal('float':I1, 'integer':I2) :-
+    brachylog_equals('integer':I2, _),
     nonvar(I1),
     I1 =< I2.
-brachylog_lessequal('integer':I1,'float':I2) :-
-    indomain(I1),
+brachylog_lessequal('integer':I1, 'float':I2) :-
+    brachylog_equals('integer':I1, _),
     nonvar(I2),
     I1 =< I2.
-brachylog_lessequal('float':I1,'float':I2) :-
+brachylog_lessequal('float':I1, 'float':I2) :-
     nonvar(I1),
     nonvar(I2),
     I1 =< I2.
@@ -1062,22 +995,22 @@ brachylog_lessequal('float':I1,'float':I2) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_GREATEREQUAL
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_greaterequal('integer':I1,'integer':I2) :-
+brachylog_greaterequal('integer':I1, 'integer':I2) :-
     I1 #>= I2.
-brachylog_greaterequal([],[]).
-brachylog_greaterequal(['integer':I],['integer':I]).
-brachylog_greaterequal(['integer':I,'integer':J|T],['integer':I,'integer':J|T]) :-
+brachylog_greaterequal([], []).
+brachylog_greaterequal(['integer':I], ['integer':I]).
+brachylog_greaterequal(['integer':I,'integer':J|T], ['integer':I,'integer':J|T]) :-
     I #>= J,
-    brachylog_greaterequal(['integer':J|T],['integer':J|T]).
-brachylog_greaterequal('float':I1,'integer':I2) :-
-    indomain(I2),
+    brachylog_greaterequal(['integer':J|T], ['integer':J|T]).
+brachylog_greaterequal('float':I1, 'integer':I2) :-
+    brachylog_equals('integer':I2, _),
     nonvar(I1),
     I1 >= I2.
-brachylog_greaterequal('integer':I1,'float':I2) :-
-    indomain(I1),
+brachylog_greaterequal('integer':I1, 'float':I2) :-
+    brachylog_equals('integer':I1, _),
     nonvar(I2),
     I1 >= I2.
-brachylog_greaterequal('float':I1,'float':I2) :-
+brachylog_greaterequal('float':I1, 'float':I2) :-
     nonvar(I1),
     nonvar(I2),
     I1 >= I2.
@@ -1086,7 +1019,7 @@ brachylog_greaterequal('float':I1,'float':I2) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MODULO
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_modulo(['integer':I1,'integer':I2],'integer':Rem) :-
+brachylog_modulo(['integer':I1,'integer':I2], 'integer':Rem) :-
     Rem #= I1 mod I2.
     
 
@@ -1096,12 +1029,12 @@ brachylog_modulo(['integer':I1,'integer':I2],'integer':Rem) :-
    Credits to Markus Triska
    See: http://codereview.stackexchange.com/questions/129924/clpfd-labeling-on-possibly-infinite-domains/129945#129945
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_equals('integer':Z,'integer':Z) :-
+brachylog_equals('integer':Z, 'integer':Z) :-
     unsafe_indomain(Z).
 
-brachylog_equals(Z,Z) :-
+brachylog_equals(Z, Z) :-
 	is_brachylog_list(Z),
-	maplist(brachylog_equals,Z,_).
+	maplist(brachylog_equals, Z, _).
 
 unsafe_indomain(X) :-
     fd_inf(X, Inf0),
