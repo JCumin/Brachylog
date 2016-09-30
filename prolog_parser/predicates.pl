@@ -814,27 +814,25 @@ brachylog_call_predicate(X,Output) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_PLUS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_plus('integer':I,'integer':J) :-
+brachylog_plus('integer':I, 'integer':J) :-
     J #= I + 1.
-brachylog_plus('float':I,'float':J) :-
+brachylog_plus('float':I, 'float':J) :-
     J is I + 1.
-brachylog_plus([],'integer':0).
-brachylog_plus(L,Sum) :-
+brachylog_plus([], 'integer':0).
+brachylog_plus(L, Sum) :-
     is_brachylog_list(L),
-    \+ (maplist(is_brachylog_list,L)),
-    brachylog_plus_(L,Sum).
-brachylog_plus(ListOfLists,Sums) :-
-    maplist(is_brachylog_list,ListOfLists),
+    \+ (maplist(is_brachylog_list, L)),
+    brachylog_plus_(L, Sum).
+brachylog_plus(ListOfLists, Sums) :-
+    maplist(is_brachylog_list, ListOfLists),
     ListOfLists = [H|_],
-    length(H,Length),
-    (
-        maplist(length_(Length),ListOfLists),
-        transpose(ListOfLists,Transpose),
-        maplist(brachylog_plus_,Transpose,Sums)
-        ;
-        \+ (maplist(length_(Length),ListOfLists)),
+    length(H, Length),
+    (   maplist(length_(Length), ListOfLists),
+        transpose(ListOfLists, Transpose),
+        maplist(brachylog_plus_, Transpose, Sums)
+    ;   \+ (maplist(length_(Length), ListOfLists)),
         throw('Lists must have have the same length to be added')
-    ).
+)   .
     
 brachylog_plus_([],'integer':0).
 brachylog_plus_([TypeI:I|T],TypeS:Sum) :-
