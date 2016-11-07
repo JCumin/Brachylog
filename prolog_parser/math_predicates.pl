@@ -14,7 +14,8 @@ ____            ____
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-:- module(math_predicates, [brachylog_math_cos/2,
+:- module(math_predicates, [brachylog_math_binary/2,
+                            brachylog_math_cos/2,
                             brachylog_math_sin/2,
                             brachylog_math_tan/2,
                             brachylog_math_exp/2,
@@ -46,6 +47,36 @@ ____            ____
 :- use_module(library(clpfd)).
 :- use_module(utils).
                 
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATH_BINARY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_math_binary('integer':I, L) :-
+    brachylog_equals('integer':I, _),
+    J #= abs(I),
+    n_base_digits(J, 2, D),
+    maplist(prepend_integer, D, L).
+
+% Credits to @repeat
+% See: http://stackoverflow.com/a/33543199/2554145
+n_base_digits(Expr, Base, Ds) :-
+    Base #> 1,
+    Ds = [_|_],
+    N #=  Expr,
+    N #>= 0,
+    n_base_ref_acc_digits(N, Base, Ds, [], Ds).
+
+n_base_ref_acc_digits(N, Base, Ref, Ds0, Ds) :-
+    zcompare(Order, N, Base),
+    order_n_base_ref_acc_digits(Order, N, Base, Ref, Ds0, Ds).
+
+order_n_base_ref_acc_digits(<, N, _, [_], Ds0, [N|Ds0]).
+order_n_base_ref_acc_digits(=, _, _, [_,_], Ds0, [1,0|Ds0]).
+order_n_base_ref_acc_digits(>, N, Base, [_|Rs], Ds0, Ds) :-
+    N0 #= N //  Base,
+    N1 #= N mod Base,
+    n_base_ref_acc_digits(N0, Base, Rs, [N1|Ds0], Ds).
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MATH_COS
