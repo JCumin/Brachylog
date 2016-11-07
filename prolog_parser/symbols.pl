@@ -136,7 +136,7 @@ token_predicate('@@', '').
 token_predicate('@#', '').
 
 token_predicate('$a', '').
-token_predicate('$b', '').
+token_predicate('$b', 'brachylog_math_binary').
 token_predicate('$c', 'brachylog_math_cos').
 token_predicate('$d', '').
 token_predicate('$e', 'brachylog_math_exp').
