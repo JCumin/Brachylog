@@ -22,6 +22,7 @@ ____            ____
                               brachylog_string_pad/2,
                               brachylog_string_uppercase/2,
                               brachylog_string_writeln/2,
+                              brachylog_string_Nchotomize/2,
                               brachylog_string_dichotomize/2,
                               brachylog_string_trichotomize/2,
                               brachylog_string_tetrachotomize/2,
