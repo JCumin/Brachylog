@@ -493,10 +493,13 @@ brachylog_permute('integer':I, 'integer':J) :-
     permutation([H|L], M),
     integer_value('integer':Sign:M, J).
 brachylog_permute('float':F, 'float':G) :-
-    number_chars(F, C),
+    Sign is abs(F)/F,
+    AF is abs(F),
+    number_chars(AF, C),
     permutation(C, D),
     \+ ( D = ['.'|_] ; reverse(D, ['.'|_])),
-    number_chars(G, D).
+    number_chars(AG, D),
+    G is Sign*AG.
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
