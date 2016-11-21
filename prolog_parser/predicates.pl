@@ -537,14 +537,19 @@ brachylog_subset('string':S, 'string':T) :-
     brachylog_subset_recur(S, T).
 brachylog_subset('integer':I, 'integer':J) :-
     H #\= 0,
+    dif(M, []),
     integer_value('integer':Sign:[H|L], I),
     brachylog_subset_recur([H|L], M),
     integer_value('integer':Sign:M, J).
 brachylog_subset('float':F, 'float':G) :-
-    number_chars(F, C),
+    Sign is abs(F)/F,
+    AF is abs(F),
+    number_chars(AF, C),
     brachylog_subset_recur(C, D),
+    dif(D, []),
     \+ (D = ['.'|_] ; reverse(D, ['.'|_])),
-    number_chars(G,D).
+    number_chars(AG,D),
+    G is Sign*AG.
 brachylog_subset(L, S) :-
     is_brachylog_list(L),
     brachylog_subset_recur(L, S).
