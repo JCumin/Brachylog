@@ -188,7 +188,16 @@ fix_list([X|T], [Y|T2]) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    TRANSPILE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-transpile(Program, [[':- style_check(-singleton).'],[':- use_module(library(clpfd)).'],[':- use_module(predicates).'],[':- use_module(math_predicates).'],[':- use_module(string_predicates).'],[':- use_module(constraint_predicates).\n'],['brachylog_main(Input,Output) :-\n    Name = brachylog_main,\n    (1=1'|T]|OtherPredicates]) :-
+transpile(Program, [[':- style_check(-singleton).'],
+                    [':- use_module(library(clpfd)).'],
+                    [':- use_module(predicates).'],
+                    [':- use_module(math_predicates).'],
+                    [':- use_module(string_predicates).'],
+                    [':- use_module(constraint_predicates).\n'],
+                    ['brachylog_main(Input,Output) :-\n    Name = brachylog_main,'],
+                    [ConstraintVariables],
+                    ['    (1=1'|T]|OtherPredicates]) :-
+    constraint_variables(ConstraintVariables),
     transpile_(Program, ['Input'], no, no, 0, [T|OtherPredicates]).
     
 transpile_([], _, _, _, _, [['\n    ).\n']]).
@@ -311,7 +320,14 @@ transpile_(['control':':',Type:A|T], B, _, _, PredNumber, [T2|OtherPredicates]) 
     transpile_(T, NewVar, no, no, PredNumber, [T2|OtherPredicates]).  
 transpile_(['control':'\n'|T], _, _, _, PredNumber, [['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
     J is PredNumber + 1,
-    atomic_list_concat(['brachylog_predicate_',J,'(Input,Output) :-\n    Name = brachylog_predicate_',J,',\n    (1=1'], PredHead),
+    constraint_variables(ConstraintVariables),
+    atomic_list_concat(['brachylog_predicate_',
+                        J,
+                        '(Input,Output) :-\n    Name = brachylog_predicate_',
+                        J,
+                        ',\n',
+                        ConstraintVariables,
+                        '    (1=1'], PredHead),
     transpile_(T, ['Input'], no, no, J, [T2|OtherPredicates]).
 transpile_(['control':'|'|T], _, _, _, PredNumber, [['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
     (   PredNumber = 0,
@@ -319,7 +335,13 @@ transpile_(['control':'|'|T], _, _, _, PredNumber, [['\n    ).\n'],[PredHead|T2]
     ;   PredNumber \= 0,
         atomic_list_concat(['brachylog_predicate_',PredNumber], PredName)
     ),
-    atomic_list_concat([PredName,'(Input,Output) :-\n    Name = ',PredName,',\n    (1=1'], PredHead),
+    constraint_variables(ConstraintVariables),
+    atomic_list_concat([PredName,
+                        '(Input,Output) :-\n    Name = ',
+                        PredName,
+                        ',\n',
+                        ConstraintVariables,
+                        '    (1=1'], PredHead),
     transpile_(T, ['Input'], no, no, PredNumber, [T2|OtherPredicates]).
     
 
@@ -333,6 +355,17 @@ contains_write(Code) :-
     (   member(predicate:brachylog_write, FixedPredicates)
     ;   member(predicate:brachylog_string_writeln, FixedPredicates)
     ).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   CONSTRAINT_VARIABLES
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+constraint_variables(ConstraintVariables) :-
+    findall(S, (member(X, ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']),
+                atomic_list_concat(['    constraint',X,'(Constraint',X,'),\n'], S)),
+            Ss
+            ),
+    atomic_list_concat(Ss, ConstraintVariables).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
