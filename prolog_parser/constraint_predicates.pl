@@ -14,7 +14,8 @@ ____            ____
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-:- module(constraint_predicates, [brachylog_constraint_different/2,
+:- module(constraint_predicates, [brachylog_constraint_binary/2,
+                                  brachylog_constraint_different/2,
                                   brachylog_constraint_even/2,
                                   brachylog_constraint_odd/2,
                                   brachylog_constraint_prime/2,
@@ -34,6 +35,15 @@ ____            ____
 :- use_module(utils).
 
 :- multifile clpfd:run_propagator/2.
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CONSTRAINT_BINARY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_constraint_binary('integer':I, 'integer':I) :-
+    I in 0..1.
+brachylog_constraint_binary([H|T], [H|T]) :-
+    maplist(brachylog_constraint_binary, [H|T], [H|T]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
