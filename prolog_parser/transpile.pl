@@ -59,7 +59,7 @@ parse_argument(Arg, Term) :-
     transpile(Program, Parsed),
     !,
     reverse(Parsed, [TempMainPredicate|_]),
-    nth0(1, TempMainPredicate, Atom),
+    nth0(3, TempMainPredicate, Atom),
     atom_concat(',\n    ', AtomT, Atom),
     atom_concat(ParsedArg, ' = Input', AtomT),
     term_to_atom(Term, ParsedArg)
@@ -194,9 +194,9 @@ transpile(Program, [[':- style_check(-singleton).'],
                     [':- use_module(math_predicates).'],
                     [':- use_module(string_predicates).'],
                     [':- use_module(constraint_predicates).\n'],
-                    ['brachylog_main(Input,Output) :-\n    Name = brachylog_main,'],
-                    [ConstraintVariables],
-                    ['    (1=1'|T]|OtherPredicates]) :-
+                    ['brachylog_main(Input,Output) :-\n    Name = brachylog_main,\n',
+                    ConstraintVariables,
+                    '    (1=1'|T]|OtherPredicates]) :-
     constraint_variables(ConstraintVariables),
     transpile_(Program, ['Input'], no, no, 0, [T|OtherPredicates]).
     

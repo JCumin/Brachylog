@@ -243,34 +243,34 @@ brachylog_constraint_nonzero_digit([H|T], [H|T]) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    CONSTRAINT[A-Z]/1
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-constraintA(X) :-
+constraintA(_) :-
     true.
 
 
-constraintB(X) :-
+constraintB(_) :-
     true.
 
 
-constraintC([A,B]).
+constraintC([_,_]).
 
 
-constraintD(X) :-
+constraintD(_) :-
     true.
 
 
-constraintE(X) :-
+constraintE(_) :-
     true.
 
 
-constraintF(X) :-
+constraintF(_) :-
     true.
 
 
-constraintG(X) :-
+constraintG(_) :-
     true.
 
 
-constraintH(X) :-
+constraintH(_) :-
     true.
 
 
@@ -278,68 +278,68 @@ constraintI('integer':X) :-
     X in inf..sup.
 
 
-constraintJ(X) :-
+constraintJ(_) :-
     true.
 
 
-constraintK(X) :-
+constraintK(_) :-
     true.
 
 
-constraintL(X) :-
+constraintL(_) :-
     true.
 
 
-constraintM(X) :-
+constraintM(_) :-
     true.
 
 
-constraintN(X) :-
+constraintN(_) :-
     true.
 
 
-constraintO(X) :-
+constraintO(_) :-
     true.
 
 
-constraintP(X) :-
+constraintP(_) :-
     true.
 
 
-constraintQ(X) :-
+constraintQ(_) :-
     true.
 
 
-constraintR(X) :-
+constraintR(_) :-
     true.
 
 
-constraintS(X) :-
+constraintS(_) :-
     true.
 
 
-constraintT([A,B,C]).
+constraintT([_,_,_]).
 
 
-constraintU(X) :-
+constraintU(_) :-
     true.
 
 
-constraintV(X) :-
+constraintV(_) :-
     true.
 
 
-constraintW(X) :-
+constraintW(_) :-
     true.
 
 
-constraintX(X) :-
+constraintX(_) :-
     true.
 
 
-constraintY(X) :-
+constraintY(_) :-
     true.
 
 
-constraintZ(X) :-
+constraintZ(_) :-
     true.
