@@ -28,7 +28,34 @@ ____            ____
                                   brachylog_constraint_strictly_positive/2,
                                   brachylog_constraint_strictly_negative/2,
                                   brachylog_constraint_digit/2,
-                                  brachylog_constraint_nonzero_digit/2
+                                  brachylog_constraint_nonzero_digit/2,
+                                  
+                                  constraintA/1,
+                                  constraintB/1,
+                                  constraintC/1,
+                                  constraintD/1,
+                                  constraintE/1,
+                                  constraintF/1,
+                                  constraintG/1,
+                                  constraintH/1,
+                                  constraintI/1,
+                                  constraintJ/1,
+                                  constraintK/1,
+                                  constraintL/1,
+                                  constraintM/1,
+                                  constraintN/1,
+                                  constraintO/1,
+                                  constraintP/1,
+                                  constraintQ/1,
+                                  constraintR/1,
+                                  constraintS/1,
+                                  constraintT/1,
+                                  constraintU/1,
+                                  constraintV/1,
+                                  constraintW/1,
+                                  constraintX/1,
+                                  constraintY/1,
+                                  constraintZ/1
                                  ]).
                        
 :- use_module(library(clpfd)).
@@ -211,3 +238,110 @@ brachylog_constraint_nonzero_digit('integer':I,'integer':I) :-
     I in 1..9.
 brachylog_constraint_nonzero_digit([H|T], [H|T]) :-
     maplist(brachylog_constraint_nonzero_digit, [H|T], [H|T]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   CONSTRAINT[A-Z]/1
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+constraintA(X) :-
+    true.
+
+
+constraintB(X) :-
+    true.
+
+
+constraintC(X) :-
+    true.
+
+
+constraintD(X) :-
+    true.
+
+
+constraintE(X) :-
+    true.
+
+
+constraintF(X) :-
+    true.
+
+
+constraintG(X) :-
+    true.
+
+
+constraintH(X) :-
+    true.
+
+
+constraintI(X) :-
+    true.
+
+
+constraintJ(X) :-
+    true.
+
+
+constraintK(X) :-
+    true.
+
+
+constraintL(X) :-
+    true.
+
+
+constraintM(X) :-
+    true.
+
+
+constraintN(X) :-
+    true.
+
+
+constraintO(X) :-
+    true.
+
+
+constraintP(X) :-
+    true.
+
+
+constraintQ(X) :-
+    true.
+
+
+constraintR(X) :-
+    true.
+
+
+constraintS(X) :-
+    true.
+
+
+constraintT(X) :-
+    true.
+
+
+constraintU(X) :-
+    true.
+
+
+constraintV(X) :-
+    true.
+
+
+constraintW(X) :-
+    true.
+
+
+constraintX(X) :-
+    true.
+
+
+constraintY(X) :-
+    true.
+
+
+constraintZ(X) :-
+    true.
