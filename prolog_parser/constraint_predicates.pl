@@ -251,8 +251,7 @@ constraintB(X) :-
     true.
 
 
-constraintC(X) :-
-    true.
+constraintC([A,B]).
 
 
 constraintD(X) :-
@@ -275,8 +274,8 @@ constraintH(X) :-
     true.
 
 
-constraintI(X) :-
-    true.
+constraintI('integer':X) :-
+    X in inf..sup.
 
 
 constraintJ(X) :-
@@ -319,8 +318,7 @@ constraintS(X) :-
     true.
 
 
-constraintT(X) :-
-    true.
+constraintT([A,B,C]).
 
 
 constraintU(X) :-
