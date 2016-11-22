@@ -205,7 +205,7 @@ token_predicate('$@', 'brachylog_math_to_string').
 token_predicate('$#', '').
 
 token_predicate('#a', '').
-token_predicate('#b', '').
+token_predicate('#b', 'brachylog_constraint_binary').
 token_predicate('#c', '').
 token_predicate('#d', 'brachylog_constraint_different').
 token_predicate('#e', 'brachylog_constraint_even').
