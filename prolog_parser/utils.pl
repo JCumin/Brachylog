@@ -21,7 +21,11 @@ ____            ____
                   prepend_integer/2,
                   is_brachylog_list/1,
                   single_atom_code/2,
-                  ceiled_square_root/2
+                  ceiled_square_root/2,
+                  if_/3,
+                  (=)/3,
+                  (#>)/3,
+                  (===)/6
                  ]).
 
 :- use_module(library(clpfd)).
@@ -119,3 +123,57 @@ ceiled_square_root(N0, Root) :-
         R0^2 #= Max,
         Root #= Root0 + 1,
         fd_sup(R0, Root0).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   IF_/3
+   Credits to Ulrich Neumerkel
+   See: http://www.complang.tuwien.ac.at/ulrich/Prolog-inedit/sicstus/reif.pl
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+if_(If_1, Then_0, Else_0) :-
+    call(If_1, T),
+    (   T == true -> Then_0
+    ;   T == false -> Else_0
+    ;   nonvar(T) -> throw(error(type_error(boolean,T),
+                                 type_error(call(If_1,T),2,boolean,T)))
+    ;   throw(error(instantiation_error,instantiation_error(call(If_1,T),2)))
+    ).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   (=)/3
+   Credits to Ulrich Neumerkel
+   See: http://www.complang.tuwien.ac.at/ulrich/Prolog-inedit/sicstus/reif.pl
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+=(X, Y, T) :-
+    (   X == Y -> T = true
+    ;   X \= Y -> T = false
+    ;   T = true, X = Y
+    ;   T = false,
+        dif(X, Y)
+    ).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   (#>)/3
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+#>(X, Y, T) :-
+    zcompare(C, X, Y),
+    greater_true(C, T).
+
+greater_true(>, true).
+greater_true(<, false).
+greater_true(=, false).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   (===)/6
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+===(X1, Y1, X2, Y2, T1, T) :-
+    (   X1 == Y1 -> T1 = true, T = true
+    ;   X1 \= Y1 -> T1 = true, T = false
+    ;   X2 == Y2 -> T1 = false, T = true
+    ;   X2 \= Y2 -> T1 = false, T = false
+    ;   T1 = true, T = true, X1 = Y1
+    ;   T1 = true, T = false, dif(X1, Y1)
+).
