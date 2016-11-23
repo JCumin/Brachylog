@@ -203,12 +203,37 @@ brachylog_math_root(['float':I,'float':E], 'float':R) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MATH_FACTORIAL
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_math_factorial('integer':0, 'integer':1).
-brachylog_math_factorial('integer':I, 'integer':J) :-
-    I #> 0,
-    A #= I - 1,
-    J #= I * B,
-    brachylog_math_factorial('integer':A, 'integer':B).
+brachylog_math_factorial('integer':N, 'integer':F) :-
+    brachylog_math_factorial_(N, 0, 1, F).
+
+brachylog_math_factorial_(N, I, N0, F) :-
+    F #> 0,
+    N #>= 0,
+    I #>= 0,
+    I #=< N,
+    N0 #> 0,
+    N0 #=< F,
+    if_(I #> 2,
+        (   F #> N,
+            if_(===(N, I, N0, F, T1),
+                if_(T1 = true,
+                    N0 = F,
+                    N = I
+                ),
+                (   J #= I + 1,
+                    N1 #= N0*J,
+                    math_predicates:brachylog_math_factorial_(N, J, N1, F)
+                )
+            )
+        ),
+        if_(N = I,
+            N0 = F,
+            (   J #= I + 1,
+                N1 #= N0*J,
+                math_predicates:brachylog_math_factorial_(N, J, N1, F)
+            )
+        )
+    ).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
