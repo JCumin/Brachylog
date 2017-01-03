@@ -214,19 +214,6 @@ brachylog_duplicates(L, M) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_enumerate('string':L, 'string':[M]) :-
     nth0(_, L, M).
-brachylog_enumerate(['integer':Inf, 'integer':'infinite'], 'integer':I) :-
-    brachylog_equals('integer':Inf, 'integer':Inf),
-    between(Inf, infinite, I).
-brachylog_enumerate(['integer':Inf, 'integer':Sup], 'integer':I) :-
-    Sup \= 'infinite',
-    Sup #>= Inf,
-    brachylog_equals(['integer':Inf,'integer':Sup], _),
-    between(Inf, Sup, I).
-brachylog_enumerate(['integer':Sup,'integer':Inf], 'integer':I) :-
-    Sup #> Inf,
-    brachylog_equals(['integer':Sup,'integer':Inf], _),
-    between(Inf, Sup, N),
-    I #= Inf + Sup - N.
 brachylog_enumerate('integer':0, 'integer':0).
 brachylog_enumerate('integer':I, 'integer':J) :-
     H #\= 0,
@@ -234,7 +221,7 @@ brachylog_enumerate('integer':I, 'integer':J) :-
     nth0(_, [H|T], M),
     integer_value('integer':'positive':[M], J).
 brachylog_enumerate(L, M) :-
-    L \= ['integer':_,'integer':_],
+    is_brachylog_list(L),
     nth0(_, L, M).
 
     
