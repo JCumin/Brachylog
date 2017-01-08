@@ -224,6 +224,21 @@ brachylog_enumerate(L, M) :-
     is_brachylog_list(L),
     nth0(_, L, M).
 
+% Used for other predicates like Yield
+brachylog_enumerate_(['integer':Inf, 'integer':'infinite'], 'integer':I) :-
+    brachylog_equals('integer':Inf, 'integer':Inf),
+    between(Inf, infinite, I).
+brachylog_enumerate_(['integer':Inf, 'integer':Sup], 'integer':I) :-
+    Sup \= 'infinite',
+    Sup #>= Inf,
+    brachylog_equals(['integer':Inf,'integer':Sup], _),
+    between(Inf, Sup, I).
+brachylog_enumerate_(['integer':Sup,'integer':Inf], 'integer':I) :-
+    Sup #> Inf,
+    brachylog_equals(['integer':Sup,'integer':Inf], _),
+    between(Inf, Sup, N),
+    I #= Inf + Sup - N.
+
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_FINDALL
@@ -662,11 +677,11 @@ brachylog_xterminate_single('string':L, 'string':H, 'string':Z) :-
    http://stackoverflow.com/a/11400256/2554145
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_yield('integer':I, Z) :-
-    findall(X, brachylog_enumerate(['integer':0,'integer':I], X), Z).
+    findall(X, brachylog_enumerate_(['integer':0,'integer':I], X), Z).
 brachylog_yield(['string':[C],'string':[D]], Z) :-
     atom_codes(C, [CC]),
     atom_codes(D, [DC]),
-    findall([X], brachylog_enumerate(['integer':CC,'integer':DC], 'integer':X), LC),
+    findall([X], brachylog_enumerate_(['integer':CC,'integer':DC], 'integer':X), LC),
     maplist(atom_codes, L, LC),
     maplist(brachylog_group, L, LG),
     maplist(prepend_string, LG, Z).
