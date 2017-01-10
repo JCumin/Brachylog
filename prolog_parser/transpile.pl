@@ -200,7 +200,7 @@ transpile(Program, [[':- style_check(-singleton).'],
     constraint_variables(ConstraintVariables),
     transpile_(Program, ['Input'], no, no, 0, [T|OtherPredicates]).
     
-transpile_([], _, _, _, _, [['\n    ),\n    brachylog_equals(Output, _).\n']]).
+transpile_([], _, _, _, _, [['\n    ),\n    (brachylog_equals(Output, _) ; true).\n']]).
 transpile_(['variable':B|T], A, Reverse, Negate, PredNumber, [[Unification|T2]|OtherPredicates]) :-
     A \= [],
     (   A = ['variable':L],
