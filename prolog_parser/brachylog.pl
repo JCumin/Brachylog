@@ -75,10 +75,6 @@ run(Input, Output) :-
     ),
     !,
     call(brachylog_main, ParsedInput, ParsedOutput),
-    (   brachylog_equals(ParsedOutput, _) -> 
-        true
-    ;   true
-    ),
     (   var(Input) ->
         brachylog_prolog_variable(ParsedInput, Input)
     ;   true
