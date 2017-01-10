@@ -20,6 +20,7 @@ ____            ____
                               brachylog_string_lowercase/2,
                               brachylog_string_split_lines/2,
                               brachylog_string_pad/2,
+                              brachylog_string_substring/2,
                               brachylog_string_uppercase/2,
                               brachylog_string_writeln/2,
                               brachylog_string_Nchotomize/2,
@@ -129,6 +130,34 @@ brachylog_string_pad_(MaxL, 'string':S, 'string':Z) :-
     length(T, L2),
     maplist(=(' '), T),
     brachylog_concatenate(['string':S,'string':T], 'string':Z).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_STRING_SUBSTRING
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_string_substring('integer':0, 'integer':0).
+brachylog_string_substring('integer':I, 'integer':J) :-
+    H #\= 0,
+    integer_value('integer':Sign:[H|L], I),
+    brachylog_string_substring_recur([H|L], [H2|L2]),
+    integer_value('integer':Sign:[H2|L2], J).
+brachylog_string_substring('string':[], 'string':[]).
+brachylog_string_substring('string':[H|T], 'string':[H2|T2]) :-
+    brachylog_string_substring_recur([H|T], [H2|T2]).
+brachylog_string_substring([], []).
+brachylog_string_substring([H|T], [H2|T2]) :-
+    brachylog_string_substring_recur([H|T], [H2|T2]).
+
+brachylog_string_substring_recur([], []).
+brachylog_string_substring_recur([H|T], [H|T2]) :-
+    brachylog_string_substring_recur_(T, T2).
+brachylog_string_substring_recur([_|T], T2) :-
+    brachylog_string_substring_recur(T, T2).
+
+brachylog_string_substring_recur_([], []).
+brachylog_string_substring_recur_([H|T], [H|T2]) :-
+    brachylog_string_substring_recur_(T, T2).
+brachylog_string_substring_recur_([_|_], []).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
