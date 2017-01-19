@@ -556,11 +556,25 @@ brachylog_subset(L, S) :-
     is_brachylog_list(L),
     brachylog_subset_recur(L, S).
     
-brachylog_subset_recur([], []).
-brachylog_subset_recur([H|T], [H|T2]) :-
-    brachylog_subset_recur(T, T2).
-brachylog_subset_recur([_|T], T2) :-
-    brachylog_subset_recur(T, T2).
+brachylog_subset_recur(L, S) :-
+    var(S),
+    length(L, Length),
+    between(0, Length, I),
+    J #= Length - I,
+    length(S, J),
+    brachylog_subset_recur_(L, S).
+brachylog_subset_recur(L, S) :-
+    nonvar(S),
+    length(S, Length),
+    I #>= Length,
+    length(L, I),
+    brachylog_subset_recur_(L, S).
+
+brachylog_subset_recur_([], []).
+brachylog_subset_recur_([H|T], [H|T2]) :-
+    brachylog_subset_recur_(T, T2).
+brachylog_subset_recur_([_|T], T2) :-
+    brachylog_subset_recur_(T, T2).
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
