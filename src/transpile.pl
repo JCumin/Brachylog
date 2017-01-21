@@ -1,4 +1,4 @@
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -6,7 +6,7 @@ ____            ____
    \     /\     /     BRACHYLOG       
     \   /  \   /      A terse declarative logic programming language
     /   \  /   \    
-   /     \/     \     Written by Julien Cumin - 2016
+   /     \/     \     Written by Julien Cumin - 2017
   /   /\____/\   \    https://github.com/JCumin/Brachylog
  /   /  ___   \   \
 /___/  /__/    \___\
@@ -38,7 +38,8 @@ parse_no_file(Code, Predicates) :-
     tokenize(SplittedCode, TokensNoOutputs),
     append_trailing_output(TokensNoOutputs, Tokens),
     fix_predicates(Tokens, FixedPredicates),
-    fill_implicit_variables(FixedPredicates, FilledTokens),
+    fix_metapredicates(FixedPredicates, FixedMetapredicates),
+    fill_implicit_variables(FixedMetapredicates, FilledTokens),
     fix_lists(FilledTokens, Program),
     transpile(Program, Predicates),
     !.
@@ -92,7 +93,7 @@ fix_predicates(Tokens, FixedPredicates) :-
     append(L, FixedPredicates).
     
 fix_predicates([], _, [[]]).
-fix_predicates(['control':'{'|T], I, [['predicate':PredName|Rest], ['control':'\n'|Predicate]|AllOtherPredicates]) :-
+fix_predicates(['control':'{'|T], I, [['predicate':PredName:0|Rest], ['control':'\n'|Predicate]|AllOtherPredicates]) :-
     atomic_list_concat(['brachylog_predicate_',I], PredName),
     J is I + 1,
     fix_predicates_(T, J, [Predicate|OtherPredicates1], Z, Remaining),
@@ -108,7 +109,7 @@ fix_predicates([Type:A|T], I, [[Type:A|Rest]|OtherPredicates]) :-
     fix_predicates(T, I, [Rest|OtherPredicates]).
     
 fix_predicates_([], _, [[]]).
-fix_predicates_(['control':'{'|T], I, [['predicate':PredName|Rest], ['control':'\n'|Predicate]|AllOtherPredicates], Z, Remaining) :-
+fix_predicates_(['control':'{'|T], I, [['predicate':PredName:0|Rest], ['control':'\n'|Predicate]|AllOtherPredicates], Z, Remaining) :-
     atomic_list_concat(['brachylog_predicate_',I], PredName),
     J is I + 1,
     fix_predicates_(T, J, [Predicate|OtherPredicates1], Z2, Remaining2),
@@ -120,7 +121,19 @@ fix_predicates_([Type:A|T], I, [[Type:A|Rest]|OtherPredicates], Z, Remaining) :-
     \+ (Type = 'control', A = '}'),
     \+ (Type = 'control', A = '\n'),
     fix_predicates_(T, I, [Rest|OtherPredicates], Z, Remaining).
-    
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   FIX_METAPREDICATES
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+fix_metapredicates([], []).
+fix_metapredicates(['predicate':PredName:Sub,'metapredicate':MetapredName:Sup|T], ['predicate':PredName:Sub:MetapredName:Sup|T2]) :-
+    fix_metapredicates(T, T2).
+fix_metapredicates(['predicate':PredName:Sub|T], ['predicate':PredName:Sub:'no':0|T2]) :-
+    fix_metapredicates(T, T2).
+fix_metapredicates([H|T], [H|T2]) :-
+    fix_metapredicates(T, T2).
+
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    FILL_IMPLICIT_VARIABLES
@@ -129,22 +142,17 @@ fill_implicit_variables(Tokens, Program) :-
     fill_implicit_variables(Tokens, 0, Program).
 
 fill_implicit_variables([], _, []).
-
 fill_implicit_variables(['control':':','predicate':A|T], I, ['control':':','predicate':A|T2]) :-
     fill_implicit_variables(T, I, T2).
-    
 fill_implicit_variables(['predicate':A,Type:B|T], I, ['predicate':A,'variable':V|T2]) :-
     Type \= 'variable',
     atom_concat('V', I, V),
     J is I + 1,
     fill_implicit_variables([Type:B|T], J, T2).
-    
 fill_implicit_variables(['predicate':A], I, ['predicate':A,'variable':V]) :-
     atom_concat('V', I, V).
-    
 fill_implicit_variables(['predicate':A,'variable':B|T], I, ['predicate':A,'variable':B|T2]) :-
     fill_implicit_variables(T, I, T2).
-
 fill_implicit_variables([Type:A|T], I, [Type:A|T2]) :-
     Type \= 'predicate',
     \+ (Type = 'control', A = ':', T = ['predicate':_|_]),
@@ -155,25 +163,22 @@ fill_implicit_variables([Type:A|T], I, [Type:A|T2]) :-
    FIX_LISTS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 fix_lists([], []).
-
 fix_lists(['variable':List|T], ['variable':FixedList|T2]) :-
     is_list(List),
     fix_list(List, FixedList),
     fix_lists(T, T2).
-    
 fix_lists([X|T], [X|T2]) :-
     (   X = 'variable':L,
         \+ (is_list(L))
     ;   X \= 'variable':_
     ),
     fix_lists(T, T2).
-    
-    
+
 fix_list([], []).
-fix_list(['control':':'|T], T2) :-
+fix_list(['control':','|T], T2) :-
     fix_list(T, T2).
 fix_list([X|T], [Y|T2]) :-
-    X \= 'control':':',
+    X \= 'control':',',
     (   X = 'variable':L,
         is_list(L),
         fix_list(L, Y)
@@ -191,33 +196,22 @@ fix_list([X|T], [Y|T2]) :-
 transpile(Program, [[':- style_check(-singleton).'],
                     [':- use_module(library(clpfd)).'],
                     [':- use_module(predicates).'],
-                    [':- use_module(math_predicates).'],
-                    [':- use_module(string_predicates).'],
-                    [':- use_module(constraint_predicates).\n'],
-                    ['brachylog_main(Input,Output) :-\n    Name = brachylog_main,\n',
+                    [':- use_module(metapredicates).'],
+                    [':- use_module(constraint_variables).\n'],
+                    ['brachylog_main(_, Input,Output) :-\n    Name = brachylog_main,\n',
                     ConstraintVariables,
                     '    (1=1'|T]|OtherPredicates]) :-
     constraint_variables(ConstraintVariables),
-    transpile_(Program, ['Input'], no, no, 0, [T|OtherPredicates]).
+    transpile_(Program, 'Input', no, no, 0, [T|OtherPredicates]).
     
-transpile_([], _, _, _, _, [['\n    ),\n    ((Output = integer:_ ; Output = [_|_], forall(member(E, Output), E = integer:_)) -> brachylog_equals(Output, _) ; true).\n']]).
+transpile_([], _, _, _, _, [['\n    ),\n    ((Output = integer:_ ; Output = [_|_], forall(member(E, Output), E = integer:_)) -> brachylog_label(default, Output, _) ; true).\n']]).
 transpile_(['variable':B|T], A, Reverse, Negate, PredNumber, [[Unification|T2]|OtherPredicates]) :-
-    A \= [],
-    (   A = ['variable':L],
-        is_list(L),
+    A \= 'nothing',
+    (   is_list(A),
         brachylog_list_to_atom(A, Var1)
-    ;   A = [L],
-        is_list(L),
-        brachylog_list_to_atom(L, Var1)
-    ;   length(A,L),
-        L > 1,
-        brachylog_list_to_atom(A, Var1)
-    ;   A = [Type:L],
+    ;   A = Type:L,
         term_to_atom(Type:L, Var1)
-    ;   A = [[]],
-        brachylog_list_to_atom([], Var1)
-    ;   A = [L],
-        Var1 = L
+    ;   A = Var1
     ),
     (   is_list(B),
         brachylog_list_to_atom(B, Var2)
@@ -232,34 +226,30 @@ transpile_(['variable':B|T], A, Reverse, Negate, PredNumber, [[Unification|T2]|O
     ),
     (   Reverse = no,
         atomic_list_concat([',\n    ',Var2,UnificationAtom,Var1], Unification),
-        transpile_(T, [B], no, no, PredNumber, [T2|OtherPredicates])
+        transpile_(T, B, no, no, PredNumber, [T2|OtherPredicates])
     ;   Reverse = yes,
         atomic_list_concat([',\n    ',Var1,UnificationAtom,Var2], Unification),
-        transpile_(T, [B], no, no, PredNumber, [T2|OtherPredicates])
+        transpile_(T, B, no, no, PredNumber, [T2|OtherPredicates])
     ).
-transpile_(['variable':[B|TB]|T], [], _, _, PredNumber, [T2|OtherPredicates]) :-
-    transpile_(T, [B|TB], no, no, PredNumber, [T2|OtherPredicates]). 
-transpile_(['variable':B|T], [], _, _, PredNumber, [T2|OtherPredicates]) :-
-    transpile_(T, [B], no, no, PredNumber, [T2|OtherPredicates]). 
-transpile_(['predicate':P,'variable':B|T], A, Reverse, Negate, PredNumber, [[Predicate|T2]|OtherPredicates]) :-
-    A \= [],
+transpile_(['variable':B|T], 'nothing', _, _, PredNumber, [T2|OtherPredicates]) :-
+    transpile_(T, B, no, no, PredNumber, [T2|OtherPredicates]). 
+transpile_(['predicate':P:Sub:Meta:Sup,'variable':B|T], A, Reverse, Negate, PredNumber, [[Predicate|T2]|OtherPredicates]) :-
+    A \= 'nothing',
     (   P = 'brachylog_call_predicate',
-        reverse(A, RA),
+        (   is_list(A),
+            reverse(A, RA)
+        ;   RA = [A]
+        ),
         A3 = ['Name'|RA],
         reverse(A3, A2)
     ;   P \= 'brachylog_call_predicate',
         A2 = A
     ),
-    (   A2 = [L],
-        is_list(L),
-        brachylog_list_to_atom(L, Var1)
-    ;   length(A2, L),
-        L > 1,
+    (   is_list(A2),
         brachylog_list_to_atom(A2, Var1)
-    ;   A2 = [Type:L],
+    ;   A2 = Type:L,
         term_to_atom(Type:L, Var1)
-    ;   A2 = [L],
-        Var1 = L
+    ;   A2 = Var1
     ),
     (   is_list(B),
         brachylog_list_to_atom(B, Var2)
@@ -272,19 +262,23 @@ transpile_(['predicate':P,'variable':B|T], A, Reverse, Negate, PredNumber, [[Pre
     ;   Negate = no,
         NegateAtom = ''
     ),
-    (   Reverse = no,
-        atomic_list_concat([',\n    ',NegateAtom,P,'(',Var1,',',Var2,')'], Predicate),
-        transpile_(T, [B], no, no, PredNumber, [T2|OtherPredicates])
-    ;   Reverse = yes,
-        atomic_list_concat([',\n    ',NegateAtom,P,'(',Var2,',',Var1,')'], Predicate),
-        transpile_(T, [B], no, no, PredNumber, [T2|OtherPredicates])
-    ).
-transpile_(['control':','|T], _, _, _, PredNumber, [T2|OtherPredicates]) :-
-    transpile_(T, [], no, no, PredNumber, [T2|OtherPredicates]).
+    (   Reverse = no ->
+        Arg1 = Var1,
+        Arg2 = Var2
+    ;   Arg1 = Var2,
+        Arg2 = Var1
+    ),
+    (   Meta = no ->
+        atomic_list_concat([',\n    ',NegateAtom,P,'(',Sub,',',Arg1,',',Arg2,')'], Predicate)
+    ;   atomic_list_concat([',\n    ',NegateAtom,Meta,'(',Sup,',',P,',',Sub,',',Arg1,',',Arg2,')'], Predicate)
+    ),
+    transpile_(T, B, no, no, PredNumber, [T2|OtherPredicates]).
+transpile_(['control':'∧'|T], _, _, _, PredNumber, [T2|OtherPredicates]) :-
+    transpile_(T, 'nothing', no, no, PredNumber, [T2|OtherPredicates]).
 transpile_(['control':'`'|T], B, _, _, PredNumber, [['\n    *->\n    1=1'|T2]|OtherPredicates]) :-
     transpile_(T, B, no, no, PredNumber, [T2|OtherPredicates]).    
-transpile_(['control':';'|T], _, _, _, PredNumber, [['\n    ;\n    1=1'|T2]|OtherPredicates]) :-
-    transpile_(T, [], no, no, PredNumber, [T2|OtherPredicates]).
+transpile_(['control':'∨'|T], _, _, _, PredNumber, [['\n    ;\n    1=1'|T2]|OtherPredicates]) :-
+    transpile_(T, 'nothing', no, no, PredNumber, [T2|OtherPredicates]).
 transpile_(['control':'('|T], B, _, Negate, PredNumber, [[Parenthesis|T2]|OtherPredicates]) :-
     (   Negate = yes,
         Parenthesis = ',\n    \\+ (\n    1=1'
@@ -296,7 +290,7 @@ transpile_(['control':')'|T], B, _, _, PredNumber, [['\n    )'|T2]|OtherPredicat
     transpile_(T, B, no, no, PredNumber, [T2|OtherPredicates]). 
 transpile_(['control':'!'|T], B, _, _, PredNumber, [[',\n    !'|T2]|OtherPredicates]) :-
     transpile_(T, B, no, no, PredNumber, [T2|OtherPredicates]). 
-transpile_(['control':'\\'|T], B, _, _, PredNumber, [[',\n    fail'|T2]|OtherPredicates]) :-
+transpile_(['control':'⊥'|T], B, _, _, PredNumber, [[',\n    false'|T2]|OtherPredicates]) :-
     transpile_(T, B, no, no, PredNumber, [T2|OtherPredicates]).  
 transpile_(['control':'~'|T], B, Reverse, Negate, PredNumber, [T2|OtherPredicates]) :-
     (   Reverse = yes,
@@ -305,30 +299,33 @@ transpile_(['control':'~'|T], B, Reverse, Negate, PredNumber, [T2|OtherPredicate
         NewReverse = yes
     ),
     transpile_(T, B, NewReverse, Negate, PredNumber, [T2|OtherPredicates]).   
-transpile_(['control':'\''|T], B, Reverse, Negate, PredNumber, [T2|OtherPredicates]) :-
+transpile_(['control':'¬'|T], B, Reverse, Negate, PredNumber, [T2|OtherPredicates]) :-
     (   Negate = yes,
         NewNegate = no
     ;   Negate = no,
         NewNegate = yes
     ),
-    transpile_(T, B, Reverse, NewNegate, PredNumber, [T2|OtherPredicates]).  
+    transpile_(T, B, Reverse, NewNegate, PredNumber, [T2|OtherPredicates]).
 transpile_(['control':':',Type:A|T], B, _, _, PredNumber, [T2|OtherPredicates]) :-
     (   Type = 'variable'
     ;   Type = 'predicate'
     ),
-    append(B, [A], NewVar),
-    transpile_(T, NewVar, no, no, PredNumber, [T2|OtherPredicates]).  
+    (   is_list(B),
+        append(B, [A], NewVar)
+    ;   append([B], [A], NewVar)
+    ),
+    transpile_(T, NewVar, no, no, PredNumber, [T2|OtherPredicates]).
 transpile_(['control':'\n'|T], _, _, _, PredNumber, [['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
     J is PredNumber + 1,
     constraint_variables(ConstraintVariables),
     atomic_list_concat(['brachylog_predicate_',
                         J,
-                        '(Input,Output) :-\n    Name = brachylog_predicate_',
+                        '(_, Input,Output) :-\n    Name = brachylog_predicate_',
                         J,
                         ',\n',
                         ConstraintVariables,
                         '    (1=1'], PredHead),
-    transpile_(T, ['Input'], no, no, J, [T2|OtherPredicates]).
+    transpile_(T, 'Input', no, no, J, [T2|OtherPredicates]).
 transpile_(['control':'|'|T], _, _, _, PredNumber, [['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
     (   PredNumber = 0,
         PredName = 'brachylog_main'
@@ -337,12 +334,12 @@ transpile_(['control':'|'|T], _, _, _, PredNumber, [['\n    ).\n'],[PredHead|T2]
     ),
     constraint_variables(ConstraintVariables),
     atomic_list_concat([PredName,
-                        '(Input,Output) :-\n    Name = ',
+                        '(_, Input,Output) :-\n    Name = ',
                         PredName,
                         ',\n',
                         ConstraintVariables,
                         '    (1=1'], PredHead),
-    transpile_(T, ['Input'], no, no, PredNumber, [T2|OtherPredicates]).
+    transpile_(T, 'Input', no, no, PredNumber, [T2|OtherPredicates]).
     
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -353,7 +350,7 @@ contains_write(Code) :-
     tokenize(SplittedCode, Tokens),
     fix_predicates(Tokens, FixedPredicates),
     (   member(predicate:brachylog_write, FixedPredicates)
-    ;   member(predicate:brachylog_string_writeln, FixedPredicates)
+    ;   member(predicate:brachylog_writeln, FixedPredicates)
     ).
 
 

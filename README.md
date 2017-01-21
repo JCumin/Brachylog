@@ -14,20 +14,6 @@ Brachylog uses [SWI-Prolog](http://www.swi-prolog.org/) as Prolog engine.
 
 Check out [Brachylog's Wiki](https://github.com/JCumin/Brachylog/wiki) if you want to learn how to write programs in this language.
 
-As an example, this predicate:
-
-    #p=
-    
-will successively unify its Input variable with a prime number, starting from `2`:
-
-    ?- run_from_atom('#p=',Z).
-    Z = 2 ;
-    Z = 3 ;
-    Z = 5 ;
-    Z = 7 ;
-    Z = 11 ;
-    ...
-
 ###Try it online!
 
 You can try out Brachylog on [Try it online!](http://brachylog.tryitonline.net/), thanks to @DennisMitchell.
@@ -46,6 +32,6 @@ You can then run Brachylog programs using different predicates:
 
  - `run(Input, Output)`: This will run a Brachylog program that has already been transpiled to Prolog using either of the two previous predicates. More precisely, this will query `brachylog_main/2` in the file `compiled_brachylog.pl`.
 
-The first two predicates will transpile your Brachylog program into Prolog, subsequently generating a file called `compiled_brachylog.pl` in the same directory that contains `brachylog.pl`. The three run predicates will then consult it and query `brachylog_main/2`.
+The first two predicates will transpile your Brachylog program into Prolog, subsequently generating a file called `compiled_brachylog.pl` in the same directory that contains `brachylog.pl`. The three run predicates will then consult it and query `brachylog_main/3`.
  
 Note that the first two run predicates also exist with either no `Output` argument, or with no `Input` nor `Output` argument, if necessary. For example, `run_from_file('code.brachylog')` is equivalent to `run_from_file('code.brachylog', _, _)`.

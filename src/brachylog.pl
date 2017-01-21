@@ -6,7 +6,7 @@ ____            ____
    \     /\     /     BRACHYLOG       
     \   /  \   /      A terse declarative logic programming language
     /   \  /   \    
-   /     \/     \     Written by Julien Cumin - 2016
+   /     \/     \     Written by Julien Cumin - 2017
   /   /\____/\   \    https://github.com/JCumin/Brachylog
  /   /  ___   \   \
 /___/  /__/    \___\
@@ -18,9 +18,8 @@ ____            ____
 :- use_module(symbols).
 :- use_module(utils).
 :- use_module(predicates).
-:- use_module(math_predicates).
-:- use_module(string_predicates).
-:- use_module(constraint_predicates).
+:- use_module(metapredicates).
+:- use_module(constraint_variables).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,7 +73,7 @@ run(Input, Output) :-
     ;   true
     ),
     !,
-    call(brachylog_main, ParsedInput, ParsedOutput),
+    call(brachylog_main, _, ParsedInput, ParsedOutput),
     (   var(Input) ->
         brachylog_prolog_variable(ParsedInput, Input)
     ;   true
@@ -139,11 +138,7 @@ run_from_files_no_file(FilePath, InputPath, OutputPath) :-
         true
     ),
     !,
-    (   call(brachylog_main, ParsedInput, ParsedOutput) ->
-        (   brachylog_equals(ParsedOutput, _) -> 
-            true
-        ;   true
-        ),
+    (   call(brachylog_main, _, ParsedInput, ParsedOutput) ->
         (   ReportInput = 'yes' ->
             brachylog_prolog_variable(ParsedInput, InputProlog)
         ;   true

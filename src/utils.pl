@@ -6,7 +6,7 @@ ____            ____
    \     /\     /     BRACHYLOG       
     \   /  \   /      A terse declarative logic programming language
     /   \  /   \    
-   /     \/     \     Written by Julien Cumin - 2016
+   /     \/     \     Written by Julien Cumin - 2017
   /   /\____/\   \    https://github.com/JCumin/Brachylog
  /   /  ___   \   \
 /___/  /__/    \___\
@@ -22,6 +22,7 @@ ____            ____
                   is_brachylog_list/1,
                   single_atom_code/2,
                   ceiled_square_root/2,
+                  scompare/4,
                   if_/3,
                   (=)/3,
                   (#>)/3,
@@ -123,6 +124,21 @@ ceiled_square_root(N0, Root) :-
         R0^2 #= Max,
         Root #= Root0 + 1,
         fd_sup(R0, Root0).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   SCOMPARE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+scompare(@>, TypeX:X, TypeY:Y, TypeZ:Z) :-
+    (   X @> Y ->
+        TypeZ:Z = TypeX:X
+    ;   TypeZ:Z = TypeY:Y
+    ).
+scompare(@<, TypeX:X, TypeY:Y, TypeZ:Z) :-
+    (   X @< Y ->
+        TypeZ:Z = TypeX:X
+    ;   TypeZ:Z = TypeY:Y
+    ).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
