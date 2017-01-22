@@ -16,7 +16,7 @@ Check out [Brachylog's Wiki](https://github.com/JCumin/Brachylog/wiki) if you wa
 
 ###Try it online!
 
-You can try out Brachylog on [Try it online!](http://brachylog.tryitonline.net/), thanks to @DennisMitchell.
+You can try out Brachylog on [Try it online!](https://tio.run/nexus/brachylog2), thanks to @DennisMitchell.
 
 ###The interpreter
 
