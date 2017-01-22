@@ -349,8 +349,8 @@ contains_write(Code) :-
     atom_chars(Code, SplittedCode),
     tokenize(SplittedCode, Tokens),
     fix_predicates(Tokens, FixedPredicates),
-    (   member(predicate:brachylog_write, FixedPredicates)
-    ;   member(predicate:brachylog_writeln, FixedPredicates)
+    (   member(predicate:brachylog_write:_, FixedPredicates)
+    ;   member(predicate:brachylog_writeln:_, FixedPredicates)
     ).
 
 
