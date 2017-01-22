@@ -1254,6 +1254,7 @@ brachylog_concatenate('integer':I, Input, Output) :-
     I #> 0,
     length(Input, I),
     brachylog_concatenate('integer':0, Input, Output).
+brachylog_concatenate('integer':0, [], []).
 brachylog_concatenate('integer':0, [H|T],L) :-
     var(L),
     (   is_brachylog_list(H),
