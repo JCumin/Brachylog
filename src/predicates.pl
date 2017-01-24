@@ -1912,7 +1912,7 @@ brachylog_blocks('default', [H|T], I, [[],[H|T2]|T3]) :-
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   BRACHYLOG_STRING_DICHOTOMIZE
+   BRACHYLOG_DICHOTOMIZE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_dichotomize('first', ['integer':I|Input], Output) :- 
     (   Input = [Arg] -> true
