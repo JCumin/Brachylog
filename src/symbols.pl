@@ -216,5 +216,5 @@ token_metapredicate('ᵘ', '').
 token_metapredicate('ᵛ', '').
 token_metapredicate('ʷ', '').
 token_metapredicate('ˣ', '').
-token_metapredicate('ʸ', 'brachylog_meta_yield').
+token_metapredicate('ʸ', '').
 token_metapredicate('ᶻ', '').
