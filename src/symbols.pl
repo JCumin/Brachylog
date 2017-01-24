@@ -199,7 +199,7 @@ token_metapredicate('ᶜ', '').
 token_metapredicate('ᵈ', '').
 token_metapredicate('ᵉ', '').
 token_metapredicate('ᶠ', 'brachylog_meta_find').
-token_metapredicate('ᵍ', 'brachylog_meta_group').
+token_metapredicate('ᵍ', 'brachylog_meta_groupby').
 token_metapredicate('ʰ', '').
 token_metapredicate('ⁱ', 'brachylog_meta_iterate').
 token_metapredicate('ʲ', '').
@@ -207,7 +207,7 @@ token_metapredicate('ᵏ', '').
 token_metapredicate('ˡ', 'brachylog_meta_leftfold').
 token_metapredicate('ᵐ', 'brachylog_meta_map').
 token_metapredicate('ⁿ', '').
-token_metapredicate('ᵒ', '').
+token_metapredicate('ᵒ', 'brachylog_meta_orderby').
 token_metapredicate('ᵖ', '').
 token_metapredicate('ʳ', 'brachylog_meta_rightfold').
 token_metapredicate('ˢ', 'brachylog_meta_select').
