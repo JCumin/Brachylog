@@ -2187,10 +2187,9 @@ brachylog_base('integer':1, 'integer':I, Output) :-
     ).
 brachylog_base('integer':B, 'integer':I, L) :-
     B #> 1,
-    brachylog_label('default', ['integer':I, 'integer':B], _),
+    %brachylog_label('default', ['integer':I, 'integer':B], _),
     J #= abs(I),
-    n_base_digits(J, B, D),
-    maplist(prepend_integer, D, L).
+    n_base_digits(J, B, L).
 
 % Credits to @repeat
 % See: http://stackoverflow.com/a/33543199/2554145
@@ -2205,12 +2204,12 @@ n_base_ref_acc_digits(N, Base, Ref, Ds0, Ds) :-
     zcompare(Order, N, Base),
     order_n_base_ref_acc_digits(Order, N, Base, Ref, Ds0, Ds).
 
-order_n_base_ref_acc_digits(<, N, _, [_], Ds0, [N|Ds0]).
-order_n_base_ref_acc_digits(=, _, _, [_,_], Ds0, [1,0|Ds0]).
+order_n_base_ref_acc_digits(<, N, _, [_], Ds0, ['integer':N|Ds0]).
+order_n_base_ref_acc_digits(=, _, _, [_,_], Ds0, ['integer':1,'integer':0|Ds0]).
 order_n_base_ref_acc_digits(>, N, Base, [_|Rs], Ds0, Ds) :-
     N0 #= N //  Base,
     N1 #= N mod Base,
-    n_base_ref_acc_digits(N0, Base, Rs, [N1|Ds0], Ds).
+    n_base_ref_acc_digits(N0, Base, Rs, ['integer':N1|Ds0], Ds).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
