@@ -2045,6 +2045,24 @@ brachylog_split_lines('default', 'string':[H|T], ['string':[H|T2]|T3]) :-
     dif(H, '\n'),
     dif(H, '\r\n'),
     brachylog_split_lines('default', 'string':T, ['string':T2|T3]).
+brachylog_split_lines('integer':1, 'string':[], ['string':[]]).
+brachylog_split_lines('integer':1, 'string':[' '|T], ['string':[]|T3]) :-
+    brachylog_split_lines('integer':1, 'string':T, T3).
+brachylog_split_lines('integer':1, 'string':[H|T], ['string':[H|T2]|T3]) :-
+    dif(H, ' '),
+    brachylog_split_lines('integer':1, 'string':T, ['string':T2|T3]).
+brachylog_split_lines('integer':2, 'string':[], ['string':[]]).
+brachylog_split_lines('integer':2, 'string':[' '|T], ['string':[]|T3]) :-
+    brachylog_split_lines('integer':2, 'string':T, T3).
+brachylog_split_lines('integer':2, 'string':['\n'|T], ['string':[]|T3]) :-
+    brachylog_split_lines('integer':2, 'string':T, T3).
+brachylog_split_lines('integer':2, 'string':['\r','\r\n'|T], ['string':[]|T3]) :-
+    brachylog_split_lines('integer':2, 'string':T, T3).
+brachylog_split_lines('integer':2, 'string':[H|T], ['string':[H|T2]|T3]) :-
+    dif(H, '\n'),
+    dif(H, '\r\n'),
+    dif(H, ' '),
+    brachylog_split_lines('integer':2, 'string':T, ['string':T2|T3]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
