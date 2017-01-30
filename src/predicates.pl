@@ -2063,6 +2063,9 @@ brachylog_split_lines('integer':2, 'string':[H|T], ['string':[H|T2]|T3]) :-
     dif(H, '\r\n'),
     dif(H, ' '),
     brachylog_split_lines('integer':2, 'string':T, ['string':T2|T3]).
+brachylog_split_lines('integer':3, Input, Output) :-
+    brachylog_split_lines('default', Input, L1),
+    brachylog_meta_map('default', brachylog_split_lines, 'integer':1, L1, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
