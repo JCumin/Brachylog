@@ -1257,26 +1257,27 @@ brachylog_concatenate('integer':I, Input, Output) :-
 brachylog_concatenate('integer':0, [], []).
 brachylog_concatenate('integer':0, [H|T],L) :-
     var(L),
-    (   is_brachylog_list(H),
+    (   maplist(is_brachylog_list, [H|T]),
         brachylog_coerce('default', L, L),
         List = L,
-        ListOfLists = [H|T]
-    ;   H = 'string':_,
+        ListOfLists = [H|T],
+        Integers = 'no'
+    ;   maplist(brachylog_concatenate_prepend_string_or_empty, ListOfLists, [H|T]),
         brachylog_coerce('integer':2, 'string':List, L),
-        maplist(prepend_string, ListOfLists, [H|T])
-    ;   H = 'integer':_,
-        maplist(brachylog_concatenate_integer_value, ListOfLists, [H|T])
+        Integers = 'no'
+    ;   maplist(brachylog_concatenate_integer_value, ListOfLists, [H|T]),
+        Integers = 'yes'
     ),
     brachylog_concatenate_(ListOfLists, List),
-    (   H = 'integer':_,
+    (   Integers = 'yes',
         List = [0],
         L = 'integer':0
-    ;   H = 'integer':_,
+    ;   Integers = 'yes',
         List = [J|TList],
         J #\= 0,
         integer_value('integer':'positive':[J|TList], I),
         L = 'integer':I
-    ;   H \= 'integer':_
+    ;   Integers = 'no'
     ).
 brachylog_concatenate('integer':0, [H|T], L) :-
     nonvar(L),
@@ -1294,8 +1295,7 @@ brachylog_concatenate('integer':0, [H|T], L) :-
         List = L,
         ListOfLists = [H|T]
     ;   L = 'string':List,
-        maplist(brachylog_coerce('integer':2), [H|T], [H|T]),
-        maplist(prepend_string, ListOfLists, [H|T])
+        maplist(brachylog_concatenate_prepend_string_or_empty, ListOfLists, [H|T])
     ;   L = 'integer':I,
         (   I = 0,
             List = [0]
@@ -1304,7 +1304,6 @@ brachylog_concatenate('integer':0, [H|T], L) :-
             integer_value('integer':_:[J|TList], I),
             List = [J|TList]
         ),
-        maplist(brachylog_coerce('integer':1), [H|T], [H|T]),
         (
             CanContainEmpty = 'no' ->
             maplist(brachylog_concatenate_limit_length(1, Length), [H|T])
@@ -1319,6 +1318,9 @@ brachylog_concatenate('integer':0, [H|T], L) :-
     ),
     brachylog_concatenate_(ListOfLists, List).
 
+brachylog_concatenate_prepend_string_or_empty([], []).
+brachylog_concatenate_prepend_string_or_empty(S, 'string':S).
+
 brachylog_concatenate_limit_length(Min, Max, H) :-
     Length #>= Min,
     Length #=< Max,
@@ -1326,6 +1328,7 @@ brachylog_concatenate_limit_length(Min, Max, H) :-
     brachylog_length('default', H, 'integer':Length).
 
 brachylog_concatenate_integer_value([0], 'integer':0).
+brachylog_concatenate_integer_value([], []).
 brachylog_concatenate_integer_value([H|T], 'integer':I) :-
     H #\= 0,
     integer_value('integer':_:[H|T], I).
