@@ -99,7 +99,7 @@ token_predicate('ḳ', '').
 token_predicate('ḷ', 'brachylog_lowercase').
 token_predicate('ṃ', '').
 token_predicate('ṇ', 'brachylog_split_lines').
-token_predicate('ọ', '').
+token_predicate('ọ', 'brachylog_occurences').
 token_predicate('ṛ', 'brachylog_random_element').
 token_predicate('ṣ', 'brachylog_shuffle').
 token_predicate('ṭ', '').
