@@ -73,6 +73,7 @@ ____            ____
                        brachylog_to_number/3,
                        brachylog_lowercase/3,
                        brachylog_split_lines/3,
+		       brachylog_occurences/3,
                        brachylog_random_element/3,
                        brachylog_shuffle/3,
                        brachylog_uppercase/3,
@@ -2069,6 +2070,43 @@ brachylog_split_lines('integer':2, 'string':[H|T], ['string':[H|T2]|T3]) :-
 brachylog_split_lines('integer':3, Input, Output) :-
     brachylog_split_lines('default', Input, L1),
     brachylog_meta_map('default', brachylog_split_lines, 'integer':1, L1, Output).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_OCCURENCES
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_occurences('first', ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_occurences('integer':I, Arg, Output).
+brachylog_occurences('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_occurences('integer':I, Arg, Output).
+brachylog_occurences('default', 'string':[], []).
+brachylog_occurences('default', 'string':[H|T], L) :-
+    brachylog_elements('default', 'string':[H|T], E),
+    brachylog_occurences('default', E, L).
+brachylog_occurences('default', 'integer':0, [['integer':0,'integer':1]]).
+brachylog_occurences('default', 'integer':I, L) :-
+    H #\= 0,
+    brachylog_elements('default', 'integer':I, ['integer':H|T]),
+    brachylog_occurences('default', ['integer':H|T], L).
+brachylog_occurences('default', [], []).
+brachylog_occurences('default', [H|T], [[H,'integer':O]|T2]) :-
+    brachylog_occurences_(H, [H|T], O, R),
+    brachylog_occurences('default', R, T2).
+
+brachylog_occurences_(_, [], 0, []).
+brachylog_occurences_(H, [H|T], I, R) :-
+    I #= J + 1,
+    brachylog_occurences_(H, T, J, R).
+brachylog_occurences_(H, [H2|T], I, [H2|R]) :-
+    dif(H, H2),
+    brachylog_occurences_(H, T, I, R).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
