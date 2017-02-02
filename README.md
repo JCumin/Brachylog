@@ -28,7 +28,7 @@ You can then run Brachylog programs using different predicates:
 
  - `run_from_file(FileName, Input, Output)`: `FileName` is an atom (i.e. between single quotes `'`) representing the file containing your Brachylog code. For example: `run_from_file('code.brachylog',"Test Input",Z)`.
  
- - `run_from_atom(Code, Input, Output)`: `Code` is an atom (i.e. between single quotes `'`) containing your Brachylog code. For example: `run_from_atom(',"Hello, World!"w',_,_)`. Note that you will have to escape certain characters in `Code`.
+ - `run_from_atom(Code, Input, Output)`: `Code` is an atom (i.e. between single quotes `'`) containing your Brachylog code. For example: `run_from_atom('∧"Hello, World!"w',_,_)`. Note that you will have to escape certain characters in `Code`.
 
  - `run(Input, Output)`: This will run a Brachylog program that has already been transpiled to Prolog using either of the two previous predicates. More precisely, this will query `brachylog_main/2` in the file `compiled_brachylog.pl`.
 
