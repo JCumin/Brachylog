@@ -62,7 +62,7 @@ token_predicate('\\', 'brachylog_transpose').
 token_predicate('^', 'brachylog_power').
 token_predicate('≜', 'brachylog_label').
 
-token_predicate('a', '').
+token_predicate('a', 'brachylog_adfix').
 token_predicate('b', 'brachylog_behead').
 token_predicate('c', 'brachylog_concatenate').
 token_predicate('d', 'brachylog_duplicates').
