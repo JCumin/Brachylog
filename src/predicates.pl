@@ -49,6 +49,7 @@ ____            ____
                        brachylog_power/3,
 
                        %Lowercase letters
+		       brachylog_adfix/3,
                        brachylog_behead/3,
                        brachylog_concatenate/3,
                        brachylog_duplicates/3,
@@ -1186,6 +1187,54 @@ brachylog_power('integer':S, 'integer':I, 'integer':J) :-
 brachylog_power('integer':S, 'float':I, 'float':J) :-
     S #> 0,
     J is I^S.
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_ADFIX
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_adfix('first', ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_adfix('integer':I, Arg, Output).
+brachylog_adfix('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_adfix('integer':I, Arg, Output).
+brachylog_adfix('default', Input, Output) :-
+    (   brachylog_adfix('integer':0, Input, Output)
+    ;   brachylog_adfix('integer':1, Input, Output)
+    ).
+brachylog_adfix('integer':0, [], []).
+brachylog_adfix('integer':0, [H|T], [H2|T2]) :-
+    (   brachylog_concatenate('default', [[H2|T2],[_|_]], [H|T])
+    ;   [H2|T2] = [H|T]
+    ).
+brachylog_adfix('integer':0, 'string':S, 'string':P) :-
+    brachylog_adfix('integer':0, S, P).
+brachylog_adfix('integer':0, 'integer':0, 'integer':0).
+brachylog_adfix('integer':0, 'integer':I, 'integer':P) :-
+    H #\= 0,
+    H2 #\= 0,
+    abs(P) #=< abs(I),
+    integer_value('integer':Sign:[H|T], I),
+    integer_value('integer':Sign:[H2|T2], P),
+    brachylog_adfix('integer':0, [H|T], [H2|T2]).
+brachylog_adfix('integer':1, [], []).
+brachylog_adfix('integer':1, [H|T], [H2|T2]) :-
+    brachylog_concatenate('default', [_,[H2|T2]], [H|T]).
+brachylog_adfix('integer':1, 'string':S, 'string':P) :-
+    brachylog_adfix('integer':1, S, P).
+brachylog_adfix('integer':1, 'integer':0, 'integer':0).
+brachylog_adfix('integer':1, 'integer':I, 'integer':P) :-
+    H #\= 0,
+    H2 #\= 0,
+    abs(P) #=< abs(I),
+    integer_value('integer':Sign:[H|T], I),
+    integer_value('integer':Sign:[H2|T2], P),
+    brachylog_adfix('integer':1, [H|T], [H2|T2]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
