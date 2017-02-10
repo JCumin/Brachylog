@@ -53,6 +53,7 @@ ____            ____
                        brachylog_behead/3,
                        brachylog_concatenate/3,
                        brachylog_duplicates/3,
+		       brachylog_factors/3,
                        brachylog_group/3,
                        brachylog_head/3,
                        brachylog_juxtapose/3,
@@ -1418,6 +1419,31 @@ brachylog_duplicates('integer':0, 'float':F, 'float':G) :-
 brachylog_duplicates('integer':0, L, M) :-
     is_brachylog_list(L),
     list_to_set(L, M).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_FACTORS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_factors('first', ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_factors('integer':I, Arg, Output).
+brachylog_factors('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_factors('integer':I, Arg, Output).
+brachylog_factors('default', 'integer':N, Z) :-
+    brachylog_label('default', 'integer':N, _),
+    (   N = 0 ,
+        Z = []
+    ;   N #> 0,
+        findall('integer':X, (X #>= 1, X #=< N, I #>= 1, I #=< N, N #= X*I, indomain(X)), Z)
+    ;   N #< 0,
+        findall('integer':X, (X #=< -1, X #>= N, I #>= 1, I #=< abs(N), N #= X*I, labeling([max(X)], [X])), Z)
+    ).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
