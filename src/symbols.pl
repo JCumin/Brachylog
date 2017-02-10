@@ -67,7 +67,7 @@ token_predicate('b', 'brachylog_behead').
 token_predicate('c', 'brachylog_concatenate').
 token_predicate('d', 'brachylog_duplicates').
 token_predicate('e', '').
-token_predicate('f', '').
+token_predicate('f', 'brachylog_factors').
 token_predicate('g', 'brachylog_group').
 token_predicate('h', 'brachylog_head').
 token_predicate('i', '').
