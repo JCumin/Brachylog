@@ -62,12 +62,12 @@ token_predicate('\\', 'brachylog_transpose').
 token_predicate('^', 'brachylog_power').
 token_predicate('≜', 'brachylog_label').
 
-token_predicate('a', '').
+token_predicate('a', 'brachylog_adfix').
 token_predicate('b', 'brachylog_behead').
 token_predicate('c', 'brachylog_concatenate').
 token_predicate('d', 'brachylog_duplicates').
 token_predicate('e', '').
-token_predicate('f', '').
+token_predicate('f', 'brachylog_factors').
 token_predicate('g', 'brachylog_group').
 token_predicate('h', 'brachylog_head').
 token_predicate('i', '').
@@ -99,7 +99,7 @@ token_predicate('ḳ', '').
 token_predicate('ḷ', 'brachylog_lowercase').
 token_predicate('ṃ', '').
 token_predicate('ṇ', 'brachylog_split_lines').
-token_predicate('ọ', '').
+token_predicate('ọ', 'brachylog_occurences').
 token_predicate('ṛ', 'brachylog_random_element').
 token_predicate('ṣ', 'brachylog_shuffle').
 token_predicate('ṭ', '').

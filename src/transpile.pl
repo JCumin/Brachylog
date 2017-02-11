@@ -1,4 +1,4 @@
-﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -192,9 +192,19 @@ fill_implicit_variables(['predicate':A], I, ['predicate':A,'variable':V]) :-
     atom_concat('V', I, V).
 fill_implicit_variables(['predicate':A,'variable':B|T], I, ['predicate':A,'variable':B|T2]) :-
     fill_implicit_variables(T, I, T2).
+fill_implicit_variables(['control':H,Type:B|T], I, ['control':H,'variable':V|T2]) :-
+    Type \= 'variable',
+    (   H = '∧'
+    ;   H = '∨'
+    ),
+    atom_concat('V', I, V),
+    J is I + 1,
+    fill_implicit_variables([Type:B|T], J, T2).
 fill_implicit_variables([Type:A|T], I, [Type:A|T2]) :-
     Type \= 'predicate',
     \+ (Type = 'control', A = ':', T = ['predicate':_|_]),
+    \+ (Type = 'control', A = '∧', T \= ['variable':_|_]),
+    \+ (Type = 'control', A = '∨', T \= ['variable':_|_]),
     fill_implicit_variables(T, I, T2).
    
    
@@ -239,11 +249,14 @@ transpile(Program, [[':- style_check(-singleton).'],
                     [':- use_module(constraint_variables).\n'],
                     ['brachylog_main(_, Input,Output) :-\n    Name = brachylog_main,\n',
                     ConstraintVariables,
-                    '    (1=1'|T]|OtherPredicates]) :-
+                    '    (1=1'|MainPred]|OtherPredicates]) :-
     constraint_variables(ConstraintVariables),
-    transpile_(Program, 'Input', no, no, 0, [T|OtherPredicates]).
+    transpile_(Program, 'Input', no, no, 0, [T|OtherPredicates]),
+    reverse(T, [_|RT]),
+    reverse(RT,T2),
+    append(T2, ['\n    ),\n    ((Output = integer:_ ; Output = [_|_], forall(member(E, Output), E = integer:_)) -> brachylog_label(default, Output, _) ; true).\n'], MainPred).
     
-transpile_([], _, _, _, _, [['\n    ),\n    ((Output = integer:_ ; Output = [_|_], forall(member(E, Output), E = integer:_)) -> brachylog_label(default, Output, _) ; true).\n']]).
+transpile_([], _, _, _, _, [['\n    ).\n']]).
 transpile_(['variable':B|T], A, Reverse, Negate, PredNumber, [[Unification|T2]|OtherPredicates]) :-
     A \= 'nothing',
     (   is_list(A),

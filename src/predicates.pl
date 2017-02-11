@@ -49,9 +49,11 @@ ____            ____
                        brachylog_power/3,
 
                        %Lowercase letters
+		       brachylog_adfix/3,
                        brachylog_behead/3,
                        brachylog_concatenate/3,
                        brachylog_duplicates/3,
+		       brachylog_factors/3,
                        brachylog_group/3,
                        brachylog_head/3,
                        brachylog_juxtapose/3,
@@ -73,6 +75,7 @@ ____            ____
                        brachylog_to_number/3,
                        brachylog_lowercase/3,
                        brachylog_split_lines/3,
+		       brachylog_occurences/3,
                        brachylog_random_element/3,
                        brachylog_shuffle/3,
                        brachylog_uppercase/3,
@@ -1188,6 +1191,54 @@ brachylog_power('integer':S, 'float':I, 'float':J) :-
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_ADFIX
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_adfix('first', ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_adfix('integer':I, Arg, Output).
+brachylog_adfix('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_adfix('integer':I, Arg, Output).
+brachylog_adfix('default', Input, Output) :-
+    (   brachylog_adfix('integer':0, Input, Output)
+    ;   brachylog_adfix('integer':1, Input, Output)
+    ).
+brachylog_adfix('integer':0, [], []).
+brachylog_adfix('integer':0, [H|T], [H2|T2]) :-
+    (   brachylog_concatenate('default', [[H2|T2],[_|_]], [H|T])
+    ;   [H2|T2] = [H|T]
+    ).
+brachylog_adfix('integer':0, 'string':S, 'string':P) :-
+    brachylog_adfix('integer':0, S, P).
+brachylog_adfix('integer':0, 'integer':0, 'integer':0).
+brachylog_adfix('integer':0, 'integer':I, 'integer':P) :-
+    H #\= 0,
+    H2 #\= 0,
+    abs(P) #=< abs(I),
+    integer_value('integer':Sign:[H|T], I),
+    integer_value('integer':Sign:[H2|T2], P),
+    brachylog_adfix('integer':0, [H|T], [H2|T2]).
+brachylog_adfix('integer':1, [], []).
+brachylog_adfix('integer':1, [H|T], [H2|T2]) :-
+    brachylog_concatenate('default', [_,[H2|T2]], [H|T]).
+brachylog_adfix('integer':1, 'string':S, 'string':P) :-
+    brachylog_adfix('integer':1, S, P).
+brachylog_adfix('integer':1, 'integer':0, 'integer':0).
+brachylog_adfix('integer':1, 'integer':I, 'integer':P) :-
+    H #\= 0,
+    H2 #\= 0,
+    abs(P) #=< abs(I),
+    integer_value('integer':Sign:[H|T], I),
+    integer_value('integer':Sign:[H2|T2], P),
+    brachylog_adfix('integer':1, [H|T], [H2|T2]).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_BEHEAD
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_behead('first', ['integer':I|Input], Output) :- 
@@ -1257,26 +1308,27 @@ brachylog_concatenate('integer':I, Input, Output) :-
 brachylog_concatenate('integer':0, [], []).
 brachylog_concatenate('integer':0, [H|T],L) :-
     var(L),
-    (   is_brachylog_list(H),
+    (   maplist(is_brachylog_list, [H|T]),
         brachylog_coerce('default', L, L),
         List = L,
-        ListOfLists = [H|T]
-    ;   H = 'string':_,
+        ListOfLists = [H|T],
+        Integers = 'no'
+    ;   maplist(brachylog_concatenate_prepend_string_or_empty, ListOfLists, [H|T]),
         brachylog_coerce('integer':2, 'string':List, L),
-        maplist(prepend_string, ListOfLists, [H|T])
-    ;   H = 'integer':_,
-        maplist(brachylog_concatenate_integer_value, ListOfLists, [H|T])
+        Integers = 'no'
+    ;   maplist(brachylog_concatenate_integer_value, ListOfLists, [H|T]),
+        Integers = 'yes'
     ),
     brachylog_concatenate_(ListOfLists, List),
-    (   H = 'integer':_,
+    (   Integers = 'yes',
         List = [0],
         L = 'integer':0
-    ;   H = 'integer':_,
+    ;   Integers = 'yes',
         List = [J|TList],
         J #\= 0,
         integer_value('integer':'positive':[J|TList], I),
         L = 'integer':I
-    ;   H \= 'integer':_
+    ;   Integers = 'no'
     ).
 brachylog_concatenate('integer':0, [H|T], L) :-
     nonvar(L),
@@ -1294,8 +1346,7 @@ brachylog_concatenate('integer':0, [H|T], L) :-
         List = L,
         ListOfLists = [H|T]
     ;   L = 'string':List,
-        maplist(brachylog_coerce('integer':2), [H|T], [H|T]),
-        maplist(prepend_string, ListOfLists, [H|T])
+        maplist(brachylog_concatenate_prepend_string_or_empty, ListOfLists, [H|T])
     ;   L = 'integer':I,
         (   I = 0,
             List = [0]
@@ -1304,7 +1355,6 @@ brachylog_concatenate('integer':0, [H|T], L) :-
             integer_value('integer':_:[J|TList], I),
             List = [J|TList]
         ),
-        maplist(brachylog_coerce('integer':1), [H|T], [H|T]),
         (
             CanContainEmpty = 'no' ->
             maplist(brachylog_concatenate_limit_length(1, Length), [H|T])
@@ -1319,6 +1369,9 @@ brachylog_concatenate('integer':0, [H|T], L) :-
     ),
     brachylog_concatenate_(ListOfLists, List).
 
+brachylog_concatenate_prepend_string_or_empty([], []).
+brachylog_concatenate_prepend_string_or_empty(S, 'string':S).
+
 brachylog_concatenate_limit_length(Min, Max, H) :-
     Length #>= Min,
     Length #=< Max,
@@ -1326,6 +1379,7 @@ brachylog_concatenate_limit_length(Min, Max, H) :-
     brachylog_length('default', H, 'integer':Length).
 
 brachylog_concatenate_integer_value([0], 'integer':0).
+brachylog_concatenate_integer_value([], []).
 brachylog_concatenate_integer_value([H|T], 'integer':I) :-
     H #\= 0,
     integer_value('integer':_:[H|T], I).
@@ -1365,6 +1419,31 @@ brachylog_duplicates('integer':0, 'float':F, 'float':G) :-
 brachylog_duplicates('integer':0, L, M) :-
     is_brachylog_list(L),
     list_to_set(L, M).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_FACTORS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_factors('first', ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_factors('integer':I, Arg, Output).
+brachylog_factors('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_factors('integer':I, Arg, Output).
+brachylog_factors('default', 'integer':N, Z) :-
+    brachylog_label('default', 'integer':N, _),
+    (   N = 0 ,
+        Z = []
+    ;   N #> 0,
+        findall('integer':X, (X #>= 1, X #=< N, I #>= 1, I #=< N, N #= X*I, indomain(X)), Z)
+    ;   N #< 0,
+        findall('integer':X, (X #=< -1, X #>= N, I #>= 1, I #=< abs(N), N #= X*I, labeling([max(X)], [X])), Z)
+    ).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2045,6 +2124,64 @@ brachylog_split_lines('default', 'string':[H|T], ['string':[H|T2]|T3]) :-
     dif(H, '\n'),
     dif(H, '\r\n'),
     brachylog_split_lines('default', 'string':T, ['string':T2|T3]).
+brachylog_split_lines('integer':1, 'string':[], ['string':[]]).
+brachylog_split_lines('integer':1, 'string':[' '|T], ['string':[]|T3]) :-
+    brachylog_split_lines('integer':1, 'string':T, T3).
+brachylog_split_lines('integer':1, 'string':[H|T], ['string':[H|T2]|T3]) :-
+    dif(H, ' '),
+    brachylog_split_lines('integer':1, 'string':T, ['string':T2|T3]).
+brachylog_split_lines('integer':2, 'string':[], ['string':[]]).
+brachylog_split_lines('integer':2, 'string':[' '|T], ['string':[]|T3]) :-
+    brachylog_split_lines('integer':2, 'string':T, T3).
+brachylog_split_lines('integer':2, 'string':['\n'|T], ['string':[]|T3]) :-
+    brachylog_split_lines('integer':2, 'string':T, T3).
+brachylog_split_lines('integer':2, 'string':['\r','\r\n'|T], ['string':[]|T3]) :-
+    brachylog_split_lines('integer':2, 'string':T, T3).
+brachylog_split_lines('integer':2, 'string':[H|T], ['string':[H|T2]|T3]) :-
+    dif(H, '\n'),
+    dif(H, '\r\n'),
+    dif(H, ' '),
+    brachylog_split_lines('integer':2, 'string':T, ['string':T2|T3]).
+brachylog_split_lines('integer':3, Input, Output) :-
+    brachylog_split_lines('default', Input, L1),
+    brachylog_meta_map('default', brachylog_split_lines, 'integer':1, L1, Output).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_OCCURENCES
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_occurences('first', ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_occurences('integer':I, Arg, Output).
+brachylog_occurences('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_occurences('integer':I, Arg, Output).
+brachylog_occurences('default', 'string':[], []).
+brachylog_occurences('default', 'string':[H|T], L) :-
+    brachylog_elements('default', 'string':[H|T], E),
+    brachylog_occurences('default', E, L).
+brachylog_occurences('default', 'integer':0, [['integer':0,'integer':1]]).
+brachylog_occurences('default', 'integer':I, L) :-
+    H #\= 0,
+    brachylog_elements('default', 'integer':I, ['integer':H|T]),
+    brachylog_occurences('default', ['integer':H|T], L).
+brachylog_occurences('default', [], []).
+brachylog_occurences('default', [H|T], [[H,'integer':O]|T2]) :-
+    brachylog_occurences_(H, [H|T], O, R),
+    brachylog_occurences('default', R, T2).
+
+brachylog_occurences_(_, [], 0, []).
+brachylog_occurences_(H, [H|T], I, R) :-
+    I #= J + 1,
+    brachylog_occurences_(H, T, J, R).
+brachylog_occurences_(H, [H2|T], I, [H2|R]) :-
+    dif(H, H2),
+    brachylog_occurences_(H, T, I, R).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -16,7 +16,8 @@ ____            ____
 
 :- module(metapredicates, [brachylog_meta_find/5,
                            brachylog_meta_iterate/5,
-                           brachylog_meta_map/5
+                           brachylog_meta_map/5,
+                           brachylog_meta_select/5
                           ]).
 
 :- use_module(library(clpfd)).
@@ -112,3 +113,26 @@ brachylog_meta_map('integer':I, P, Sub, Input, Output) :-
     I #> 1,
     J #= I - 1,
     maplist(brachylog_meta_map('integer':J, P, Sub), Input, Output).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_SELECT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_select('first', P, Sub, ['integer':I|Input], Output) :-
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_select('integer':I, P, Sub, Arg, Output).
+brachylog_meta_select('last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_select('integer':I, P, Sub, Arg, Output).
+brachylog_meta_select('default', _, _, [], []).
+brachylog_meta_select('default', P, Sub, [H|T], Output) :-
+    (   call(P, Sub, H, H2) *->
+        Output = [H2|T2]
+    ;   Output = T2
+    ),
+    brachylog_meta_select('default', P, Sub, T, T2).
