@@ -39,9 +39,10 @@ tokenize([Variable|T], ['variable':RealVariable|T2]) :-
     is_math_constant_character(Variable),
     token_variable(Variable, RealVariable),
     tokenize(T, T2).
-tokenize([H|T], ['variable':'Input'|T2]) :-
+tokenize([H|T], ['variable':'Input':Sub|T2]) :-
     is_input_character(H),
-    tokenize(T, T2).
+    tokenize_subscript(T, Rest, Sub),
+    tokenize(Rest, T2).
 tokenize([H|T], ['variable':'Output'|T2]) :-
     is_output_character(H),
     tokenize(T, T2).
