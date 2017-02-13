@@ -1,4 +1,4 @@
-﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -35,8 +35,7 @@ parse(Code, TranspiledPath) :-
     
 parse_no_file(Code, Predicates) :-
     atom_chars(Code, SplittedCode),
-    tokenize(SplittedCode, TokensNoInputSub),
-    prepend_input_subscript(TokensNoInputSub, TokensNoOutputs),
+    tokenize(SplittedCode, TokensNoOutputs),
     append_trailing_output(TokensNoOutputs, Tokens),
     fix_predicates(Tokens, FixedPredicates),
     fix_metapredicates(FixedPredicates, FixedMetapredicates),
@@ -67,44 +66,6 @@ parse_argument(Arg, Term) :-
     term_to_atom(Term, ParsedArg)
     ;
     throw('Incorrect variable format.').
-
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   PREPEND_INPUT_SUBSCRIPT
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-prepend_input_subscript(Tokens, NewTokens) :-
-    prepend_input_subscript(Tokens, [], [], NewTokens).
-
-prepend_input_subscript([], Rule, Inputs, NewTokens) :-
-    reverse(['variable':'Input', 'control':'∧'|Inputs], RInputs),
-    reverse(Rule, RRule),
-    append([RInputs, RRule], NewTokens).
-prepend_input_subscript([H|T], Rule, Inputs, NewTokens) :-
-    (   H = 'control':'\n'
-    ;   H = 'control':'}'
-    ;   H = 'control':'|'
-    ), !,
-    prepend_input_subscript(T, [], [], T2),
-    reverse(['variable':'Input', 'control':'∧'|Inputs], RInputs),
-    reverse(Rule, RRule),
-    append([RInputs, RRule, H, T2], NewTokens).
-prepend_input_subscript(['variable':'Input':'default'|T], Rule, Inputs, NewTokens) :-
-    prepend_input_subscript(T, ['variable':'Input'|Rule], Inputs, NewTokens).
-prepend_input_subscript(['variable':'Input':Sub|T], Rule, Inputs, NewTokens) :-
-    (   Sub = 'first' ->
-        Pred = 'brachylog_head':'default',
-        Var = 'InputFirst'
-    ;   Sub = 'last' ->
-        Pred = 'brachylog_tail':'default',
-        Var = 'InputLast'
-    ;   term_to_atom('integer':I, Sub) ->
-        Pred = 'brachylog_in':Sub,
-        atomic_list_concat(['Input', I], Var)
-    ),
-    prepend_input_subscript(T, ['variable':Var|Rule], ['variable':Var, 'predicate':Pred, 'variable':'Input', 'control':'∧'|Inputs], NewTokens).
-prepend_input_subscript([H|T], Rule, Inputs, NewTokens) :-
-    H \= 'variable':'Input':_,
-    prepend_input_subscript(T, [H|Rule], Inputs, NewTokens).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
