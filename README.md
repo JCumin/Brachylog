@@ -14,6 +14,8 @@ Brachylog uses [SWI-Prolog](http://www.swi-prolog.org/) as Prolog engine.
 
 Check out [Brachylog's Wiki](https://github.com/JCumin/Brachylog/wiki) if you want to learn how to write programs in this language.
 
+You may want to watch this [**short video introduction to Brachylog**](https://www.youtube.com/watch?v=XYVhZ-MFcUs).
+
 ###Try it online!
 
 You can try out Brachylog on [Try it online!](https://tio.run/nexus/brachylog2), thanks to @DennisMitchell.
