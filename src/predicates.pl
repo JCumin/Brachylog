@@ -2325,6 +2325,9 @@ brachylog_base('integer':1, 'integer':I, Output) :-
 brachylog_base('integer':B, 'integer':I, L) :-
     B #> 1,
     %brachylog_label('default', ['integer':I, 'integer':B], _),
+    (   I #>= 0
+    ;   I #< 0
+    ),
     J #= abs(I),
     n_base_digits(J, B, L).
 
