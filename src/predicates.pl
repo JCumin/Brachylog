@@ -1,4 +1,4 @@
-﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -49,11 +49,11 @@ ____            ____
                        brachylog_power/3,
 
                        %Lowercase letters
-		       brachylog_adfix/3,
+		               brachylog_adfix/3,
                        brachylog_behead/3,
                        brachylog_concatenate/3,
                        brachylog_duplicates/3,
-		       brachylog_factors/3,
+		               brachylog_factors/3,
                        brachylog_group/3,
                        brachylog_head/3,
                        brachylog_juxtapose/3,
@@ -75,7 +75,7 @@ ____            ____
                        brachylog_to_number/3,
                        brachylog_lowercase/3,
                        brachylog_split_lines/3,
-		       brachylog_occurences/3,
+		               brachylog_occurences/3,
                        brachylog_random_element/3,
                        brachylog_shuffle/3,
                        brachylog_uppercase/3,
@@ -1671,15 +1671,25 @@ brachylog_order('last', Input, Output) :-
 brachylog_order('default', Input, Output) :-
     brachylog_order('integer':0, Input, Output).
 brachylog_order('integer':0, 'string':S, 'string':T) :-
-    msort(S, T).
+    (   nonvar(S),
+        msort(S, T)
+    ;   var(S),
+        msort(T, T),
+        brachylog_permute('default', 'string':T, 'string':S)
+    ).
 brachylog_order('integer':0, 'integer':I, 'integer':J) :-
     brachylog_label('default', 'integer':I, _),
     number_codes(I, C),
     msort(C, D),
     number_codes(J, D).
 brachylog_order('integer':0, [], []).
-brachylog_order('integer':0, [H|T], OrderedList) :-
-    msort([H|T], OrderedList).
+brachylog_order('integer':0, [H|T], [H2|T2]) :-
+    (   nonvar(T),
+        msort([H|T], [H2|T2])
+    ;   var(T),
+        msort([H2|T2], [H2|T2]),
+        brachylog_permute('default', [H2|T2], [H|T])
+    ).
 brachylog_order('integer':1, Input, Output) :-
     brachylog_order('integer':0, Input, ROutput),
     brachylog_reverse('default', ROutput, Output).
