@@ -15,6 +15,7 @@ ____            ____
 
 
 :- module(metapredicates, [brachylog_meta_find/5,
+                           brachylog_meta_groupby/5,
                            brachylog_meta_iterate/5,
                            brachylog_meta_map/5,
                            brachylog_meta_orderby/5,
@@ -62,6 +63,42 @@ call_nth(Goal_0, C) :-
     C2 is C1+1,
     nb_setarg(1, State, C2),
     C = C2.
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_GROUPBY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_groupby('first', P, Sub, ['integer':I|Input], Output) :-
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_groupby(I, P, Sub, Arg, Output).
+brachylog_meta_groupby('last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_groupby(I, P, Sub, Arg, Output).
+brachylog_meta_groupby('default', P, Sub, Input, Output) :-
+    brachylog_meta_map('default', P, Sub, Input, L),
+    brachylog_zip('default', [L,Input], L2),
+    brachylog_meta_groupby_group(L2, L3),
+    maplist(brachylog_meta_groupby_tail, L3, Output).
+
+brachylog_meta_groupby_group(L, Gs) :-
+    brachylog_meta_groupby_group(L, [], Gs).
+
+brachylog_meta_groupby_group([], Gs, Gs).
+brachylog_meta_groupby_group([[G,H]|T], TempGs, Gs) :-
+    (   member(G:L, TempGs) ->
+        reverse(L, RL),
+        reverse([H|RL], L2),
+        select(G:L, TempGs, G:L2, TempGs2)
+    ;   append(TempGs, [G:[H]], TempGs2)
+    ),
+    brachylog_meta_groupby_group(T, TempGs2, Gs).
+
+brachylog_meta_groupby_tail(_:T, T).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -118,7 +155,7 @@ brachylog_meta_map('integer':I, P, Sub, Input, Output) :-
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   BRACHYLOG_META_ORDER_BY
+   BRACHYLOG_META_ORDERBY
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_meta_orderby('first', P, Sub, ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
