@@ -17,10 +17,12 @@ ____            ____
 :- module(metapredicates, [brachylog_meta_find/5,
                            brachylog_meta_iterate/5,
                            brachylog_meta_map/5,
+                           brachylog_meta_orderby/5,
                            brachylog_meta_select/5
                           ]).
 
 :- use_module(library(clpfd)).
+:- use_module(predicates).
     
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,6 +115,42 @@ brachylog_meta_map('integer':I, P, Sub, Input, Output) :-
     I #> 1,
     J #= I - 1,
     maplist(brachylog_meta_map('integer':J, P, Sub), Input, Output).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_ORDER_BY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_orderby('first', P, Sub, ['integer':I|Input], Output) :-
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_orderby('integer':I, P, Sub, Arg, Output).
+brachylog_meta_orderby('last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_orderby('integer':I, P, Sub, Arg, Output).
+brachylog_meta_orderby('default', P, Sub, Input, Output) :-
+    brachylog_meta_orderby('integer':0, P, Sub, Input, Output).
+brachylog_meta_orderby('integer':0, P, Sub, Input, Output) :-
+    brachylog_meta_map('default', P, Sub, Input, L),
+    brachylog_zip('default', [L,Input], L2),
+    msort(L2, SL2),
+    brachylog_zip('default', SL2, [_,Output]).
+brachylog_meta_orderby('integer':1, P, Sub, Input, Output) :-
+    brachylog_meta_map('default', P, Sub, Input, L),
+    brachylog_zip('default', [L,Input], L2),
+    msort(L2, RSL2),
+    reverse(RSL2, SL2),
+    brachylog_zip('default', SL2, [_,Output]).
+brachylog_meta_orderby('integer':2, P, Sub, Input, Output) :-
+    brachylog_meta_map('default', P, Sub, Input, L),
+    msort(L, Output).
+brachylog_meta_orderby('integer':3, P, Sub, Input, Output) :-
+    brachylog_meta_map('default', P, Sub, Input, L),
+    msort(L, RL),
+    reverse(RL, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
