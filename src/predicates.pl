@@ -1950,7 +1950,8 @@ brachylog_zip('integer':0, L,Z) :-
     maplist(brachylog_length('default'), L, Lengths),
     brachylog_order('default', Lengths, OrderedLengths),
     reverse(OrderedLengths, ['integer':MaxLength|_]),
-    brachylog_zip_(L, MaxLength, Z).
+    maplist(brachylog_zip_listify_integer, L, L2),
+    brachylog_zip_(L2, MaxLength, Z).
     
 brachylog_zip_(_, 0, []).
 brachylog_zip_(L, I, [Heads|Z]) :-
@@ -1959,6 +1960,11 @@ brachylog_zip_(L, I, [Heads|Z]) :-
     maplist(brachylog_circular_permute_counterclockwise('default'), L, Tails),
     J #= I - 1,
     brachylog_zip_(Tails, J, Z).
+
+brachylog_zip_listify_integer(L, L) :-
+    L \= 'integer':_.
+brachylog_zip_listify_integer('integer':I, L) :-
+    brachylog_elements('default', 'integer':I, L).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
