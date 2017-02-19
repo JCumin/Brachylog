@@ -1840,27 +1840,44 @@ brachylog_write('default', Input, Output) :-
 brachylog_write('integer':1, [List,'string':F], _) :-
     is_brachylog_list(List),
     atomic_list_concat(F, Format),
+    maplist(brachylog_write_try_label, List),
     brachylog_prolog_variable(List, PrologList),
     format(Format, PrologList).
 brachylog_write('integer':1, Args, _) :-
     is_brachylog_list(Args),
     reverse(Args, ['string':F|R]),
     reverse(R, S),
+    maplist(brachylog_write_try_label, S),
     brachylog_prolog_variable(S, PrologS),
     atomic_list_concat(F, Format),
     format(Format, PrologS).
 brachylog_write('integer':0, 'string':S, _) :-
+    nonvar(S),
     atomic_list_concat(S, X),
     write(X).
 brachylog_write('integer':0, 'integer':I, _) :-
+    brachylog_label('default', 'integer':I, _),
     write(I).
 brachylog_write('integer':0, 'float':F, _) :-
+    nonvar(F),
     write(F).
 brachylog_write('integer':0, List, _) :-
     is_brachylog_list(List),
+    maplist(brachylog_write_try_label, List),
     brachylog_prolog_variable(List, PrologList),
     write(PrologList).
-   
+
+brachylog_write_try_label(X) :-
+    (   nonvar(X), X = 'float':_ -> true
+    ;   nonvar(X), X = 'string':_ -> true
+    ;   nonvar(X), X = [] -> true
+    ;   nonvar(X),
+        X = [H|T] ->
+        maplist(brachylog_write_try_label, [H|T])
+    ;   X = 'integer':I,
+        brachylog_label('default', 'integer':I, _)
+    ).
+
    
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_XTERMINATE
