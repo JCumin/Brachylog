@@ -80,7 +80,10 @@ brachylog_meta_groupby('last', P, Sub, Input, Output) :-
     ),
     brachylog_meta_groupby(I, P, Sub, Arg, Output).
 brachylog_meta_groupby('default', P, Sub, Input, Output) :-
-    brachylog_meta_map('default', P, Sub, Input, L),
+    (   is_brachylog_list(Input) -> FixedInput = Input
+    ;   brachylog_elements('default', Input, FixedInput)
+    ),
+    brachylog_meta_map('default', P, Sub, FixedInput, L),
     brachylog_zip('default', [L,Input], L2),
     brachylog_meta_groupby_group(L2, L3),
     maplist(brachylog_meta_groupby_tail, L3, Output).
@@ -145,12 +148,30 @@ brachylog_meta_map('integer':0, P, Sub, Input, Output) :-
     call(P, Sub, Input, Output).
 brachylog_meta_map('default', P, Sub, Input, Output) :-
     brachylog_meta_map('integer':1, P, Sub, Input, Output).
+brachylog_meta_map('integer':I, P, Sub, 'string':S, Output) :-
+    brachylog_elements('default', 'string':S, E),
+    brachylog_meta_map('integer':I, P, Sub, E, O),
+    (   brachylog_concatenate('default', O, X),
+        X = 'string':_ ->
+        Output = X
+    ;   Output = O
+    ).
+brachylog_meta_map('integer':I, P, Sub, 'integer':Input, Output) :-
+    brachylog_elements('default', 'integer':Input, E),
+    brachylog_meta_map('integer':I, P, Sub, E, O),
+    (   brachylog_concatenate('default', O, X),
+        X = 'integer':_ ->
+        Output = X
+    ;   Output = O
+    ).
 brachylog_meta_map('integer':1, P, Sub, Input, Output) :-
     Pred =.. [P, Sub],
+    is_brachylog_list(Input),
     maplist(Pred, Input, Output).
 brachylog_meta_map('integer':I, P, Sub, Input, Output) :-
     I #> 1,
     J #= I - 1,
+    is_brachylog_list(Input),
     maplist(brachylog_meta_map('integer':J, P, Sub), Input, Output).
 
 
@@ -171,21 +192,33 @@ brachylog_meta_orderby('last', P, Sub, Input, Output) :-
 brachylog_meta_orderby('default', P, Sub, Input, Output) :-
     brachylog_meta_orderby('integer':0, P, Sub, Input, Output).
 brachylog_meta_orderby('integer':0, P, Sub, Input, Output) :-
-    brachylog_meta_map('default', P, Sub, Input, L),
+    (   is_brachylog_list(Input) -> FixedInput = Input
+    ;   brachylog_elements('default', Input, FixedInput)
+    ),
+    brachylog_meta_map('default', P, Sub, FixedInput, L),
     brachylog_zip('default', [L,Input], L2),
     msort(L2, SL2),
     brachylog_zip('default', SL2, [_,Output]).
 brachylog_meta_orderby('integer':1, P, Sub, Input, Output) :-
-    brachylog_meta_map('default', P, Sub, Input, L),
+    (   is_brachylog_list(Input) -> FixedInput = Input
+    ;   brachylog_elements('default', Input, FixedInput)
+    ),
+    brachylog_meta_map('default', P, Sub, FixedInput, L),
     brachylog_zip('default', [L,Input], L2),
     msort(L2, RSL2),
     reverse(RSL2, SL2),
     brachylog_zip('default', SL2, [_,Output]).
 brachylog_meta_orderby('integer':2, P, Sub, Input, Output) :-
-    brachylog_meta_map('default', P, Sub, Input, L),
+    (   is_brachylog_list(Input) -> FixedInput = Input
+    ;   brachylog_elements('default', Input, FixedInput)
+    ),
+    brachylog_meta_map('default', P, Sub, FixedInput, L),
     msort(L, Output).
 brachylog_meta_orderby('integer':3, P, Sub, Input, Output) :-
-    brachylog_meta_map('default', P, Sub, Input, L),
+    (   is_brachylog_list(Input) -> FixedInput = Input
+    ;   brachylog_elements('default', Input, FixedInput)
+    ),
+    brachylog_meta_map('default', P, Sub, FixedInput, L),
     msort(L, RL),
     reverse(RL, Output).
 
@@ -204,6 +237,22 @@ brachylog_meta_select('last', P, Sub, Input, Output) :-
     ;   T = Arg
     ),
     brachylog_meta_select('integer':I, P, Sub, Arg, Output).
+brachylog_meta_select('default', P, Sub, 'string':S, Output) :-
+    brachylog_elements('default', 'string':S, E),
+    brachylog_meta_select('default', P, Sub, E, O),
+    (   brachylog_concatenate('default', O, X),
+        X = 'string':_ ->
+        Output = X
+    ;   Output = O
+    ).
+brachylog_meta_select('default', P, Sub, 'integer':S, Output) :-
+    brachylog_elements('default', 'integer':S, E),
+    brachylog_meta_select('default', P, Sub, E, O),
+    (   brachylog_concatenate('default', O, X),
+        X = 'integer':_ ->
+        Output = X
+    ;   Output = O
+    ).
 brachylog_meta_select('default', _, _, [], []).
 brachylog_meta_select('default', P, Sub, [H|T], Output) :-
     (   call(P, Sub, H, H2) *->
