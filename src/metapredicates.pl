@@ -14,7 +14,8 @@ ____            ____
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-:- module(metapredicates, [brachylog_meta_find/5,
+:- module(metapredicates, [brachylog_meta_count/5,
+                           brachylog_meta_find/5,
                            brachylog_meta_groupby/5,
                            brachylog_meta_iterate/5,
                            brachylog_meta_leftfold/5,
@@ -26,7 +27,31 @@ ____            ____
 
 :- use_module(library(clpfd)).
 :- use_module(predicates).
-    
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_COUNT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_count('first', P, Sub, ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_count('integer':I, P, Sub, Arg, Output).
+brachylog_meta_count('last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_count('integer':I, P, Sub, Arg, Output).
+brachylog_meta_count('default', P, Sub, Input, Output) :-
+    brachylog_meta_count('integer':0, P, Sub, Input, Output).
+brachylog_meta_count('integer':0, P, Sub, Input, Output) :-
+    brachylog_meta_find('default', P, Sub, Input, E),
+    brachylog_length('default', E, Output).
+brachylog_meta_count('integer':1, P, Sub, Input, Output) :-
+    brachylog_meta_unique('default', P, Sub, Input, E),
+    brachylog_length('default', E, Output).
+
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_FIND
