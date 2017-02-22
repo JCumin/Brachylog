@@ -17,6 +17,7 @@ ____            ____
 :- module(metapredicates, [brachylog_meta_find/5,
                            brachylog_meta_groupby/5,
                            brachylog_meta_iterate/5,
+                           brachylog_meta_leftfold/5,
                            brachylog_meta_map/5,
                            brachylog_meta_orderby/5,
                            brachylog_meta_select/5
@@ -128,6 +129,47 @@ brachylog_meta_iterate('integer':I, P, Sub, Input, Output) :-
     call(P, Sub, Input, TOutput),
     J #= I - 1,
     brachylog_meta_iterate('integer':J, P, Sub, TOutput, Output).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_LEFTFOLD
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_leftfold('first', P, Sub, ['integer':I|Input], Output) :-
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_leftfold('integer':I, P, Sub, Arg, Output).
+brachylog_meta_leftfold('last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_leftfold('integer':I, P, Sub, Arg, Output).
+brachylog_meta_leftfold('default', P, Sub, 'string':S, Output) :-
+    brachylog_elements('default', 'string':S, E),
+    brachylog_meta_leftfold('default', P, Sub, E, O),
+    (   brachylog_concatenate('default', O, X),
+        X = 'string':_ ->
+        Output = X
+    ;   Output = O
+    ).
+brachylog_meta_leftfold('default', P, Sub, 'integer':Input, Output) :-
+    brachylog_elements('default', 'integer':Input, E),
+    brachylog_meta_leftfold('default', P, Sub, E, O),
+    (   brachylog_concatenate('default', O, X),
+        X = 'integer':_ ->
+        Output = X
+    ;   Output = O
+    ).
+brachylog_meta_leftfold('default', _P, _Sub, [], []).
+brachylog_meta_leftfold('default', _P, _Sub, [X], [X]).
+brachylog_meta_leftfold('default', P, Sub, [H,I|T], Output) :-
+    brachylog_meta_leftfold_(P, Sub, [I|T], H, Output).
+
+brachylog_meta_leftfold_(_P, _Sub, [], Output, Output).
+brachylog_meta_leftfold_(P, Sub, [H|T], A, Output) :-
+    call(P, Sub, [A,H], E),
+    brachylog_meta_leftfold_(P, Sub, T, E, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
