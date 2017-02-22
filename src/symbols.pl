@@ -212,7 +212,7 @@ token_metapredicate('ᵖ', '').
 token_metapredicate('ʳ', 'brachylog_meta_rightfold').
 token_metapredicate('ˢ', 'brachylog_meta_select').
 token_metapredicate('ᵗ', '').
-token_metapredicate('ᵘ', '').
+token_metapredicate('ᵘ', 'brachylog_meta_unique').
 token_metapredicate('ᵛ', '').
 token_metapredicate('ʷ', '').
 token_metapredicate('ˣ', '').

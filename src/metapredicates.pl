@@ -20,7 +20,8 @@ ____            ____
                            brachylog_meta_leftfold/5,
                            brachylog_meta_map/5,
                            brachylog_meta_orderby/5,
-                           brachylog_meta_select/5
+                           brachylog_meta_select/5,
+                           brachylog_meta_unique/5
                           ]).
 
 :- use_module(library(clpfd)).
@@ -302,3 +303,36 @@ brachylog_meta_select('default', P, Sub, [H|T], Output) :-
     ;   Output = T2
     ),
     brachylog_meta_select('default', P, Sub, T, T2).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_UNIQUE
+   
+   TODO: fix infinite loops when the subscript is bigger than the number of
+         existing answers. The between call generates infinite choice 
+         points which is bad if length(Output, I) is impossible.
+   
+   TODO: improve performance outside default mod. Right now it recomputes 
+         all answers until it finds a set of unique answers, instead of
+         keeping the ones it already found.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_unique('first', P, Sub, ['integer':I|Input], Output) :-
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_unique('integer':I, P, Sub, Arg, Output).
+brachylog_meta_unique('last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_unique('integer':I, P, Sub, Arg, Output).
+brachylog_meta_unique('default', P, Sub, Input, Output) :-
+    setof(X, call(P, Sub, Input, X), Output).
+brachylog_meta_unique('integer':0, _, _, _, []).
+brachylog_meta_unique('integer':I, P, Sub, Input, Output) :-
+    I #> 0,
+    length(Output, I),
+    between(I, infinite, J),
+    setof(X, call_firstn(call(P, Sub, Input, X), J), Output),
+    !.
