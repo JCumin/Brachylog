@@ -120,8 +120,7 @@ constraintR(_) :-
     true.
 
 
-constraintS(_) :-
-    true.
+constraintS('string':_).
 
 
 constraintT([_,_,_]).
