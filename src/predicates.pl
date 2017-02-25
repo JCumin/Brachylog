@@ -182,6 +182,7 @@ brachylog_greaterequal('integer':1, ['integer':I,'integer':J|T], ['integer':I,'i
 brachylog_contains(Sub, Input, Output) :-
     brachylog_in(Sub, Output, Input).
 
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_IN
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
