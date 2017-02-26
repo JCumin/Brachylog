@@ -49,11 +49,11 @@ ____            ____
                        brachylog_power/3,
 
                        %Lowercase letters
-		               brachylog_adfix/3,
+                       brachylog_adfix/3,
                        brachylog_behead/3,
                        brachylog_concatenate/3,
                        brachylog_duplicates/3,
-		               brachylog_factors/3,
+                       brachylog_factors/3,
                        brachylog_group/3,
                        brachylog_head/3,
                        brachylog_juxtapose/3,
@@ -75,7 +75,7 @@ ____            ____
                        brachylog_to_number/3,
                        brachylog_lowercase/3,
                        brachylog_split_lines/3,
-		               brachylog_occurences/3,
+                       brachylog_occurences/3,
                        brachylog_random_element/3,
                        brachylog_shuffle/3,
                        brachylog_uppercase/3,
@@ -2455,10 +2455,10 @@ brachylog_prime_decomposition_2(N, SN, D, L, LF) :-
         ;   brachylog_prime_decomposition_2(N, SN, D1, L, LF)
         )
     ).
-	
+
 brachylog_prime_decomposition_append_integer([], []).
 brachylog_prime_decomposition_append_integer([H|T], ['integer':H|T2]) :-
-	brachylog_prime_decomposition_append_integer(T, T2).
+    brachylog_prime_decomposition_append_integer(T, T2).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
