@@ -14,7 +14,7 @@ ____            ____
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-:- module(metapredicates, [brachylog_meta_accumulate/5
+:- module(metapredicates, [brachylog_meta_accumulate/5,
                            brachylog_meta_count/5,
                            brachylog_meta_find/5,
                            brachylog_meta_groupby/5,
