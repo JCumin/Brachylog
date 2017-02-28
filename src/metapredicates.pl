@@ -14,7 +14,8 @@ ____            ____
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-:- module(metapredicates, [brachylog_meta_count/5,
+:- module(metapredicates, [brachylog_meta_accumulate/5
+                           brachylog_meta_count/5,
                            brachylog_meta_find/5,
                            brachylog_meta_groupby/5,
                            brachylog_meta_iterate/5,
@@ -27,6 +28,38 @@ ____            ____
 
 :- use_module(library(clpfd)).
 :- use_module(predicates).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_ACCUMULATE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_accumulate('first', P, Sub, ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_accumulate('integer':I, P, Sub, Arg, Output).
+brachylog_meta_accumulate('last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_accumulate('integer':I, P, Sub, Arg, Output).
+brachylog_meta_accumulate('default', P, Sub, Input, Output) :-
+    brachylog_meta_accumulate('integer':1, P, Sub, Input, Output).
+brachylog_meta_accumulate(Sup, P, Sub, 'string':Input, Output) :-
+    brachylog_meta_accumulate(Sup, P, Sub, ['string':Input], Output).
+brachylog_meta_accumulate(Sup, P, Sub, 'integer':Input, Output) :-
+    brachylog_meta_accumulate(Sup, P, Sub, ['integer':Input], Output).
+brachylog_meta_accumulate(Sup, P, Sub, 'float':Input, Output) :-
+    brachylog_meta_accumulate(Sup, P, Sub, ['float':Input], Output).
+brachylog_meta_accumulate('integer':0, _P, _Sub, Input, Input).
+brachylog_meta_accumulate('integer':I, P, Sub, Input, Output) :-
+    I #> 0,
+    is_brachylog_list(Input),
+    call(P, Sub, Input, E),
+    J #= I - 1,
+    append(Input, [E], F),
+    brachylog_meta_accumulate('integer':J, P, Sub, F, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
