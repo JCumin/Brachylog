@@ -193,7 +193,7 @@ token_variable('φ', '\'float\':1.61803398875').
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    TOKEN_METAPREDICATE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-token_metapredicate('ᵃ', '').
+token_metapredicate('ᵃ', 'brachylog_meta_accumulate').
 token_metapredicate('ᵇ', '').
 token_metapredicate('ᶜ', 'brachylog_meta_count').
 token_metapredicate('ᵈ', '').
