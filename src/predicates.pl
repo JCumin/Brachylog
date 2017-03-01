@@ -383,8 +383,10 @@ brachylog_circular_permute_counterclockwise('integer':0, Input, Input).
 brachylog_circular_permute_counterclockwise('integer':1, 'string':[], 'string':[]).
 brachylog_circular_permute_counterclockwise('integer':1, 'string':[H|T], 'string':S) :-
     append(T, [H], S).
+brachylog_circular_permute_counterclockwise('integer':1, [], []).
 brachylog_circular_permute_counterclockwise('integer':1, [H|T], S) :-
     append(T, [H], S).
+brachylog_circular_permute_counterclockwise('integer':1, 'integer':0, 'integer':0).
 brachylog_circular_permute_counterclockwise('integer':1, 'integer':I, 'integer':J) :-
     dif(H, 0),
     integer_value('integer':Sign:[H|T], I),
@@ -416,9 +418,11 @@ brachylog_circular_permute_clockwise('integer':1, 'string':[], 'string':[]).
 brachylog_circular_permute_clockwise('integer':1, 'string':L, 'string':S) :-
     append(T, [H], L),
     S = [H|T].
+brachylog_circular_permute_clockwise('integer':1, [], []).
 brachylog_circular_permute_clockwise('integer':1, [A|B], S) :-
     append(T, [H], [A|B]),
     S = [H|T].
+brachylog_circular_permute_clockwise('integer':1, 'integer':0, 'integer':0).
 brachylog_circular_permute_clockwise('integer':1, 'integer':I, 'integer':J) :-
     dif(H2, 0),
     integer_value('integer':Sign:[H2|T2], I),
