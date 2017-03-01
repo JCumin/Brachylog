@@ -246,6 +246,7 @@ brachylog_subset('default', Input, Output) :-
     brachylog_subset('integer':0, Input, Output).
 brachylog_subset('integer':0, 'string':S, 'string':T) :-
     brachylog_subset_recur(S, T).
+brachylog_subset('integer':0, 'integer':0, 'integer':0).
 brachylog_subset('integer':0, 'integer':I, 'integer':J) :-
     H #\= 0,
     dif(M, []),
