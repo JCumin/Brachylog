@@ -401,6 +401,46 @@ test('different_1', fail) :-
     run_from_atom('≠', [1,2,1], _).
 
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_INTEGER_DIVISION
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('integer_division_1', all(X == [3])) :-
+    run_from_atom('÷', [6,2], X).
+test('integer_division_2', all(X == [3])) :-
+    run_from_atom('÷', [7,2], X).
+test('integer_division_3', all(X == [-3])) :-
+    run_from_atom('÷', '[_6,2]', X).
+test('integer_division_1', fail) :-
+    run_from_atom('÷', '[6,0]', _).
+test('integer_division_1', all(X == [0])) :-
+    run_from_atom('÷', '[0,_42]', X).
+test('integer_division_1', all(X == [3])) :-
+    run_from_atom('÷', [6.2,2], X).
+test('integer_division_1', all(X == [2])) :-
+    run_from_atom('÷₃', 6, X).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MULTIPLY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('multiply_1', all(X == [1])) :-
+    run_from_atom('×', [], X).
+test('multiply_1', all(X == [12])) :-
+    run_from_atom('×', [6,2], X).
+test('multiply_2', all(X == [12])) :-
+    run_from_atom('×', [2,6], X).
+test('multiply_3', all(X == [-12])) :-
+    run_from_atom('×', '[_6,2]', X).
+test('multiply_4', all(X == [24])) :-
+    run_from_atom('×', [2,3,4], X).
+test('multiply_5', all(X == [0])) :-
+    run_from_atom('×', '[0,_42]', X).
+test('multiply_6', all(X == [12.4])) :-
+    run_from_atom('×', [6.2,2], X).
+test('multiply_7', all(X == [18])) :-
+    run_from_atom('×₃', 6, X).
+
+
 
 :- end_tests(predicates).
 
