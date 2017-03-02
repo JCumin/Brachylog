@@ -280,6 +280,127 @@ test('floor_8', all(X == [-124])) :-
     run_from_atom('⌋₁', '_123.45', X).
 
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_RANGE_ASCENDING
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('range_ascending_1', all(X == [[0]])) :-
+    run_from_atom('⟦', 0, X).
+test('range_ascending_2', all(X == [[0,1,2,3,4,5]])) :-
+    run_from_atom('⟦', 5, X).
+test('range_ascending_3', all(X == [[-5,-4,-3,-2,-1,0]])) :-
+    run_from_atom('⟦', '_5', X).
+test('range_ascending_4', all(X == [[1,2,3,4,5]])) :-
+    run_from_atom('⟦₁', 5, X).
+test('range_ascending_5', all(X == [[9,10,11,12,13]])) :-
+    run_from_atom('⟦₂', [9,13], X).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_RANGE_DESCENDING
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('range_descending_1', all(X == [[0]])) :-
+    run_from_atom('⟧', 0, X).
+test('range_descending_2', all(X == [[5,4,3,2,1,0]])) :-
+    run_from_atom('⟧', 5, X).
+test('range_descending_3', all(X == [[0,-1,-2,-3,-4,-5]])) :-
+    run_from_atom('⟧', '_5', X).
+test('range_descending_4', all(X == [[5,4,3,2,1]])) :-
+    run_from_atom('⟧₁', 5, X).
+test('range_descending_5', all(X == [[13,12,11,10,9]])) :-
+    run_from_atom('⟧₂', [9,13], X).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_NATURAL_INTEGER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('natural_integer_1', all(X == [0])) :-
+    run_from_atom('ℕ', 0, X).
+test('natural_integer_2', all(X == [42])) :-
+    run_from_atom('ℕ', 42, X).
+test('natural_integer_3', fail) :-
+    run_from_atom('ℕ', "test", _).
+test('natural_integer_4', fail) :-
+    run_from_atom('ℕ', '_3', _).
+test('natural_integer_5', fail) :-
+    run_from_atom('ℕ', [1,2], _).
+test('natural_integer_6', fail) :-
+    run_from_atom('ℕ', 4.2, _).
+test('natural_integer_7', all(X == [42])) :-
+    run_from_atom('ℕ₄₂', 42, X).
+test('natural_integer_8', fail) :-
+    run_from_atom('ℕ₄₂', 41, _).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_INTEGER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('integer_1', all(X == [0])) :-
+    run_from_atom('ℤ', 0, X).
+test('integer_2', all(X == [42])) :-
+    run_from_atom('ℤ', 42, X).
+test('integer_3', fail) :-
+    run_from_atom('ℤ', "test", _).
+test('integer_4', all(X == [-3])) :-
+    run_from_atom('ℤ', '_3', X).
+test('integer_5', fail) :-
+    run_from_atom('ℤ', [1,2], _).
+test('integer_6', fail) :-
+    run_from_atom('ℤ', 4.2, _).
+test('integer_7', all(X == [-42])) :-
+    run_from_atom('ℤ₄₂', '_42', X).
+test('integer_8', fail) :-
+    run_from_atom('ℤ₄₂', '_41', _).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_FLOAT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('float_1', all(X == [4.2])) :-
+    run_from_atom('ℝ', 4.2, X).
+test('float_2', all(X == [0.0])) :-
+    run_from_atom('ℝ', 0.0, X).
+test('float_3', all(X == [-4.2])) :-
+    run_from_atom('ℝ', '_4.2', X).
+test('float_4', fail) :-
+    run_from_atom('ℝ', 0, _).
+test('float_5', fail) :-
+    run_from_atom('ℝ', 42, _).
+test('float_6', all(X == [42])) :-
+    run_from_atom('ℝ₁', 42, X).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_EMPTY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('empty_1', nondet) :-
+    run_from_atom('∅', [], _).
+test('empty_2', nondet) :-
+    run_from_atom('∅', 0, _).
+test('empty_3', nondet) :-
+    run_from_atom('∅', "", _).
+test('empty_4', nondet) :-
+    run_from_atom('∅', 0.0, _).
+test('empty_5', fail) :-
+    run_from_atom('∅', [1], _).
+test('empty_6', fail) :-
+    run_from_atom('∅', 1, _).
+test('empty_7', fail) :-
+    run_from_atom('∅', "a", _).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_DIFFERENT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('different_1', all(X == [12345])) :-
+    run_from_atom('≠', 12345, X).
+test('different_1', fail) :-
+    run_from_atom('≠', 12344, _).
+test('different_1', all(X == [[1,2,3]])) :-
+    run_from_atom('≠', [1,2,3], X).
+test('different_1', fail) :-
+    run_from_atom('≠', [1,2,1], _).
+
+
 
 :- end_tests(predicates).
 
