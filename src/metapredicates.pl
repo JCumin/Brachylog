@@ -132,13 +132,13 @@ brachylog_meta_groupby('first', P, Sub, ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
-    brachylog_meta_groupby(I, P, Sub, Arg, Output).
+    brachylog_meta_groupby('integer':I, P, Sub, Arg, Output).
 brachylog_meta_groupby('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
     ;   T = Arg
     ),
-    brachylog_meta_groupby(I, P, Sub, Arg, Output).
+    brachylog_meta_groupby('integer':I, P, Sub, Arg, Output).
 brachylog_meta_groupby('default', P, Sub, Input, Output) :-
     (   is_brachylog_list(Input) -> FixedInput = Input
     ;   brachylog_elements('default', Input, FixedInput)
@@ -171,13 +171,13 @@ brachylog_meta_iterate('first', P, Sub, ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
-    brachylog_meta_iterate(I, P, Sub, Arg, Output).
+    brachylog_meta_iterate('integer':I, P, Sub, Arg, Output).
 brachylog_meta_iterate('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
     ;   T = Arg
     ),
-    brachylog_meta_iterate(I, P, Sub, Arg, Output).
+    brachylog_meta_iterate('integer':I, P, Sub, Arg, Output).
 brachylog_meta_iterate('integer':0, _, _, Input, Input).
 brachylog_meta_iterate('default', P, Sub, Input, Output) :-
     brachylog_meta_iterate('integer':1, P, Sub, Input, Output).
