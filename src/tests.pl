@@ -441,6 +441,87 @@ test('multiply_7', all(X == [18])) :-
     run_from_atom('×₃', 6, X).
 
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MODULO
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('_', all(X == [1])) :-
+    run_from_atom('%', [4,3], X).
+test('_', all(X == [0])) :-
+    run_from_atom('%', [4,2], X).
+test('_', all(X == [4])) :-
+    run_from_atom('%', [42,19], X).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_EXP
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('exp_1', all(X == [22026.465794806718])) :-
+    run_from_atom('*', 10, X).
+test('exp_2', all(X == [2.302585092994046])) :-
+    run_from_atom('*₁', 10, X).
+test('exp_3', all(X == [-0.8390715290764524])) :-
+    run_from_atom('*₂', 10, X).
+test('exp_4', all(X == [-0.5440211108893698])) :-
+    run_from_atom('*₃', 10, X).
+test('exp_5', all(X == [0.6483608274590866])) :-
+    run_from_atom('*₄', 10, X).
+test('exp_6', all(X == [1.0471975511965979])) :-
+    run_from_atom('*₅', 0.5, X).
+test('exp_7', all(X == [0.5235987755982989])) :-
+    run_from_atom('*₆', 0.5, X).
+test('exp_8', all(X == [1.4711276743037347])) :-
+    run_from_atom('*₇', 10, X).
+test('exp_9', all(X == [11013.232920103323])) :-
+    run_from_atom('*₈', 10, X).
+test('exp_10', all(X == [11013.232874703393])) :-
+    run_from_atom('*₉', 10, X).
+test('exp_11', all(X == [0.9999999958776927])) :-
+    run_from_atom('*₁₀', 10, X).
+test('exp_12', all(X == [2.993222846126381])) :-
+    run_from_atom('*₁₁', 10, X).
+test('exp_13', all(X == [2.99822295029797])) :-
+    run_from_atom('*₁₂', 10, X).
+test('exp_14', all(X == [0.5493061443340549])) :-
+    run_from_atom('*₁₃', 0.5, X).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_PLUS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('plus_1', all(X == [3])) :-
+    run_from_atom('+', [1,2], X).
+test('plus_2', all(X == [2])) :-
+    run_from_atom('+', '[_3,5]', X).
+test('plus_3', all(X == [-5])) :-
+    run_from_atom('+', '[_3,_2]', X).
+test('plus_4', all(X == [21])) :-
+    run_from_atom('+', [1,2,3,4,5,6], X).
+test('plus_5', all(X == [4.6])) :-
+    run_from_atom('+', [1.2,3.4], X).
+test('plus_6', all(X == [13])) :-
+    run_from_atom('+', [13,0,0,0,0], X).
+test('plus_7', all(X == [67])) :-
+    run_from_atom('+₄₂', 25, X).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MINUS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('minus_1', all(X == [-1])) :-
+    run_from_atom('-', [1,2], X).
+test('minus_2', all(X == [-8])) :-
+    run_from_atom('-', '[_3,5]', X).
+test('minus_3', all(X == [2])) :-
+    run_from_atom('-', '[_1,_3]', X).
+test('minus_4', all(X == [-3])) :-
+    run_from_atom('-', [1,2,3,4,5,6], X).
+test('minus_5', all(X == [-2.2])) :-
+    run_from_atom('-', [1.2,3.4], X).
+test('minus_6', all(X == [13])) :-
+    run_from_atom('-', [13,0,0,0,0], X).
+test('minus_7', all(X == [-17])) :-
+    run_from_atom('-₄₂', 25, X).
+
 
 :- end_tests(predicates).
 
