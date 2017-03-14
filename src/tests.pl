@@ -523,6 +523,120 @@ test('minus_7', all(X == [-17])) :-
     run_from_atom('-₄₂', 25, X).
 
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_DIVIDE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('divide_1', all(X == [0.5])) :-
+    run_from_atom('/', [1,2], X).
+test('divide_2', all(X == [3])) :-
+    run_from_atom('/', [6,2], X).
+test('divide_3', all(X == [-0.5])) :-
+    run_from_atom('/', '[1,_2]', X).
+test('divide_4', all(X == [0.1111111111111111])) :-
+    run_from_atom('/₁', 9, X).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_LESS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('less_1', all(X == [2])) :-
+    run_from_atom('1<2', _, X).
+test('less_2', all(X == [2])) :-
+    run_from_atom('_1<2', _, X).
+test('less_3', fail) :-
+    run_from_atom('0<0', _, _).
+test('less_4', fail) :-
+    run_from_atom('13<13', _, _).
+test('less_5', fail) :-
+    run_from_atom('_42<_42', _, _).
+test('less_6', all(X == [[1,2,3]])) :-
+    run_from_atom('[1,2,3]<₁', _, X).
+test('less_7', all(X == [[-1,0,1]])) :-
+    run_from_atom('[_1,0,1]<₁', _, X).
+test('less_8', all(X == [[-42,-23,-16]])) :-
+    run_from_atom('[_42,_23,_16]<₁', _, X).
+test('less_9', all(X == [[1,2,3]])) :-
+    run_from_atom('[1,I,3]<₁', _, X).
+test('less_10', fail) :-
+    run_from_atom('2<1', _, _).
+test('less_11', fail) :-
+    run_from_atom('2<_1', _, _).
+test('less_12', fail) :-
+    run_from_atom('[1,3,2]<₁', _, _).
+test('less_13', fail) :-
+    run_from_atom('[1,I,_1]<₁', _, _).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_EQUAL
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('equal_1', all(X == [1111])) :-
+    run_from_atom('=', 1111, X).
+test('equal_2', all(X == [[]])) :-
+    run_from_atom('=', [], X).
+test('equal_3', all(X == [0])) :-
+    run_from_atom('=', 0, X).
+test('equal_4', all(X == [[42,42,42,42]])) :-
+    run_from_atom('=', '[X,Y,42,Z]', X).
+test('equal_5', fail) :-
+    run_from_atom('=', [1,1,1,2,1], _).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_GREATER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('greater_1', all(X == [1])) :-
+    run_from_atom('2>1', _, X).
+test('greater_2', all(X == [-1])) :-
+    run_from_atom('2>_1', _, X).
+test('greater_3', fail) :-
+    run_from_atom('0>0', _, _).
+test('greater_4', fail) :-
+    run_from_atom('13>13', _, _).
+test('greater_5', fail) :-
+    run_from_atom('_42>_42', _, _).
+test('greater_6', all(X == [[3,2,1]])) :-
+    run_from_atom('[3,2,1]>₁', _, X).
+test('greater_7', all(X == [[1,0,-1]])) :-
+    run_from_atom('[1,0,_1]>₁', _, X).
+test('greater_8', all(X == [[-16,-23,-42]])) :-
+    run_from_atom('[_16,_23,_42]>₁', _, X).
+test('greater_9', all(X == [[3,2,1]])) :-
+    run_from_atom('[3,I,1]>₁', _, X).
+test('greater_10', fail) :-
+    run_from_atom('1>2', _, _).
+test('greater_11', fail) :-
+    run_from_atom('_1>2', _, _).
+test('greater_12', fail) :-
+    run_from_atom('[1,3,2]>₁', _, _).
+test('greater_13', fail) :-
+    run_from_atom('[_1,I,1]>₁', _, _).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_TRANSPOSE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('transpose_1', all(X == [[[1,4,7],[2,5,8],[3,6,9]]])) :-
+    run_from_atom('\\', [[1,2,3],[4,5,6],[7,8,9]], X).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_POWER
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+test('power_1', all(X == [8])) :-
+    run_from_atom('^', [2,3], X).
+test('power_2', all(X == [-8])) :-
+    run_from_atom('^', '[_2,3]', X).
+test('power_3', all(X == [1])) :-
+    run_from_atom('^', [1,50], X).
+test('power_4', all(X == [0])) :-
+    run_from_atom('^', [0,42], X).
+test('power_5', all(X == [1])) :-
+    run_from_atom('^', [7,0], X).
+test('power_6', all(X == [49])) :-
+    run_from_atom('^₂', 7, X).
+
+
 :- end_tests(predicates).
 
 
