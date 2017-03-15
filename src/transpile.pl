@@ -288,6 +288,8 @@ transpile_(['predicate':P:Sub:Meta:Sup,'variable':B|T], A, Reverse, Negate, Pred
     transpile_(T, B, no, no, PredNumber, [T2|OtherPredicates]).
 transpile_(['control':'∧'|T], _, _, _, PredNumber, [T2|OtherPredicates]) :-
     transpile_(T, 'nothing', no, no, PredNumber, [T2|OtherPredicates]).
+transpile_(['control':'&'|T], _, _, _, PredNumber, [T2|OtherPredicates]) :-
+    transpile_(T, 'Input', no, no, PredNumber, [T2|OtherPredicates]).
 transpile_(['control':'`'|T], B, _, _, PredNumber, [['\n    *->\n    1=1'|T2]|OtherPredicates]) :-
     transpile_(T, B, no, no, PredNumber, [T2|OtherPredicates]).    
 transpile_(['control':'∨'|T], _, _, _, PredNumber, [['\n    ;\n    1=1'|T2]|OtherPredicates]) :-
