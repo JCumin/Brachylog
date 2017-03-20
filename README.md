@@ -1,6 +1,6 @@
 <p align="center"><a href="https://github.com/JCumin/Brachylog"><img src="https://github.com/JCumin/Brachylog/blob/master/misc/brachylog_logo.png" alt="Brachylog" width="600"/></a></p>
 
-#What is it?
+# What is it?
 
 Brachylog is a declarative logic programming language much like Prolog. Brachylog is designed to be much terser than Prolog, while retaining some readability.
 
@@ -8,19 +8,19 @@ Currently in development.
 
 Brachylog uses [SWI-Prolog](http://www.swi-prolog.org/) as Prolog engine.
 
-##How do I use this?
+## How do I use this?
 
-###The language itself
+### The language itself
 
 Check out [Brachylog's Wiki](https://github.com/JCumin/Brachylog/wiki) if you want to learn how to write programs in this language.
 
 You may want to watch this [**short video introduction to Brachylog**](https://www.youtube.com/watch?v=XYVhZ-MFcUs).
 
-###Try it online!
+### Try it online!
 
 You can try out Brachylog on [Try it online!](https://tio.run/nexus/brachylog2), thanks to @DennisMitchell.
 
-###The interpreter
+### The interpreter
 
 Brachylog's interpreter is entirely written in Prolog. Therefore, installing [SWI-Prolog](http://www.swi-prolog.org/) (version 7 and up) is mandatory to use Brachylog (We do not guarantee that Brachylog's interpreter will be compatible with any other Prolog engines).
 
