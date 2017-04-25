@@ -679,11 +679,13 @@ brachylog_different('default', [], []).
 brachylog_different('default', [H|T], [H|T]) :-
     maplist(prepend_integer, L, [H|T]),
     all_distinct(L).
-brachylog_different('default', 'integer':0, 'integer':0).
 brachylog_different('default', 'integer':I, 'integer':I) :-
-    H #\= 0,
-    integer_value('integer':_:[H|T], I),
-    all_distinct([H|T]).
+    (   integer_value('integer':_:[_], I) ->
+        true
+    ;   H #\= 0,
+        integer_value('integer':_:[H,H2|T], I),
+        all_distinct([H,H2|T])
+    ).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1641,13 +1643,15 @@ brachylog_length('integer':0, [H|T], 'integer':Length) :-
     length([H|T], Length).
 brachylog_length('integer':0, 'string':S, 'integer':Length) :-
     length(S, Length).
-brachylog_length('integer':0, 'integer':0, 'integer':1).
 brachylog_length('integer':0, 'integer':I, 'integer':Length) :-
     nonvar(Length),
-    H #\= 0,
-    abs(I) #< 10^Length,
-    integer_value('integer':_:[H|T], I),
-    length([H|T], Length).
+    (   Length = 1 ->
+        I in 0..9
+    ;   H #\= 0,
+        abs(I) #< 10^Length,
+        integer_value('integer':_:[H|T], I),
+        length([H|T], Length)
+    ).
 brachylog_length('integer':0, 'integer':I, 'integer':Length) :-
     var(Length),
     H #\= 0,
