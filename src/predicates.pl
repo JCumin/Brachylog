@@ -2675,6 +2675,15 @@ brachylog_label('integer':0, 'integer':Z, 'integer':Z) :-
 brachylog_label('integer':0, Z, Z) :-
     is_brachylog_list(Z),
     maplist(brachylog_label('integer':0), Z, _).
+brachylog_label('integer':1, 'integer':Z, 'integer':Z) :-
+    get_time(T),
+    T2 is ceil(1000000 * T),
+    labeling([random_value(T2)], [Z]).
+brachylog_label('integer':1, Z, Z) :-
+    is_brachylog_list(Z),
+    get_time(T),
+    T2 is ceil(1000000 * T),
+    labeling([random_value(T2)], Z).
 
 unsafe_indomain(X) :-
     fd_inf(X, Inf0),
