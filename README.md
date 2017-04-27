@@ -37,3 +37,12 @@ You can then run Brachylog programs using different predicates:
 The first two predicates will transpile your Brachylog program into Prolog, subsequently generating a file called `compiled_brachylog.pl` in the same directory that contains `brachylog.pl`. The three run predicates will then consult it and query `brachylog_main/3`.
  
 Note that the first two run predicates also exist with either no `Output` argument, or with no `Input` nor `Output` argument, if necessary. For example, `run_from_file('code.brachylog')` is equivalent to `run_from_file('code.brachylog', _, _)`.
+
+
+### Contributors
+
+- Julien Cumin - @JCumin
+
+- Markus Triska - @triska
+
+- ais523
