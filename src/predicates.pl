@@ -752,12 +752,18 @@ brachylog_multiply('integer':S, 'float':F, 'float':G) :-
     G is S*F.
 brachylog_multiply('integer':0, [], 'integer':1).
 brachylog_multiply('integer':0, [TypeI:I|T], TypeS:Product) :-
-    brachylog_multiply('integer':0, T, TypeF:F),
     (   TypeI = 'integer',
         TypeF = 'integer',
+        (   var(I) ->
+            I #> 1,
+            F #> 0
+        ;   true
+        ),
         Product #= I * F,
-        TypeS = 'integer'
+        TypeS = 'integer',
+        brachylog_multiply('integer':0, T, TypeF:F)
     ;   TypeS = 'float',
+        brachylog_multiply('integer':0, T, TypeF:F),
         (   TypeF = 'float',
             TypeI = 'integer',
             brachylog_label('default', 'integer':I, _)
