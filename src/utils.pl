@@ -111,7 +111,7 @@ is_brachylog_list([_|_]).
    SINGLE_ATOM_CODE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 single_atom_code(A, C) :-
-    atom_codes(A, [C]).
+    catch(atom_codes(A, [C]), _, false).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
