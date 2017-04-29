@@ -24,7 +24,9 @@ You can try out Brachylog on [Try it online!](https://tio.run/nexus/brachylog2),
 
 Brachylog's interpreter is entirely written in Prolog. Therefore, installing [SWI-Prolog](http://www.swi-prolog.org/) (version 7 and up) is mandatory to use Brachylog (We do not guarantee that Brachylog's interpreter will be compatible with any other Prolog engines).
 
-To run Brachylog's interpreter, start SWI-Prolog's interpreter inside the `prolog_parser` directory available in this repository, and consult the file `brachylog.pl` (`consult(brachylog.pl).`).
+To run Brachylog's interpreter, start SWI-Prolog's interpreter inside the `src` directory available in this repository, and consult the file `brachylog.pl` (`consult(brachylog).`). Alternatively, you can run the interpreter with:
+
+    $ swipl src/brachylog.pl
 
 You can then run Brachylog programs using different predicates:
 
