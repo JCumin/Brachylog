@@ -10,7 +10,7 @@ Brachylog uses [SWI-Prolog](http://www.swi-prolog.org/) as Prolog engine.
 
 ## How do I use this?
 
-### The language itself
+### Documentation
 
 Check out [Brachylog's Wiki](https://github.com/JCumin/Brachylog/wiki) if you want to learn how to write programs in this language.
 
@@ -22,7 +22,7 @@ You can try out Brachylog on [Try it online!](https://tio.run/nexus/brachylog2),
 
 ### The interpreter
 
-Brachylog's interpreter is entirely written in Prolog. Therefore, installing [SWI-Prolog](http://www.swi-prolog.org/) (version 7 and up) is mandatory to use Brachylog (We do not guarantee that Brachylog's interpreter will be compatible with any other Prolog engines).
+Brachylog's interpreter is entirely written in Prolog. Therefore, installing [SWI-Prolog](http://www.swi-prolog.org/) (version 7 and up) is mandatory to use Brachylog (We do not guarantee that Brachylog's interpreter will be compatible with any other Prolog implementation).
 
 To run Brachylog's interpreter, start SWI-Prolog's interpreter inside the `src` directory available in this repository, and consult the file `brachylog.pl` (`consult(brachylog).`). Alternatively, you can run the interpreter with:
 
