@@ -63,12 +63,12 @@ run(Input, Output) :-
                                           max_depth(0)]),
     consult('compiled_brachylog.pl'),
     (   \+ var(Input),
-		Input \= 'ignore',
+        Input \= 'ignore',
         parse_argument(Input, ParsedInput)
     ;   true
     ),
     (   \+ var(Output),
-		Output \= 'ignore',
+        Output \= 'ignore',
         parse_argument(Output, ParsedOutput)
     ;   true
     ),
