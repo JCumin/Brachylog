@@ -678,13 +678,13 @@ brachylog_different('last', Input, Output) :-
 brachylog_different('default', [], []).
 brachylog_different('default', [H|T], [H|T]) :-
     maplist(prepend_integer, L, [H|T]),
-    all_distinct(L).
+    all_different(L).
 brachylog_different('default', 'integer':I, 'integer':I) :-
     (   integer_value('integer':_:[_], I) ->
         true
     ;   H #\= 0,
         integer_value('integer':_:[H,H2|T], I),
-        all_distinct([H,H2|T])
+        all_different([H,H2|T])
     ).
 
 
