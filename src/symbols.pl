@@ -1,4 +1,4 @@
-﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -144,9 +144,9 @@ token_variable('Ḥ', '\'string\':[\'H\',e,l,l,o,\',\',\' \',\'W\',o,r,l,d,\'!\'
 token_variable('Ị', '\'string\':[\'0\',\'1\',\'2\',\'3\',\'4\',\'5\',\'6\',\'7\',\'8\',\'9\']').
 %token_variable('', '').
 token_variable('Ḳ', '').
-token_variable('Ḷ', '').
+token_variable('Ḷ', '\'string\':[\'\n\']').
 token_variable('Ṃ', '').
-token_variable('Ṇ', '\'string\':[\'\n\']').
+token_variable('Ṇ', '\'string\':[\'A\',\'B\',\'C\',\'D\',\'E\',\'F\',\'G\',\'H\',\'I\',\'J\',\'K\',\'L\',\'M\',\'N\',\'O\',\'P\',\'Q\',\'R\',\'S\',\'T\',\'U\',\'V\',\'W\',\'X\',\'Y\',\'Z\',a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,0,1,2,3,4,5,6,7,8,9]').
 token_variable('Ọ', '').
 %token_variable('', '').
 %token_variable('', '').
