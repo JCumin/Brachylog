@@ -2654,7 +2654,7 @@ brachylog_sign('last', Input, Output) :-
     ),
     brachylog_sign('integer':I, Arg, Output).
 brachylog_sign('default', 'integer':I, 'integer':S) :-
-    (   I #= 0,
+    (   I = 0,
         S #= 0
     ;   I #\= 0,
         S in -1\/1,
