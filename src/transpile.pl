@@ -351,7 +351,7 @@ transpile_(['control':',','variable':A|T], B, _, _, AppendNumber, PredNumber, [[
                         ',',TempVar,') -> true ; brachylog_concatenate(default,',
                         '[[',Arg2,'],[',Arg1,']],',TempVar,'))'
                        ], Append),
-    NewAppendNumber #= AppendNumber + 1,
+    NewAppendNumber is AppendNumber + 1,
     transpile_(T, TempVar, no, no, NewAppendNumber, PredNumber, [T2|OtherPredicates]).
 transpile_(['control':'\n'|T], _, _, _, AppendNumber, PredNumber, [['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
     J is PredNumber + 1,

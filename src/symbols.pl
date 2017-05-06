@@ -1,4 +1,4 @@
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -122,8 +122,8 @@ token_predicate('ṅ', 'brachylog_negate').
 token_predicate('ȯ', '').
 token_predicate('ṗ', 'brachylog_prime').
 token_predicate('ṙ', 'brachylog_random_number').
-token_predicate('ṡ', 'brachylog_to_string').
-token_predicate('ṫ', '').
+token_predicate('ṡ', 'brachylog_sign').
+token_predicate('ṫ', 'brachylog_to_string').
 token_predicate('ẇ', '').
 token_predicate('ẋ', '').
 token_predicate('ẏ', '').

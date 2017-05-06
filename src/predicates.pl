@@ -90,6 +90,7 @@ ____            ____
                        brachylog_negate/3,
                        brachylog_prime/3,
                        brachylog_random_number/3,
+                       brachylog_sign/3,
                        brachylog_to_string/3,
 
                        %Label
@@ -2635,6 +2636,29 @@ brachylog_random_number(['float':I,'float':J], 'float':R) :-
     (   I =< J ->
         R is I + K*(J - I)
     ;   R is J + K*(I - J)
+    ).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_SIGN
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_sign('first', ['integer':I|Input], Output) :-
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_sign('integer':I, Arg, Output).
+brachylog_sign('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_sign('integer':I, Arg, Output).
+brachylog_sign('default', 'integer':I, 'integer':S) :-
+    (   I #= 0,
+        S #= 0
+    ;   I #\= 0,
+        S in -1\/1,
+        S #= abs(I) // I
     ).
 
 
