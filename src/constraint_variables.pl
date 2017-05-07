@@ -64,8 +64,7 @@ constraintD('integer':X) :-
     X in 0..9.
 
 
-constraintE(_) :-
-    true.
+constraintE([]).
 
 
 constraintF(_) :-

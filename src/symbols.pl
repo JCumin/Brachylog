@@ -137,7 +137,7 @@ token_variable('Ạ', '\'string\':[a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w
 token_variable('Ḅ', '\'string\':[b,c,d,f,g,h,j,k,l,m,n,p,q,r,s,t,v,w,x,y,z]').
 %token_variable('', '').
 token_variable('Ḍ', '\'string\':[b,c,d,f,g,h,j,k,l,m,n,p,q,r,s,t,v,w,x,z]').
-token_variable('Ẹ', '').
+token_variable('Ẹ', '\'string\':[]').
 %token_variable('', '').
 %token_variable('', '').
 token_variable('Ḥ', '\'string\':[\'H\',e,l,l,o,\',\',\' \',\'W\',o,r,l,d,\'!\']').
