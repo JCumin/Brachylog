@@ -1660,7 +1660,6 @@ brachylog_knife('integer':I, Input, Output) :-
     I #> 1,
     brachylog_meta_iterate('integer':I, brachylog_knife, 'integer':1, Input, Output).
 
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_LENGTH
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -1675,14 +1674,15 @@ brachylog_length('last', Input, Output) :-
     ;   T = Arg
     ),
     brachylog_length('integer':I, Arg, Output).
-brachylog_length('default', Input, Output) :-
-    brachylog_length('integer':0, Input, Output).
-brachylog_length('integer':0, [], 'integer':0).
-brachylog_length('integer':0, [H|T], 'integer':Length) :-
+brachylog_length('integer':I, Input, Input) :-
+    I #>= 0,
+    brachylog_length('default', Input, 'integer':I).
+brachylog_length('default', [], 'integer':0).
+brachylog_length('default', [H|T], 'integer':Length) :-
     length([H|T], Length).
-brachylog_length('integer':0, 'string':S, 'integer':Length) :-
+brachylog_length('default', 'string':S, 'integer':Length) :-
     length(S, Length).
-brachylog_length('integer':0, 'integer':I, 'integer':Length) :-
+brachylog_length('default', 'integer':I, 'integer':Length) :-
     nonvar(Length),
     (   Length = 1 ->
         I in 0..9
@@ -1691,13 +1691,13 @@ brachylog_length('integer':0, 'integer':I, 'integer':Length) :-
         integer_value('integer':_:[H|T], I),
         length([H|T], Length)
     ).
-brachylog_length('integer':0, 'integer':I, 'integer':Length) :-
+brachylog_length('default', 'integer':I, 'integer':Length) :-
     var(Length),
     H #\= 0,
     Length #>= 0,
     integer_value('integer':_:[H|T], I),
     length([H|T], Length).
-brachylog_length('integer':0, 'float':F, 'integer':Length) :-
+brachylog_length('default', 'float':F, 'integer':Length) :-
     nonvar(F),
     length(L, Length),
     catch(number_codes(F, L), E, (print_message(error, E), false)).
