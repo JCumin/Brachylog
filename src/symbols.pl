@@ -115,7 +115,7 @@ token_predicate('ċ', 'brachylog_coerce').
 token_predicate('ḋ', 'brachylog_prime_decomposition').
 token_predicate('ė', '').
 token_predicate('ḟ', 'brachylog_factorial').
-token_predicate('ġ', '').
+token_predicate('ġ', 'brachylog_groups').
 token_predicate('ḣ', '').
 token_predicate('ṁ', 'brachylog_matrix').
 token_predicate('ṅ', 'brachylog_negate').
