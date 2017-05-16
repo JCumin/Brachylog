@@ -87,6 +87,7 @@ ____            ____
                        brachylog_coerce/3,
                        brachylog_prime_decomposition/3,
                        brachylog_factorial/3,
+                       brachylog_groups/3,
                        brachylog_matrix/3,
                        brachylog_negate/3,
                        brachylog_prime/3,
@@ -2567,6 +2568,51 @@ brachylog_factorial_(N, I, N0, F) :-
             )
         )
     ).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_GROUPS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_groups('first', ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_groups('integer':I, Arg, Output).
+brachylog_groups('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_groups('integer':I, Arg, Output).
+brachylog_groups('default', Input, Output) :-
+    I in 1..sup,
+    brachylog_groups('integer':I, Input, Output).
+brachylog_groups('integer':I, 'string':Input, Output) :-
+    brachylog_groups('integer':I, Input, S),
+    maplist(prepend_string, S, Output).
+brachylog_groups('integer':I, 'integer':Input, Output) :-
+    H #\= 0,
+    integer_value('integer':_:[H|T], Input),
+    brachylog_groups('integer':I, [H|T], S),
+    maplist(brachylog_groups_ints, S, Output).
+brachylog_groups('integer':I, Input, Output) :-
+    maplist(is_brachylog_list, [Input, Output]),
+    brachylog_groups(I, [], Input, Output).
+
+brachylog_groups(_, [H|T], [], [RL]) :- 
+    reverse([H|T], RL).
+brachylog_groups(I, L, Input, [RL|T2]) :-
+    length(L, I),
+    reverse(L, RL),
+    brachylog_groups(I, [], Input, T2).
+brachylog_groups(I, L, [H|T], Output) :-
+    J #< I,
+    J #>= 0,
+    length(L, J),
+    brachylog_groups(I, [H|L], T, Output).
+
+brachylog_groups_ints(I, 'integer':O) :-
+    integer_value('integer':'positive':I, O).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
