@@ -117,7 +117,7 @@ token_predicate('ė', '').
 token_predicate('ḟ', 'brachylog_factorial').
 token_predicate('ġ', '').
 token_predicate('ḣ', '').
-token_predicate('ṁ', '').
+token_predicate('ṁ', 'brachylog_matrix').
 token_predicate('ṅ', 'brachylog_negate').
 token_predicate('ȯ', '').
 token_predicate('ṗ', 'brachylog_prime').
