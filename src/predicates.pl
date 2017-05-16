@@ -87,6 +87,7 @@ ____            ____
                        brachylog_coerce/3,
                        brachylog_prime_decomposition/3,
                        brachylog_factorial/3,
+                       brachylog_matrix/3,
                        brachylog_negate/3,
                        brachylog_prime/3,
                        brachylog_random_number/3,
@@ -2566,6 +2567,28 @@ brachylog_factorial_(N, I, N0, F) :-
             )
         )
     ).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_MATRIX
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_matrix('first', ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_matrix('integer':I, Arg, Output).
+brachylog_matrix('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_matrix('integer':I, Arg, Output).
+brachylog_matrix('default', M, M) :-
+    L in 0..sup,
+    brachylog_matrix('integer':L, M, M).
+brachylog_matrix('integer':L, M, M) :-
+    length(M, L),
+    maplist(length_(L), M).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
