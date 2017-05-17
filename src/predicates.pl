@@ -1696,10 +1696,11 @@ brachylog_length('default', [H|T], 'integer':Length) :-
     length([H|T], Length).
 brachylog_length('default', 'string':S, 'integer':Length) :-
     length(S, Length).
+brachylog_length('default','integer':0, 'integer':1).
 brachylog_length('default', 'integer':I, 'integer':Length) :-
     nonvar(Length),
     (   Length = 1 ->
-        I in 0..9
+        I in 1..9
     ;   H #\= 0,
         abs(I) #< 10^Length,
         integer_value('integer':_:[H|T], I),
