@@ -217,4 +217,4 @@ token_metapredicate('ᵛ', '').
 token_metapredicate('ʷ', '').
 token_metapredicate('ˣ', '').
 token_metapredicate('ʸ', '').
-token_metapredicate('ᶻ', '').
+token_metapredicate('ᶻ', 'brachylog_meta_zip').

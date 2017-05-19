@@ -23,7 +23,8 @@ ____            ____
                            brachylog_meta_map/5,
                            brachylog_meta_orderby/5,
                            brachylog_meta_select/5,
-                           brachylog_meta_unique/5
+                           brachylog_meta_unique/5,
+                           brachylog_meta_zip/5
                           ]).
 
 :- use_module(library(clpfd)).
@@ -394,3 +395,32 @@ brachylog_meta_unique('integer':I, P, Sub, Input, Output) :-
     between(I, infinite, J),
     setof(X, call_firstn(call(P, Sub, Input, X), J), Output),
     !.
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_ZIP
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_zip('first', P, Sub, ['integer':I|Input], Output) :-
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_zip('integer':I, P, Sub, Arg, Output).
+brachylog_meta_zip('last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_zip('integer':I, P, Sub, Arg, Output).
+brachylog_meta_zip('default', P, Sub, Arg, Output) :-
+    brachylog_meta_map('default', P, Sub, Arg, O),
+    brachylog_zip('default', [Arg,O], Output).
+brachylog_meta_zip('integer':0, P, Sub, Arg, Output) :-
+    brachylog_meta_find('default', P, Sub, Arg, O),
+    brachylog_zip('default', [Arg,O], Output).
+brachylog_meta_zip('integer':1, P, Sub, Arg, Output) :-
+    brachylog_meta_map('default', P, Sub, Arg, O),
+    brachylog_zip('default', [O,Arg], Output).
+brachylog_meta_zip('integer':2, P, Sub, Arg, Output) :-
+    brachylog_meta_find('default', P, Sub, Arg, O),
+    brachylog_zip('default', [O,Arg], Output).
+
