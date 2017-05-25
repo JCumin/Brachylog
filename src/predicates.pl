@@ -1588,7 +1588,6 @@ brachylog_juxtapose('last', Input, Output) :-
     ;   T = Arg
     ),
     brachylog_juxtapose('integer':I, Arg, Output).
-brachylog_juxtapose('integer':0, Input, Input).
 brachylog_juxtapose('default', Input, Output) :-
     brachylog_juxtapose('integer':2, Input, Output).
 brachylog_juxtapose('integer':_, [], []).
