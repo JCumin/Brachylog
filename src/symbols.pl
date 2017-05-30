@@ -196,7 +196,7 @@ token_variable('φ', '\'float\':1.61803398875').
 token_metapredicate('ᵃ', 'brachylog_meta_accumulate').
 token_metapredicate('ᵇ', '').
 token_metapredicate('ᶜ', 'brachylog_meta_count').
-token_metapredicate('ᵈ', '').
+token_metapredicate('ᵈ', 'brachylog_meta_declare').
 token_metapredicate('ᵉ', '').
 token_metapredicate('ᶠ', 'brachylog_meta_find').
 token_metapredicate('ᵍ', 'brachylog_meta_groupby').
