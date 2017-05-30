@@ -16,6 +16,7 @@ ____            ____
 
 :- module(metapredicates, [brachylog_meta_accumulate/5,
                            brachylog_meta_count/5,
+                           brachylog_meta_declare/5
                            brachylog_meta_find/5,
                            brachylog_meta_groupby/5,
                            brachylog_meta_iterate/5,
@@ -86,7 +87,31 @@ brachylog_meta_count('integer':1, P, Sub, Input, Output) :-
     brachylog_meta_unique('default', P, Sub, Input, E),
     brachylog_length('default', E, Output).
 
-    
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_DECLARE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_declare('first', P, Sub, ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_declare('integer':I, P, Sub, Arg, Output).
+brachylog_meta_declare('last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_declare('integer':I, P, Sub, Arg, Output).
+brachylog_meta_declare('default', P, Sub, [H,T], T) :-
+    call(P, Sub, H, T).
+brachylog_meta_declare('integer':0, P, Sub, [H,T], [H,T]) :-
+    call(P, Sub, H, T).
+brachylog_meta_declare('integer':1, P, Sub, [H,T], H) :-
+    call(P, Sub, T, H).
+brachylog_meta_declare('integer':2, P, Sub, [H,T], [H,T]) :-
+    call(P, Sub, T, H).
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_FIND
    
