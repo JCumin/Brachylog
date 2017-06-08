@@ -124,12 +124,12 @@ brachylog_lessequal('default', Input, Output) :-
 brachylog_lessequal('integer':0, 'integer':I1, 'integer':I2) :-
     I1 #=< I2.
 brachylog_lessequal('integer':0, 'float':I1, 'integer':I2) :-
-    brachylog_label('default', 'integer':I2, _),
     nonvar(I1),
+    brachylog_label('default', 'integer':I2, _),
     I1 =< I2.
 brachylog_lessequal('integer':0, 'integer':I1, 'float':I2) :-
-    brachylog_label('default', 'integer':I1, _),
     nonvar(I2),
+    brachylog_label('default', 'integer':I1, _),
     I1 =< I2.
 brachylog_lessequal('integer':0, 'float':I1, 'float':I2) :-
     nonvar(I1),
@@ -161,12 +161,12 @@ brachylog_greaterequal('default', Input, Output) :-
 brachylog_greaterequal('integer':0, 'integer':I1, 'integer':I2) :-
     I1 #>= I2.
 brachylog_greaterequal('integer':0, 'float':I1, 'integer':I2) :-
-    brachylog_label('default', 'integer':I2, _),
     nonvar(I1),
+    brachylog_label('default', 'integer':I2, _),
     I1 >= I2.
 brachylog_greaterequal('integer':0, 'integer':I1, 'float':I2) :-
-    brachylog_label('default', 'integer':I1, _),
     nonvar(I2),
+    brachylog_label('default', 'integer':I1, _),
     I1 >= I2.
 brachylog_greaterequal('integer':0, 'float':I1, 'float':I2) :-
     nonvar(I1),
@@ -1108,12 +1108,12 @@ brachylog_less('default', Input, Output) :-
 brachylog_less('integer':0, 'integer':I1, 'integer':I2) :-
     I1 #< I2.
 brachylog_less('integer':0, 'float':I1, 'integer':I2) :-
-    brachylog_label('default', 'integer':I2, _),
     nonvar(I1),
+    brachylog_label('default', 'integer':I2, _),
     I1 < I2.
 brachylog_less('integer':0, 'integer':I1, 'float':I2) :-
-    brachylog_label('default', 'integer':I1, _),
     nonvar(I2),
+    brachylog_label('default', 'integer':I1, _),
     I1 < I2.
 brachylog_less('integer':0, 'float':I1, 'float':I2) :-
     nonvar(I1),
@@ -1173,12 +1173,12 @@ brachylog_greater('default', Input, Output) :-
 brachylog_greater('integer':0, 'integer':I1, 'integer':I2) :-
     I1 #> I2.
 brachylog_greater('integer':0, 'float':I1, 'integer':I2) :-
-    brachylog_label('default', 'integer':I2, _),
     nonvar(I1),
+    brachylog_label('default', 'integer':I2, _),
     I1 > I2.
 brachylog_greater('integer':0, 'integer':I1, 'float':I2) :-
-    brachylog_label('default', 'integer':I1, _),
     nonvar(I2),
+    brachylog_label('default', 'integer':I1, _),
     I1 > I2.
 brachylog_greater('integer':0, 'float':I1, 'float':I2) :-
     nonvar(I1),
