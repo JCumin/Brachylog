@@ -2006,15 +2006,23 @@ brachylog_zip('last', Input, Output) :-
     ;   T = Arg
     ),
     brachylog_zip('integer':I, Arg, Output).
-brachylog_zip('default', Input, Output) :-
-    brachylog_zip('integer':0, Input, Output).
-brachylog_zip('integer':0, L,Z) :-
+brachylog_zip('default', L,Z) :-
     is_brachylog_list(L),
     maplist(brachylog_length('default'), L, Lengths),
     brachylog_order('default', Lengths, OrderedLengths),
     reverse(OrderedLengths, ['integer':MaxLength|_]),
     maplist(brachylog_zip_listify_integer, L, L2),
     brachylog_zip_(L2, MaxLength, Z).
+brachylog_zip('integer':0, L, Z) :-
+    is_brachylog_list(L),
+    maplist(brachylog_length('default'), L, Lengths),
+    brachylog_order('default', Lengths, ['integer':MinLength|_]),
+    maplist(brachylog_zip_listify_integer, L, L2),
+    brachylog_zip_(L2, MinLength, Z).
+brachylog_zip('integer':1, L, Z) :-
+    is_brachylog_list(L),
+    maplist(brachylog_zip_listify_integer, L, L2),
+    brachylog_zip_no_cycling(L2, Z).
     
 brachylog_zip_(_, 0, []).
 brachylog_zip_(L, I, [Heads|Z]) :-
@@ -2023,6 +2031,15 @@ brachylog_zip_(L, I, [Heads|Z]) :-
     maplist(brachylog_circular_permute_counterclockwise('default'), L, Tails),
     J #= I - 1,
     brachylog_zip_(Tails, J, Z).
+
+brachylog_zip_no_cycling([H|T], Z) :-
+    brachylog_meta_select('default', brachylog_head, 'default', [H|T], Heads),
+    (   Heads = [] ->
+        Z = []
+    ;   Z = [Heads|Z2],
+        brachylog_meta_select('default', brachylog_behead, 'default', [H|T], Tails),
+        brachylog_zip_no_cycling(Tails, Z2)
+    ).
 
 brachylog_zip_listify_integer(L, L) :-
     L \= 'integer':_.
