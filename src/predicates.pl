@@ -1226,6 +1226,15 @@ brachylog_transpose('default', Input, Output) :-
     brachylog_transpose('integer':0, Input, Output).
 brachylog_transpose('integer':0, Input, Output) :-
     is_brachylog_list(Input),
+    member(X, Input),
+    is_list(X),
+    !,
+    maplist(is_brachylog_list, Input),
+    length(X, LX),
+    length(Input, LI),
+    brachylog_juxtapose('integer':LI, ['integer':LX], Lengths),
+    maplist(brachylog_length('default'), Input, Lengths),
+    brachylog_equal('default', Lengths, _),
     transpose(Input, Output).
 
 
