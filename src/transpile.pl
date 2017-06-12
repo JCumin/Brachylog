@@ -276,14 +276,12 @@ transpile_(['predicate':P:Sub:Meta:Sup,'variable':B|T], A, Reverse, Negate, Appe
         NegateAtom = ''
     ),
     (   Reverse = no ->
-        Arg1 = Var1,
-        Arg2 = Var2
-    ;   Arg1 = Var2,
-        Arg2 = Var1
+        PredName = P
+    ;   atomic_list_concat([P,'_reversed'], PredName)
     ),
     (   Meta = no ->
-        atomic_list_concat([',\n    ',NegateAtom,P,'(',Sub,',',Arg1,',',Arg2,')'], Predicate)
-    ;   atomic_list_concat([',\n    ',NegateAtom,Meta,'(',Sup,',',P,',',Sub,',',Arg1,',',Arg2,')'], Predicate)
+        atomic_list_concat([',\n    ',NegateAtom,PredName,'(',Sub,',',Var1,',',Var2,')'], Predicate)
+    ;   atomic_list_concat([',\n    ',NegateAtom,Meta,'(',Sup,',',PredName,',',Sub,',',Var1,',',Var2,')'], Predicate)
     ),
     transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).
 transpile_(['control':'∧'|T], _, _, _, AppendNumber, PredNumber, [T2|OtherPredicates]) :-
