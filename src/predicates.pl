@@ -1420,7 +1420,6 @@ brachylog_concatenate('integer':0, [H|T],L) :-
         L = 'integer':0
     ;   Integers = 'yes',
         List = [J|TList],
-        J #\= 0,
         integer_value('integer':'positive':[J|TList], I),
         L = 'integer':I
     ;   Integers = 'no'
