@@ -325,7 +325,10 @@ brachylog_meta_orderby('integer':0, P, Sub, Input, Output) :-
     brachylog_meta_map('default', P, Sub, FixedInput, L),
     brachylog_zip('default', [L,Input], L2),
     msort(L2, SL2),
-    brachylog_zip('default', SL2, [_,Output]).
+    (   SL2 = [] ->
+        Output = []
+    ;   brachylog_zip('default', SL2, [_,Output])
+    ).
 brachylog_meta_orderby('integer':1, P, Sub, Input, Output) :-
     (   is_brachylog_list(Input) -> FixedInput = Input
     ;   brachylog_elements('default', Input, FixedInput)
@@ -334,7 +337,10 @@ brachylog_meta_orderby('integer':1, P, Sub, Input, Output) :-
     brachylog_zip('default', [L,Input], L2),
     msort(L2, RSL2),
     reverse(RSL2, SL2),
-    brachylog_zip('default', SL2, [_,Output]).
+    (   SL2 = [] ->
+        Output = []
+    ;   brachylog_zip('default', SL2, [_,Output])
+    ).
 brachylog_meta_orderby('integer':2, P, Sub, Input, Output) :-
     (   is_brachylog_list(Input) -> FixedInput = Input
     ;   brachylog_elements('default', Input, FixedInput)
