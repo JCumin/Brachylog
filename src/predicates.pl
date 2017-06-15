@@ -56,6 +56,7 @@ ____            ____
                        brachylog_factors/3,                             brachylog_factors_reversed/3,
                        brachylog_group/3,                               brachylog_group_reversed/3,
                        brachylog_head/3,                                brachylog_head_reversed/3,
+                       brachylog_index/3,                               brachylog_index_reversed/3,
                        brachylog_juxtapose/3,                           brachylog_juxtapose_reversed/3,
                        brachylog_knife/3,                               brachylog_knife_reversed/3,
                        brachylog_length/3,                              brachylog_length_reversed/3,
@@ -1613,6 +1614,29 @@ brachylog_head_float([H|T], 'integer':I) :-
         H \= 46,
         number_codes(I, [H])    
     ).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_INDEX
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_index_reversed(S, I, O) :-
+    brachylog_index(S, I, O).
+brachylog_index('first', ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_index('integer':I, Arg, Output).
+brachylog_index('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_index('integer':I, Arg, Output).
+brachylog_index('default', Input, [E,'integer':I]) :-
+    brachylog_in('integer':I, Input, E).
+brachylog_index('integer':1, Input, [E,'integer':J]) :-
+    J #= I + 1,
+    brachylog_in('integer':I, Input, E).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
