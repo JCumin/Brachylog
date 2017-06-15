@@ -70,7 +70,7 @@ token_predicate('e', '').
 token_predicate('f', 'brachylog_factors').
 token_predicate('g', 'brachylog_group').
 token_predicate('h', 'brachylog_head').
-token_predicate('i', '').
+token_predicate('i', 'brachylog_index').
 token_predicate('j', 'brachylog_juxtapose').
 token_predicate('k', 'brachylog_knife').
 token_predicate('l', 'brachylog_length').
