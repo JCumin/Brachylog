@@ -1276,7 +1276,9 @@ brachylog_power('integer':S, 'integer':I, 'integer':J) :-
     S #> 0,
     J #= I^S.
 brachylog_power('integer':S, 'float':I, 'float':J) :-
+    nonvar(I),
     S #> 0,
+    brachylog_label('default', 'integer':S, _),
     J is I^S.
 
 
