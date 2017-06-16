@@ -351,7 +351,7 @@ transpile_(['control':',','variable':A|T], B, _, _, AppendNumber, PredNumber, [[
                        ], Append),
     NewAppendNumber is AppendNumber + 1,
     transpile_(T, TempVar, no, no, NewAppendNumber, PredNumber, [T2|OtherPredicates]).
-transpile_(['control':'\n'|T], _, _, _, AppendNumber, PredNumber, [['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
+transpile_(['control':'\n'|T], _, _, _, AppendNumber, PredNumber, [['\n    ).\n'],[ReversedPred],[PredHead|T2]|OtherPredicates]) :-
     J is PredNumber + 1,
     constraint_variables(ConstraintVariables),
     atomic_list_concat(['brachylog_predicate_',
@@ -359,8 +359,8 @@ transpile_(['control':'\n'|T], _, _, _, AppendNumber, PredNumber, [['\n    ).\n'
                         '_reversed(_, Input, Output) :-\n',
                         '    brachylog_predicate_',
                         J,
-                        '(_, Output, Input).\n',
-                        'brachylog_predicate_',
+                        '(_, Output, Input).\n'], ReversedPred),
+    atomic_list_concat(['brachylog_predicate_',
                         J,
                         '(_, Input,Output) :-\n    Name = brachylog_predicate_',
                         J,
