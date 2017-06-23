@@ -2836,8 +2836,19 @@ check_prime(N) :-
     (   N = 2 -> 
         true
     ;   N #> 2,
-        ceiled_square_root(N, SN),
-        check_prime_1(N, SN, 2, [], [_])
+        (   % Check existence of crypto_is_prime
+            catch(crypto_is_prime(2, []),
+                  error(existence_error(procedure, crypto_is_prime/2), _),
+                  false
+            ) ->
+            crypto_is_prime(N, []),
+            % Check the old way to be theoretically sure of primeness
+            ceiled_square_root(N, SN),
+            check_prime_1(N, SN, 2, [], [_])
+        ;   % If it doesn't exist, check using the old way
+            ceiled_square_root(N, SN),
+            check_prime_1(N, SN, 2, [], [_])
+        )
     ).
 
 check_prime_1(1, _, _, L, L) :- !.
