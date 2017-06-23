@@ -397,14 +397,6 @@ brachylog_meta_select('default', P, Sub, [H|T], Output) :-
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_UNIQUE
-   
-   TODO: fix infinite loops when the subscript is bigger than the number of
-         existing answers. The between call generates infinite choice 
-         points which is bad if length(Output, I) is impossible.
-   
-   TODO: improve performance outside default mod. Right now it recomputes 
-         all answers until it finds a set of unique answers, instead of
-         keeping the ones it already found.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_meta_unique('first', P, Sub, ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
@@ -418,14 +410,25 @@ brachylog_meta_unique('last', P, Sub, Input, Output) :-
     ),
     brachylog_meta_unique('integer':I, P, Sub, Arg, Output).
 brachylog_meta_unique('default', P, Sub, Input, Output) :-
-    setof(X, call(P, Sub, Input, X), Output).
+    brachylog_meta_unique_(1, -1, P, Sub, Input, [], Output).
 brachylog_meta_unique('integer':0, _, _, _, []).
 brachylog_meta_unique('integer':I, P, Sub, Input, Output) :-
-    I #> 0,
-    length(Output, I),
-    between(I, infinite, J),
-    setof(X, call_firstn(call(P, Sub, Input, X), J), Output),
-    !.
+    brachylog_meta_unique_(1, I, P, Sub, Input, [], Output).
+
+brachylog_meta_unique_(_, 0, _, _, _, ROutput, Output) :-
+    reverse(ROutput, Output).
+brachylog_meta_unique_(Nth, J, P, Sub, Input, A, Output) :-
+    J #\= 0,
+    (   call_nth(call(P, Sub, Input, X), Nth) ->
+        (   \+ member(X, A) ->
+            M #= Nth + 1,
+            K #= J - 1,
+            brachylog_meta_unique_(M, K, P, Sub, Input, [X|A], Output)
+        ;   M #= Nth + 1,
+            brachylog_meta_unique_(M, J, P, Sub, Input, A, Output)
+        )
+    ;   reverse(A, Output)
+    ).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
