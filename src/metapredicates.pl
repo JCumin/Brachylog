@@ -132,10 +132,10 @@ brachylog_meta_find('last', P, Sub, Input, Output) :-
     brachylog_meta_find('integer':I, P, Sub, Arg, Output).
 brachylog_meta_find('integer':0, _, _, _, []).
 brachylog_meta_find('default', P, Sub, Input, Output) :-
-    findall(X, call(P, Sub, Input, X), Output).
+    bagof(X, call(P, Sub, Input, X), Output).
 brachylog_meta_find('integer':I, P, Sub, Input, Output) :-
     I #> 0,
-    findall(X, call_firstn(call(P, Sub, Input, X), I), Output).
+    bagof(X, call_firstn(call(P, Sub, Input, X), I), Output).
 
 call_firstn(Goal_0, N) :-
     N + N mod 1 >= 0,         % ensures that N >=0 and N is an integer
