@@ -35,6 +35,7 @@ ____            ____
                        brachylog_float/3,                               brachylog_float_reversed/3,
                        brachylog_empty/3,                               brachylog_empty_reversed/3,
                        brachylog_different/3,                           brachylog_different_reversed/3,
+                       brachylog_identity/3,                            brachylog_identity_reversed/3,
                        brachylog_integer_division/3,                    brachylog_integer_division_reversed/3,
                        brachylog_multiply/3,                            brachylog_multiply_reversed/3,
                        brachylog_modulo/3,                              brachylog_modulo_reversed/3,
@@ -100,7 +101,6 @@ ____            ____
                       ]).
                        
 :- use_module(library(clpfd)).
-:- use_module(library(crypto)).
 :- use_module(utils).
 
 :- multifile clpfd:run_propagator/2.
@@ -729,6 +729,14 @@ brachylog_different('default', 'integer':I, 'integer':I) :-
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_IDENTITY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_identity_reversed(S, I, O) :-
+    brachylog_identity(S, O, I).
+brachylog_identity(_, Input, Input).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_INTEGER_DIVISION
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_integer_division_reversed(S, I, O) :-
@@ -1222,6 +1230,12 @@ brachylog_transpose('last', Input, Output) :-
     brachylog_transpose('integer':I, Arg, Output).
 brachylog_transpose('default', Input, Output) :-
     brachylog_transpose('integer':0, Input, Output).
+brachylog_transpose('integer':0, 'string':Input, 'string':Output) :-
+    brachylog_split_lines('default', Input, Ls),
+    brachylog_elements('default', Ls, LLs),
+    brachylog_transpose('integer':0, LLs, CCs),
+    maplist(brachylog_concatenate('default'), CCs, Cs),
+    brachylog_split_lines('default', Output, Cs).
 brachylog_transpose('integer':0, Input, Output) :-
     is_brachylog_list(Input),
     member(X, Input),
@@ -2829,19 +2843,23 @@ clpfd:run_propagator(prime(N), MState) :-
         clpfd:update_bounds(N, ND, NPs, NL, NU, NNL, NU)
     ).
 
-:- if(current_predicate(crypto_is_prime/2)).
-probably_prime(P) :- crypto_is_prime(P, []).
-:- else.
-probably_prime(_).
-:- endif.
-
 check_prime(N) :-
     (   N = 2 -> 
         true
     ;   N #> 2,
-        probably_prime(N),
-        ceiled_square_root(N, SN),
-        check_prime_1(N, SN, 2, [], [_])
+        (   % Check existence of crypto_is_prime
+            catch(crypto_is_prime(2, []),
+                  error(existence_error(procedure, crypto_is_prime/2), _),
+                  false
+            ) ->
+            crypto_is_prime(N, []),
+            % Check the old way to be theoretically sure of primeness
+            ceiled_square_root(N, SN),
+            check_prime_1(N, SN, 2, [], [_])
+        ;   % If it doesn't exist, check using the old way
+            ceiled_square_root(N, SN),
+            check_prime_1(N, SN, 2, [], [_])
+        )
     ).
 
 check_prime_1(1, _, _, L, L) :- !.
