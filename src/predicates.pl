@@ -362,13 +362,9 @@ brachylog_call_predicate('last', Input, Output) :-
     ;   T = Arg
     ),
     brachylog_call_predicate('integer':I, Arg, Output).
-brachylog_call_predicate('default', Input, Output) :-
-    reverse(Input, [CallingPredName|RArgs]),
-    reverse(RArgs, Args),
-    (   Args = [RealArgs] -> true
-    ;   Args = RealArgs
-    ),
-    call(CallingPredName, 'integer':0, RealArgs, Output).
+brachylog_call_predicate(CallingPredName, Input, Output) :-
+    atom(CallingPredName),
+    call(CallingPredName, 'integer':0, Input, Output).
 brachylog_call_predicate('integer':I, Input, Output) :-
     reverse(Input, [_CallingPredName|RArgs]),
     reverse(RArgs, Args),
