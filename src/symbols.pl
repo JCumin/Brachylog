@@ -44,7 +44,7 @@ token_predicate('ℤ', 'brachylog_integer').
 token_predicate('ℝ', 'brachylog_float').
 token_predicate('∅', 'brachylog_empty').
 token_predicate('≠', 'brachylog_different').
-token_predicate('≡', '').
+token_predicate('≡', 'brachylog_identity').
 token_predicate('÷', 'brachylog_integer_division').
 token_predicate('×', 'brachylog_multiply').
 token_predicate('%', 'brachylog_modulo').
