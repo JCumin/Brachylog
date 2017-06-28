@@ -249,20 +249,18 @@ transpile_(['variable':B|T], 'nothing', _, _, AppendNumber, PredNumber, [T2|Othe
 transpile_(['predicate':P:Sub:Meta:Sup,'variable':B|T], A, Reverse, Negate, AppendNumber, PredNumber, [[Predicate|T2]|OtherPredicates]) :-
     A \= 'nothing',
     (   P = 'brachylog_call_predicate',
-        (   is_list(A),
-            reverse(A, RA)
-        ;   RA = [A]
-        ),
-        A3 = ['Name'|RA],
-        reverse(A3, A2)
+        (   Sub = 'default' ->
+            RealSub = 'Name'
+        ;   RealSub = Sub
+        )
     ;   P \= 'brachylog_call_predicate',
-        A2 = A
+        RealSub = Sub
     ),
-    (   is_list(A2),
-        brachylog_list_to_atom(A2, Var1)
-    ;   A2 = Type:L,
+    (   is_list(A),
+        brachylog_list_to_atom(A, Var1)
+    ;   A = Type:L,
         term_to_atom(Type:L, Var1)
-    ;   A2 = Var1
+    ;   A = Var1
     ),
     (   is_list(B),
         brachylog_list_to_atom(B, Var2)
@@ -280,8 +278,8 @@ transpile_(['predicate':P:Sub:Meta:Sup,'variable':B|T], A, Reverse, Negate, Appe
     ;   atomic_list_concat([P,'_reversed'], PredName)
     ),
     (   Meta = no ->
-        atomic_list_concat([',\n    ',NegateAtom,PredName,'(',Sub,',',Var1,',',Var2,')'], Predicate)
-    ;   atomic_list_concat([',\n    ',NegateAtom,Meta,'(',Sup,',',PredName,',',Sub,',',Var1,',',Var2,')'], Predicate)
+        atomic_list_concat([',\n    ',NegateAtom,PredName,'(',RealSub,',',Var1,',',Var2,')'], Predicate)
+    ;   atomic_list_concat([',\n    ',NegateAtom,Meta,'(',Sup,',',PredName,',',RealSub,',',Var1,',',Var2,')'], Predicate)
     ),
     transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).
 transpile_(['control':'∧'|T], _, _, _, AppendNumber, PredNumber, [T2|OtherPredicates]) :-
