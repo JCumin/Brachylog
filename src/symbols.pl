@@ -31,8 +31,6 @@ token_predicate('⊆', 'brachylog_superset').
 token_predicate('⊇', 'brachylog_subset').
 token_predicate('↔', 'brachylog_reverse').
 token_predicate('↕', '').
-token_predicate('↑', '').
-token_predicate('↓', '').
 token_predicate('↰', 'brachylog_call_predicate').
 token_predicate('↺', 'brachylog_circular_permute_counterclockwise').
 token_predicate('↻', 'brachylog_circular_permute_clockwise').
