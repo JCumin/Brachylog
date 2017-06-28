@@ -1,4 +1,4 @@
-﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -40,7 +40,8 @@ parse_no_file(Code, Predicates) :-
     fix_predicates(Tokens, FixedPredicates),
     fix_metapredicates(FixedPredicates, FixedMetapredicates),
     fill_implicit_variables(FixedMetapredicates, FilledTokens),
-    fix_lists(FilledTokens, Program),
+    fix_lists(FilledTokens, FixedLists),
+    fix_forks(FixedLists, Program),
     transpile(Program, Predicates),
     !.
     
@@ -76,17 +77,20 @@ append_trailing_output(['control':'\n'|T], ['variable':'Output','control':'\n'|T
     append_trailing_output(T, T2).
 append_trailing_output(['control':'}'|T], ['variable':'Output','control':'}'|T2]) :-
     append_trailing_output(T, T2).
+append_trailing_output(['control':'⟩'|T], ['variable':'Output','control':'⟩'|T2]) :-
+    append_trailing_output(T, T2).
 append_trailing_output(['control':'|'|T], ['variable':'Output','control':'|'|T2]) :-
     append_trailing_output(T, T2).
 append_trailing_output([H|T], [H|T2]) :-
     H \= 'control':'\n',
     H \= 'control':'}',
+    H \= 'control':'⟩',
     H \= 'control':'|',
     append_trailing_output(T, T2).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   FIX_PREDICATES
+   FIX_PREDICATES'⟨', '⟩'
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 fix_predicates(Tokens, FixedPredicates) :-
     fix_predicates(Tokens, 1, L),
@@ -99,12 +103,20 @@ fix_predicates(['control':'{'|T], I, [['predicate':PredName:0|Rest], ['control':
     fix_predicates_(T, J, [Predicate|OtherPredicates1], Z, Remaining),
     fix_predicates(Remaining, Z, [Rest|OtherPredicates2]),
     append(OtherPredicates1, OtherPredicates2, AllOtherPredicates).
+fix_predicates(['control':'⟨'|T], I, [['predicate':PredName:0|Rest], ['control':'\n','fork':'start'|Predicate]|AllOtherPredicates]) :-
+    atomic_list_concat(['brachylog_predicate_',I], PredName),
+    J is I + 1,
+    fix_predicates_(T, J, [Predicate|OtherPredicates1], Z, Remaining),
+    fix_predicates(Remaining, Z, [Rest|OtherPredicates2]),
+    append(OtherPredicates1, OtherPredicates2, AllOtherPredicates).
 fix_predicates(['control':'\n'|T], I, [[],['control':'\n'|Rest]|OtherPredicates]) :-
     J is I + 1,
     fix_predicates(T, J, [Rest|OtherPredicates]).
 fix_predicates([Type:A|T], I, [[Type:A|Rest]|OtherPredicates]) :-
     \+ (Type = 'control', A = '{'),
     \+ (Type = 'control', A = '}'),
+    \+ (Type = 'control', A = '⟨'),
+    \+ (Type = 'control', A = '⟩'),
     \+ (Type = 'control', A = '\n'),
     fix_predicates(T, I, [Rest|OtherPredicates]).
     
@@ -115,10 +127,19 @@ fix_predicates_(['control':'{'|T], I, [['predicate':PredName:0|Rest], ['control'
     fix_predicates_(T, J, [Predicate|OtherPredicates1], Z2, Remaining2),
     fix_predicates_(Remaining2, Z2, [Rest|OtherPredicates2], Z, Remaining),
     append(OtherPredicates1, OtherPredicates2, AllOtherPredicates).
+fix_predicates_(['control':'⟨'|T], I, [['predicate':PredName:0|Rest], ['control':'\n','fork':'start'|Predicate]|AllOtherPredicates], Z, Remaining) :-
+    atomic_list_concat(['brachylog_predicate_',I], PredName),
+    J is I + 1,
+    fix_predicates_(T, J, [Predicate|OtherPredicates1], Z2, Remaining2),
+    fix_predicates_(Remaining2, Z2, [Rest|OtherPredicates2], Z, Remaining),
+    append(OtherPredicates1, OtherPredicates2, AllOtherPredicates).
 fix_predicates_(['control':'}'|T], I, [[]], I, T).
+fix_predicates_(['control':'⟩'|T], I, [['fork':'end']], I, T).
 fix_predicates_([Type:A|T], I, [[Type:A|Rest]|OtherPredicates], Z, Remaining) :-
     \+ (Type = 'control', A = '{'),
     \+ (Type = 'control', A = '}'),
+    \+ (Type = 'control', A = '⟨'),
+    \+ (Type = 'control', A = '⟩'),
     \+ (Type = 'control', A = '\n'),
     fix_predicates_(T, I, [Rest|OtherPredicates], Z, Remaining).
 
@@ -198,7 +219,25 @@ fix_list([X|T], [Y|T2]) :-
     ;   Y = X
     ),
     fix_list(T, T2).
-    
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   FIX_FORKS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+fix_forks(L, Z) :-
+    fix_forks(L, 0, Z).
+
+fix_forks([], _, []).     % Ignore each useless implicit var after
+fix_forks(['fork':'start', F1, _, F2, _, F3, Output, 'fork':'end'|T], I, ['control':'&',F1,'variable':V1,'control':'&',F3,'variable':V2,'control':'∧','variable':V1,'control':';','variable':V2,F2,Output|T2]) :-
+    atom_concat('Fork', I, V1),
+    J is I + 1,
+    atom_concat('Fork', J, V2),
+    K is I + 1,
+    fix_forks(T, K, T2).
+fix_forks([H|T], I, [H|T2]) :-
+    dif(H, 'fork':'start'),
+    fix_forks(T, I, T2).
+
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    TRANSPILE
