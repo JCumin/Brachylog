@@ -2843,23 +2843,19 @@ clpfd:run_propagator(prime(N), MState) :-
         clpfd:update_bounds(N, ND, NPs, NL, NU, NNL, NU)
     ).
 
+:- if(current_predicate(crypto_is_prime/2)).
+probably_prime(P) :- crypto_is_prime(P, []).
+:- else.
+probably_prime(_).
+:- endif.
+
 check_prime(N) :-
     (   N = 2 -> 
         true
     ;   N #> 2,
-        (   % Check existence of crypto_is_prime
-            catch(crypto_is_prime(2, []),
-                  error(existence_error(procedure, crypto_is_prime/2), _),
-                  false
-            ) ->
-            crypto_is_prime(N, []),
-            % Check the old way to be theoretically sure of primeness
-            ceiled_square_root(N, SN),
-            check_prime_1(N, SN, 2, [], [_])
-        ;   % If it doesn't exist, check using the old way
-            ceiled_square_root(N, SN),
-            check_prime_1(N, SN, 2, [], [_])
-        )
+        probably_prime(N),
+        ceiled_square_root(N, SN),
+        check_prime_1(N, SN, 2, [], [_])
     ).
 
 check_prime_1(1, _, _, L, L) :- !.
@@ -2881,7 +2877,7 @@ check_prime_2(N, SN, D, L, LF) :-
             LF = [N|L]
         ;   check_prime_2(N, SN, D1, L, LF)
         )
-    ).
+).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
