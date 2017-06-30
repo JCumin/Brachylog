@@ -1266,29 +1266,25 @@ brachylog_power('last', Input, Output) :-
     ;   T = Arg
     ),
     brachylog_power('integer':I, Arg, Output).
-brachylog_power('default', Input, Output) :-
-    brachylog_power('integer':0, Input, Output).
-brachylog_power('integer':0, [], 'integer':1).
-brachylog_power('integer':0, ['integer':I1,'integer':I2], 'integer':Power) :-
+brachylog_power('default', [], 'integer':1).
+brachylog_power('default', ['integer':I1,'integer':I2], 'integer':Power) :-
     Power #= I1 ^ I2.
-brachylog_power('integer':0, ['float':I1,'integer':I2], 'float':Power) :-
+brachylog_power('default', ['float':I1,'integer':I2], 'float':Power) :-
     brachylog_label('default', 'integer':I2, _),
     nonvar(I1),
     Power is I1 ^ I2.
-brachylog_power('integer':0, ['integer':I1,'float':I2], 'float':Power) :-
+brachylog_power('default', ['integer':I1,'float':I2], 'float':Power) :-
     brachylog_label('default', 'integer':I1, _),
     nonvar(I2),
     Power is I1 ^ I2.
-brachylog_power('integer':0, ['float':I1,'float':I2], 'float':Power) :-
+brachylog_power('default', ['float':I1,'float':I2], 'float':Power) :-
     nonvar(I1),
     nonvar(I2),
     Power is I1 ^ I2.
 brachylog_power('integer':S, 'integer':I, 'integer':J) :-
-    S #> 0,
     J #= I^S.
 brachylog_power('integer':S, 'float':I, 'float':J) :-
     nonvar(I),
-    S #> 0,
     brachylog_label('default', 'integer':S, _),
     J is I^S.
 
