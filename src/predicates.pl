@@ -2939,6 +2939,12 @@ brachylog_sign('default', 'integer':I, 'integer':S) :-
         S in -1\/1,
         S #= abs(I) // I
     ).
+brachylog_sign('default', 'float':F, 'integer':S) :-
+    nonvar(F),
+    (   F =:= 0.0 -> S = 0
+    ;   F > 0.0 -> S = 1
+    ;   F < 0.0 -> S = -1
+    ).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
