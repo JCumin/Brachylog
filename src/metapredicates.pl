@@ -15,6 +15,7 @@ ____            ____
 
 
 :- module(metapredicates, [brachylog_meta_accumulate/5,
+                           brachylog_meta_bagof/5,
                            brachylog_meta_count/5,
                            brachylog_meta_declare/5,
                            brachylog_meta_find/5,
@@ -62,6 +63,28 @@ brachylog_meta_accumulate('integer':I, P, Sub, Input, Output) :-
     J #= I - 1,
     append(Input, [E], F),
     brachylog_meta_accumulate('integer':J, P, Sub, F, Output).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_BAGOF
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_bagof('first', P, Sub, ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_bagof('integer':I, P, Sub, Arg, Output).
+brachylog_meta_bagof('last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_bagof('integer':I, P, Sub, Arg, Output).
+brachylog_meta_bagof('integer':0, _, _, _, []).
+brachylog_meta_bagof('default', P, Sub, Input, Output) :-
+    bagof(X, call(P, Sub, Input, X), Output).
+brachylog_meta_bagof('integer':I, P, Sub, Input, Output) :-
+    I #> 0,
+    bagof(X, call_firstn(call(P, Sub, Input, X), I), Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,10 +155,10 @@ brachylog_meta_find('last', P, Sub, Input, Output) :-
     brachylog_meta_find('integer':I, P, Sub, Arg, Output).
 brachylog_meta_find('integer':0, _, _, _, []).
 brachylog_meta_find('default', P, Sub, Input, Output) :-
-    bagof(X, call(P, Sub, Input, X), Output).
+    findall(X, call(P, Sub, Input, X), Output).
 brachylog_meta_find('integer':I, P, Sub, Input, Output) :-
     I #> 0,
-    bagof(X, call_firstn(call(P, Sub, Input, X), I), Output).
+    findall(X, call_firstn(call(P, Sub, Input, X), I), Output).
 
 call_firstn(Goal_0, N) :-
     N + N mod 1 >= 0,         % ensures that N >=0 and N is an integer
