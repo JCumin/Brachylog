@@ -795,16 +795,13 @@ brachylog_multiply('last', Input, Output) :-
     ;   T = Arg
     ),
     brachylog_multiply('integer':I, Arg, Output).
-brachylog_multiply('default', Input, Output) :-
-    brachylog_multiply('integer':0, Input, Output).
 brachylog_multiply('integer':S, 'integer':I, 'integer':J) :-
-    S #> 0,
     J #= S*I.
 brachylog_multiply('integer':S, 'float':F, 'float':G) :-
-    S #> 0,
+    nonvar(F),
     G is S*F.
-brachylog_multiply('integer':0, [], 'integer':1).
-brachylog_multiply('integer':0, [TypeI:I|T], TypeS:Product) :-
+brachylog_multiply('default', [], 'integer':1).
+brachylog_multiply('default', [TypeI:I|T], TypeS:Product) :-
     (   TypeI = 'integer',
         TypeF = 'integer',
         (   var(I) ->
@@ -814,9 +811,9 @@ brachylog_multiply('integer':0, [TypeI:I|T], TypeS:Product) :-
         ),
         Product #= I * F,
         TypeS = 'integer',
-        brachylog_multiply('integer':0, T, TypeF:F)
+        brachylog_multiply('default', T, TypeF:F)
     ;   TypeS = 'float',
-        brachylog_multiply('integer':0, T, TypeF:F),
+        brachylog_multiply('default', T, TypeF:F),
         (   TypeF = 'float',
             TypeI = 'integer',
             brachylog_label('default', 'integer':I, _)
