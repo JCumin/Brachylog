@@ -425,30 +425,30 @@ test('integer_division_1', all(X == [2])) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 test('multiply_1', all(X == [1])) :-
     run_from_atom('×', [], X).
-test('multiply_1', all(X == [12])) :-
-    run_from_atom('×', [6,2], X).
 test('multiply_2', all(X == [12])) :-
+    run_from_atom('×', [6,2], X).
+test('multiply_3', all(X == [12])) :-
     run_from_atom('×', [2,6], X).
-test('multiply_3', all(X == [-12])) :-
+test('multiply_4', all(X == [-12])) :-
     run_from_atom('×', '[_6,2]', X).
-test('multiply_4', all(X == [24])) :-
+test('multiply_5', all(X == [24])) :-
     run_from_atom('×', [2,3,4], X).
-test('multiply_5', all(X == [0])) :-
+test('multiply_6', all(X == [0])) :-
     run_from_atom('×', '[0,_42]', X).
-test('multiply_6', all(X == [12.4])) :-
+test('multiply_7', all(X == [12.4])) :-
     run_from_atom('×', [6.2,2], X).
-test('multiply_7', all(X == [18])) :-
+test('multiply_8', all(X == [18])) :-
     run_from_atom('×₃', 6, X).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MODULO
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-test('_', all(X == [1])) :-
+test('modulo_1', all(X == [1])) :-
     run_from_atom('%', [4,3], X).
-test('_', all(X == [0])) :-
+test('modulo_2', all(X == [0])) :-
     run_from_atom('%', [4,2], X).
-test('_', all(X == [4])) :-
+test('modulo_3', all(X == [4])) :-
     run_from_atom('%', [42,19], X).
 
 
