@@ -367,17 +367,12 @@ brachylog_call_predicate(CallingPredName, Input, Output) :-
     atom(CallingPredName),
     call(CallingPredName, 'integer':0, Input, Output).
 brachylog_call_predicate('integer':I, Input, Output) :-
-    reverse(Input, [_CallingPredName|RArgs]),
-    reverse(RArgs, Args),
-    (   Args = [RealArgs] -> true
-    ;   Args = RealArgs
-    ),
     (   I = 0,
         PredName = 'brachylog_main'
     ;   I #> 0,
         atomic_list_concat(['brachylog_predicate_',I], PredName)
     ),
-    call(PredName, 'integer':0, RealArgs, Output).
+    call(PredName, 'integer':0, Input, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
