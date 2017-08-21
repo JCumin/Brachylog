@@ -578,6 +578,38 @@ brachylog_range_ascending('integer':2, ['integer':X,'integer':Y], Output) :-
     ;   X #> Y,
         brachylog_range_ascending_(Y, X, Output)
     ).
+brachylog_range_ascending('integer':3, ['integer':X,'integer':Y], Output) :-
+    (   X #=< Y,
+        Y2 #= Y - 1,
+        brachylog_range_ascending_(X, Y2, Output)
+    ;   X #> Y,
+        X2 #= X - 1,
+        brachylog_range_ascending_(Y, X2, Output)
+    ).
+brachylog_range_ascending('integer':4, ['integer':X,'integer':Y], Output) :-
+    (   X #=< Y,
+        X2 #= X + 1,
+        brachylog_range_ascending_(X2, Y, Output)
+    ;   X #> Y,
+        Y2 #= Y + 1,
+        brachylog_range_ascending_(Y2, X, Output)
+    ).
+brachylog_range_ascending('integer':5, 'integer':Input, Output) :-
+    (   0 #=< Input,
+        I2 #= Input - 1,
+        brachylog_range_ascending_(0, I2, Output)
+    ;   0 #> Input,
+        I2 #= Input + 1,
+        brachylog_range_ascending_(I2, 0, Output)
+    ).
+brachylog_range_ascending('integer':6, 'integer':Input, Output) :-
+    (   1 #=< Input,
+        I2 #= Input - 1,
+        brachylog_range_ascending_(1, I2, Output)
+    ;   1 #> Input,
+        I2 #= Input + 1,
+        brachylog_range_ascending_(I2, 1, Output)
+    ).
 
 brachylog_range_ascending_(I, S, ['integer':I|R]) :-
     I #=< S,
