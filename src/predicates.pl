@@ -743,10 +743,17 @@ brachylog_different('last', Input, Output) :-
     ;   T = Arg
     ),
     brachylog_different('integer':I, Arg, Output).
+brachylog_different('default', 'string':S, 'string':S) :-
+    brachylog_different_(S).
 brachylog_different('default', [], []).
 brachylog_different('default', [H|T], [H|T]) :-
-    maplist(prepend_integer, L, [H|T]),
-    all_different(L).
+    (   maplist(prepend_integer, L, [H|T]),
+        all_different(L)                        % More efficient on integers
+    ;   maplist(prepend_string, _, [H|T]),
+        brachylog_different_([H|T])
+    ;   maplist(is_brachylog_list, [H|T]),
+        brachylog_different_([H|T])
+    ).
 brachylog_different('default', 'integer':I, 'integer':I) :-
     (   integer_value('integer':_:[_], I) ->
         true
@@ -754,6 +761,11 @@ brachylog_different('default', 'integer':I, 'integer':I) :-
         integer_value('integer':_:[H,H2|T], I),
         all_different([H,H2|T])
     ).
+
+brachylog_different_([]).
+brachylog_different_([H|T]) :-
+    maplist(dif(H), T),
+    brachylog_different_(T).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
