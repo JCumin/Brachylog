@@ -20,6 +20,10 @@ You may want to watch this [**short video introduction to Brachylog**](https://w
 
 You can try out Brachylog on [Try it online!](https://tio.run/nexus/brachylog2), thanks to @DennisMitchell.
 
+### Brachylog language bar
+
+[you can find here](https://abrudz.github.io/lb/brachylog) the Brachylog language bar which gives you access to all symbols used in Brachylog on any webpage (by clicking on the symbols or by inputing shortcuts), thanks to @abrudz.
+
 ### The interpreter
 
 Brachylog's interpreter is entirely written in Prolog. Therefore, installing [SWI-Prolog](http://www.swi-prolog.org/) (version 7 and up) is mandatory to use Brachylog (We do not guarantee that Brachylog's interpreter will be compatible with any other Prolog implementation).
