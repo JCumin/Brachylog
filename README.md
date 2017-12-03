@@ -22,7 +22,7 @@ You can try out Brachylog on [Try it online!](https://tio.run/nexus/brachylog2),
 
 ### Brachylog language bar
 
-[you can find here](https://abrudz.github.io/lb/brachylog) the Brachylog language bar which gives you access to all symbols used in Brachylog on any webpage (by clicking on the symbols or by inputing shortcuts), thanks to @abrudz.
+[You can find here](https://abrudz.github.io/lb/brachylog) the Brachylog language bar which gives you access to all symbols used in Brachylog on any webpage (by clicking on the symbols or by inputing shortcuts), thanks to @abrudz.
 
 ### The interpreter
 
