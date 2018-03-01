@@ -1307,12 +1307,12 @@ brachylog_power('default', [], 'integer':1).
 brachylog_power('default', ['integer':I1,'integer':I2], 'integer':Power) :-
     Power #= I1 ^ I2.
 brachylog_power('default', ['float':I1,'integer':I2], 'float':Power) :-
-    brachylog_label('default', 'integer':I2, _),
     nonvar(I1),
+    brachylog_label('default', 'integer':I2, _),
     Power is I1 ^ I2.
 brachylog_power('default', ['integer':I1,'float':I2], 'float':Power) :-
-    brachylog_label('default', 'integer':I1, _),
     nonvar(I2),
+    brachylog_label('default', 'integer':I1, _),
     Power is I1 ^ I2.
 brachylog_power('default', ['float':I1,'float':I2], 'float':Power) :-
     nonvar(I1),
