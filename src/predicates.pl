@@ -2569,6 +2569,7 @@ brachylog_absolute_value('last', Input, Output) :-
 brachylog_absolute_value('default', 'integer':I, 'integer':J) :-
     J #= abs(I).
 brachylog_absolute_value('default', 'float':I, 'float':J) :-
+    nonvar(I),
     J is abs(I).
 
 
