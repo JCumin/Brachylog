@@ -103,8 +103,7 @@ constraintN(_) :-
     true.
 
 
-constraintO(_) :-
-    true.
+constraintO([_]).
 
 
 constraintP(_) :-
