@@ -2843,6 +2843,7 @@ brachylog_negate('last', Input, Output) :-
 brachylog_negate('default', 'integer':I, 'integer':J) :-
     J #= -I.
 brachylog_negate('default', 'float':I, 'float':J) :-
+    nonvar(I),
     J is -I.
 
 
