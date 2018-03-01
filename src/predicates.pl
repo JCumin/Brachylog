@@ -476,12 +476,14 @@ brachylog_root('integer':I,'integer':E, Type:R) :-
         Type = 'float'
     ).
 brachylog_root('integer':I,'float':E, 'float':R) :-
+    nonvar(E),
     brachylog_label('default', 'integer':I, _),
     R is E^(1/I).
 brachylog_root('float':I,'integer':E, 'float':R) :-
     brachylog_label('default', 'integer':E, _),
     R is E^(1/I).
 brachylog_root('float':I,'float':E, 'float':R) :-
+    nonvar(E),
     R is E^(1/I).
 
 
