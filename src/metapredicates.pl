@@ -24,6 +24,7 @@ ____            ____
                            brachylog_meta_iterate/5,
                            brachylog_meta_leftfold/5,
                            brachylog_meta_map/5,
+                           brachylog_meta_nonexistence/5,
                            brachylog_meta_orderby/5,
                            brachylog_meta_select/5,
                            brachylog_meta_unique/5,
@@ -349,6 +350,32 @@ brachylog_meta_map('integer':I, P, Sub, Input, Output) :-
     J #= I - 1,
     is_brachylog_list(Input),
     maplist(brachylog_meta_map('integer':J, P, Sub), Input, Output).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_NONEXISTENCE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_nonexistence('first', P, Sub, [I|Input], Arg) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_nonexistence(P, Sub, Arg, I).
+brachylog_meta_nonexistence('last', P, Sub, Input, Arg) :-
+    reverse(Input, [I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_nonexistence(P, Sub, Arg, I).
+brachylog_meta_nonexistence('integer':I, P, Sub, Input, Input) :-
+    dif(I, 'default'),
+    brachylog_meta_nonexistence(P, Sub, Input, 'integer':I).
+brachylog_meta_nonexistence('default', P, Sub, Input, Output) :-
+    brachylog_meta_nonexistence(P, Sub, Input, Output).
+
+brachylog_meta_nonexistence(P, Sub, Input, Output) :-
+    brachylog_meta_map('default', P, Sub, Input, T),
+    brachylog_zip('default', [T,[Output]], Z),
+    brachylog_meta_map('default', brachylog_different, 'default', Z, _).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

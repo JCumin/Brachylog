@@ -204,7 +204,7 @@ token_metapredicate('ʲ', '').
 token_metapredicate('ᵏ', '').
 token_metapredicate('ˡ', 'brachylog_meta_leftfold').
 token_metapredicate('ᵐ', 'brachylog_meta_map').
-token_metapredicate('ⁿ', '').
+token_metapredicate('ⁿ', 'brachylog_meta_nonexistence').
 token_metapredicate('ᵒ', 'brachylog_meta_orderby').
 token_metapredicate('ᵖ', '').
 token_metapredicate('ʳ', 'brachylog_meta_rightfold').
