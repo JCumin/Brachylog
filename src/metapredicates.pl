@@ -28,6 +28,7 @@ ____            ____
                            brachylog_meta_orderby/5,
                            brachylog_meta_select/5,
                            brachylog_meta_unique/5,
+                           brachylog_meta_verify/5,
                            brachylog_meta_zip/5
                           ]).
 
@@ -505,6 +506,32 @@ brachylog_meta_unique_(Nth, J, P, Sub, Input, A, Output) :-
         )
     ;   reverse(A, Output)
     ).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_VERIFY
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_verify('first', P, Sub, [I|Input], Arg) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_verify(P, Sub, Arg, I).
+brachylog_meta_verify('last', P, Sub, Input, Arg) :-
+    reverse(Input, [I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_verify(P, Sub, Arg, I).
+brachylog_meta_verify('integer':I, P, Sub, Input, Input) :-
+    dif(I, 'default'),
+    brachylog_meta_verify(P, Sub, Input, 'integer':I).
+brachylog_meta_verify('default', P, Sub, Input, Output) :-
+    brachylog_meta_verify(P, Sub, Input, Output).
+
+brachylog_meta_verify(P, Sub, Input, Output) :-
+    brachylog_meta_map('default', P, Sub, Input, T),
+    brachylog_equal('default', T, _),
+    brachylog_head('default', T, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
