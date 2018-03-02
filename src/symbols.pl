@@ -195,7 +195,7 @@ token_metapredicate('ᵃ', 'brachylog_meta_accumulate').
 token_metapredicate('ᵇ', 'brachylog_meta_bagof').
 token_metapredicate('ᶜ', 'brachylog_meta_count').
 token_metapredicate('ᵈ', 'brachylog_meta_declare').
-token_metapredicate('ᵉ', '').
+token_metapredicate('ᵉ', 'brachylog_meta_existence').
 token_metapredicate('ᶠ', 'brachylog_meta_find').
 token_metapredicate('ᵍ', 'brachylog_meta_groupby').
 token_metapredicate('ʰ', '').

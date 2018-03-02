@@ -18,6 +18,7 @@ ____            ____
                            brachylog_meta_bagof/5,
                            brachylog_meta_count/5,
                            brachylog_meta_declare/5,
+						   brachylog_meta_existence/5,
                            brachylog_meta_find/5,
                            brachylog_meta_groupby/5,
                            brachylog_meta_iterate/5,
@@ -112,7 +113,7 @@ brachylog_meta_count('integer':1, P, Sub, Input, Output) :-
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   BRACHYLOG_DECLARE
+   BRACHYLOG_META_DECLARE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_meta_declare('first', P, Sub, ['integer':I|Input], Output) :- 
     (   Input = [Arg] -> true
@@ -133,6 +134,31 @@ brachylog_meta_declare('integer':1, P, Sub, [H,T], H) :-
     call(P, Sub, T, H).
 brachylog_meta_declare('integer':2, P, Sub, [H,T], [H,T]) :-
     call(P, Sub, T, H).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_EXISTENCE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_existence('first', P, Sub, [I|Input], Arg) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_existence(P, Sub, Arg, I).
+brachylog_meta_existence('last', P, Sub, Input, Arg) :-
+    reverse(Input, [I|T]),
+    (   T = [Arg] -> true
+    ;   T = Arg
+    ),
+    brachylog_meta_existence(P, Sub, Arg, I).
+brachylog_meta_existence('integer':I, P, Sub, Input, Input) :-
+    dif(I, 'default'),
+    brachylog_meta_existence(P, Sub, Input, 'integer':I).
+brachylog_meta_existence('default', P, Sub, Input, Output) :-
+    brachylog_meta_existence(P, Sub, Input, Output).
+
+brachylog_meta_existence(P, Sub, Input, Output) :-
+    brachylog_in('default', Input, E),
+    call(P, Sub, E, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
