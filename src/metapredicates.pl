@@ -1,4 +1,4 @@
-﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -47,7 +47,7 @@ brachylog_meta_accumulate('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_accumulate('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_accumulate('integer':I, P, Sub, Arg, Output).
 brachylog_meta_accumulate('default', P, Sub, Input, Output) :-
@@ -79,7 +79,7 @@ brachylog_meta_bagof('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_bagof('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_bagof('integer':I, P, Sub, Arg, Output).
 brachylog_meta_bagof('integer':0, _, _, _, []).
@@ -101,7 +101,7 @@ brachylog_meta_count('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_count('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_count('integer':I, P, Sub, Arg, Output).
 brachylog_meta_count('default', P, Sub, Input, Output) :-
@@ -125,7 +125,7 @@ brachylog_meta_declare('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_declare('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_declare('integer':I, P, Sub, Arg, Output).
 brachylog_meta_declare('default', P, Sub, [H,T], T) :-
@@ -149,7 +149,7 @@ brachylog_meta_existence('first', P, Sub, [I|Input], Arg) :-
 brachylog_meta_existence('last', P, Sub, Input, Arg) :-
     reverse(Input, [I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_existence(P, Sub, Arg, I).
 brachylog_meta_existence('integer':I, P, Sub, Input, Input) :-
@@ -178,7 +178,7 @@ brachylog_meta_find('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_find('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_find('integer':I, P, Sub, Arg, Output).
 brachylog_meta_find('integer':0, _, _, _, []).
@@ -213,7 +213,7 @@ brachylog_meta_groupby('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_groupby('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_groupby('integer':I, P, Sub, Arg, Output).
 brachylog_meta_groupby('default', P, Sub, Input, Output) :-
@@ -252,7 +252,7 @@ brachylog_meta_iterate('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_iterate('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_iterate('integer':I, P, Sub, Arg, Output).
 brachylog_meta_iterate('integer':0, _, _, Input, Input).
@@ -278,7 +278,7 @@ brachylog_meta_leftfold('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_leftfold('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_leftfold('integer':I, P, Sub, Arg, Output).
 brachylog_meta_leftfold('default', P, Sub, 'string':S, Output) :-
@@ -319,7 +319,7 @@ brachylog_meta_map('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_map('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_map('integer':I, P, Sub, Arg, Output).
 brachylog_meta_map('integer':0, P, Sub, Input, Output) :-
@@ -364,7 +364,7 @@ brachylog_meta_nonexistence('first', P, Sub, [I|Input], Arg) :-
 brachylog_meta_nonexistence('last', P, Sub, Input, Arg) :-
     reverse(Input, [I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_nonexistence(P, Sub, Arg, I).
 brachylog_meta_nonexistence('integer':I, P, Sub, Input, Input) :-
@@ -390,7 +390,7 @@ brachylog_meta_orderby('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_orderby('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_orderby('integer':I, P, Sub, Arg, Output).
 brachylog_meta_orderby('default', P, Sub, Input, Output) :-
@@ -444,7 +444,7 @@ brachylog_meta_select('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_select('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_select('integer':I, P, Sub, Arg, Output).
 brachylog_meta_select('default', P, Sub, 'string':S, Output) :-
@@ -483,7 +483,7 @@ brachylog_meta_unique('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_unique('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_unique('integer':I, P, Sub, Arg, Output).
 brachylog_meta_unique('default', P, Sub, Input, Output) :-
@@ -519,7 +519,7 @@ brachylog_meta_verify('first', P, Sub, [I|Input], Arg) :-
 brachylog_meta_verify('last', P, Sub, Input, Arg) :-
     reverse(Input, [I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_verify(P, Sub, Arg, I).
 brachylog_meta_verify('integer':I, P, Sub, Input, Input) :-
@@ -545,7 +545,7 @@ brachylog_meta_zip('first', P, Sub, ['integer':I|Input], Output) :-
 brachylog_meta_zip('last', P, Sub, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
-    ;   T = Arg
+    ;   reverse(T, Arg)
     ),
     brachylog_meta_zip('integer':I, P, Sub, Arg, Output).
 brachylog_meta_zip('default', P, Sub, Arg, Output) :-
