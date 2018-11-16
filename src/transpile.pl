@@ -228,6 +228,10 @@ fix_forks(L, Z) :-
     fix_forks(L, 0, Z).
 
 fix_forks([], _, []).     % Ignore each useless implicit var after
+fix_forks(['fork':'start', F1, _, F2, Output, 'fork':'end'|T], I, ['control':'unpair','variable':V1,F1,Output,F2,'variable':V1,'control':'∧'|T2]) :-
+    atom_concat('Fork', I, V1),
+    J is I + 1,
+    fix_forks(T, J,  T2).
 fix_forks(['fork':'start', F1, _, F2, _, F3, Output, 'fork':'end'|T], I, ['control':'&',F1,'variable':V1,'control':'&',F3,'variable':V2,'control':'∧','variable':V1,'control':';','variable':V2,F2,Output|T2]) :-
     atom_concat('Fork', I, V1),
     J is I + 1,
@@ -356,6 +360,20 @@ transpile_(['control':'¬'|T], B, Reverse, Negate, AppendNumber, PredNumber, [T2
         NewNegate = yes
     ),
     transpile_(T, B, Reverse, NewNegate, AppendNumber, PredNumber, [T2|OtherPredicates]).
+transpile_(['control':'unpair','variable':A|T], B, _, _, AppendNumber, PredNumber, [[Unpair|T2]|OtherPredicates]) :-
+    (   A = TypeA:LA,
+        term_to_atom(TypeA:LA, TailElem)
+    ;   A = TailElem
+    ),
+    (   B = TypeB:LB,
+        term_to_atom(TypeB:LB, Pair)
+    ;   B = Pair
+    ),
+    atomic_list_concat(['UnpairTemp',AppendNumber],HeadElem),
+    atomic_list_concat([',\n    ',
+                        Pair,'=[',HeadElem,',',TailElem,']'],Unpair),
+    NewAppendNumber is AppendNumber + 1,
+    transpile_(T, HeadElem, no, no, NewAppendNumber, PredNumber, [T2|OtherPredicates]).
 transpile_(['control':';',Type:A|T], B, _, _, AppendNumber, PredNumber, [T2|OtherPredicates]) :-
     (   Type = 'variable'
     ;   Type = 'predicate'
