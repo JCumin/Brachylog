@@ -1111,28 +1111,34 @@ brachylog_divide('last', Input, Output) :-
     ;   reverse(T, Arg)
     ),
     brachylog_divide('integer':I, Arg, Output).
-brachylog_divide('default', Input, Output) :-
-    brachylog_divide('integer':0, Input, Output).
-brachylog_divide('integer':0, [], 'integer':1).
-brachylog_divide('integer':0, ['integer':I1,'integer':I2], Type:Division) :-
+brachylog_divide('default', [], 'integer':1).
+brachylog_divide('default', ['integer':I1,'integer':I2], Type:Division) :-
     brachylog_label('default', ['integer':I1,'integer':I2], _),
+    I2 #\= 0,
     Division is I1 / I2,
     (   integer(Division) ->
         Type = 'integer'
     ;   Type = 'float'
     ).
-brachylog_divide('integer':0, ['float':I1,'integer':I2], 'float':Division) :-
+brachylog_divide('default', ['integer':0, 'integer':0], 'integer':_).
+brachylog_divide('default', ['float':I1,'integer':I2], 'float':Division) :-
     brachylog_label('default', 'integer':I2, _),
+    I2 #\= 0,
     nonvar(I1),
     Division is I1 / I2.
-brachylog_divide('integer':0, ['integer':I1,'float':I2], 'float':Division) :-
+brachylog_divide('default', ['float':0.0, 'integer':0], 'float':_).
+brachylog_divide('default', ['integer':I1,'float':I2], 'float':Division) :-
     brachylog_label('default', 'integer':I1, _),
     nonvar(I2),
+    dif(I2, 0.0),
     Division is I1 / I2.
-brachylog_divide('integer':0, ['float':I1,'float':I2], 'float':Division) :-
+brachylog_divide('default', ['integer':0, 'float':0.0], 'float':_).
+brachylog_divide('default', ['float':I1,'float':I2], 'float':Division) :-
     nonvar(I1),
     nonvar(I2),
+    dif(I2, 0.0),
     Division is I1 / I2.
+brachylog_divide('default', ['float':0.0, 'float':0.0], 'float':_).
 brachylog_divide('integer':1, 'integer':I, 'float':J) :-
     brachylog_label('default', 'integer':I, _),
     J is 1/I.
