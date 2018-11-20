@@ -825,17 +825,10 @@ brachylog_integer_division('integer':I, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_multiply_reversed(S, I, O) :-
     brachylog_multiply(S, O, I).
-brachylog_multiply('first', ['integer':I|Input], Output) :- 
-    (   Input = [Arg] -> true
-    ;   Input = Arg
-    ),
-    brachylog_multiply('integer':I, Arg, Output).
-brachylog_multiply('last', Input, Output) :-
-    reverse(Input, ['integer':I|T]),
-    (   T = [Arg] -> true
-    ;   reverse(T, Arg)
-    ),
-    brachylog_multiply('integer':I, Arg, Output).
+brachylog_multiply('first', ['integer':A,'integer':B], Output) :- 
+    brachylog_multiply('integer':A, 'integer':B, Output).
+brachylog_multiply('last', ['integer':A,'integer':B], Output) :-
+    brachylog_multiply('integer':B, 'integer':A, Output).
 brachylog_multiply('integer':S, 'integer':I, 'integer':J) :-
     J #= S*I.
 brachylog_multiply('integer':S, 'float':F, 'float':G) :-
