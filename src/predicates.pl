@@ -1186,29 +1186,30 @@ brachylog_less('integer':1, ['integer':I,'integer':J|T], ['integer':I,'integer':
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_equal_reversed(S, I, O) :-
     brachylog_equal(S, O, I).
-brachylog_equal('first', ['integer':I|Input], Output) :- 
+brachylog_equal('first', [I|Input], Output) :- 
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
-    brachylog_equal('integer':I, Arg, Output).
+    brachylog_equal(I, Arg, Output).
 brachylog_equal('last', Input, Output) :-
-    reverse(Input, ['integer':I|T]),
+    reverse(Input, [I|T]),
     (   T = [Arg] -> true
     ;   reverse(T, Arg)
     ),
-    brachylog_equal('integer':I, Arg, Output).
-brachylog_equal('default', Input, Output) :-
-    brachylog_equal('integer':0, Input, Output).
-brachylog_equal('integer':0, [], []).
-brachylog_equal('integer':0, [H|T], [H|T]) :-
+    brachylog_equal(I, Arg, Output).
+brachylog_equal('default', [], []).
+brachylog_equal('default', [H|T], [H|T]) :-
     maplist(=(H), T).
-brachylog_equal('integer':0, 'string':L, 'string':L) :-
+brachylog_equal('default', 'string':L, 'string':L) :-
     brachylog_equal('integer':0, L, L).
-brachylog_equal('integer':0, 'integer':0, 'integer':0).
-brachylog_equal('integer':0, 'integer':I, 'integer':I) :-
+brachylog_equal('default', 'integer':0, 'integer':0).
+brachylog_equal('default', 'integer':I, 'integer':I) :-
     H #\= 0,
     integer_value('integer':_:[H|T], I),
-    brachylog_equal('integer':0, [H|T], [H|T]).
+    brachylog_equal('default', [H|T], [H|T]).
+brachylog_equal(I, [I|T], [I|T]) :-
+    dif(I, 'default'),
+    brachylog_equal('default', [I|T], [I|T]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
