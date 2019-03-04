@@ -1901,9 +1901,12 @@ brachylog_permute('integer':0, 'string':S, 'string':Permutation) :-
     permutation(S, Permutation).
 brachylog_permute('integer':0, List, Permutation) :-
     is_brachylog_list(List),
+    is_brachylog_list(Permutation),
     permutation(List, Permutation).
+brachylog_permute('integer':0, 'integer':0, 'integer':0).
 brachylog_permute('integer':0, 'integer':I, 'integer':J) :-
     H #\= 0,
+    J #\= 0,
     integer_value('integer':Sign:[H|L], I),
     permutation([H|L], M),
     integer_value('integer':Sign:M, J).
