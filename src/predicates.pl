@@ -1207,9 +1207,8 @@ brachylog_equal('default', 'integer':I, 'integer':I) :-
     H #\= 0,
     integer_value('integer':_:[H|T], I),
     brachylog_equal('default', [H|T], [H|T]).
-brachylog_equal(I, [I|T], [I|T]) :-
-    dif(I, 'default'),
-    brachylog_equal('default', [I|T], [I|T]).
+brachylog_equal(Type:I, [Type:I|T], [Type:I|T]) :-
+    brachylog_equal('default', [Type:I|T], [Type:I|T]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
