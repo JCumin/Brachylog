@@ -529,10 +529,11 @@ brachylog_meta_verify('default', P, Sub, Input, Output) :-
     brachylog_meta_verify(P, Sub, Input, Output).
 
 brachylog_meta_verify(P, Sub, Input, Output) :-
-    brachylog_meta_map('default', P, Sub, Input, T),
+    brachylog_length('default', Input, L),
+    brachylog_length('default', T, L),
     brachylog_equal('default', T, _),
-    brachylog_head('default', T, Output).
-
+    brachylog_head('default', T, Output),
+    brachylog_meta_map('default', P, Sub, Input, T).
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_ZIP
