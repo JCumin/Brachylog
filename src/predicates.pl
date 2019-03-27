@@ -1620,8 +1620,6 @@ brachylog_group('integer':I, Input, Output) :-
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_HEAD
-   
-   TODO: Sub > 1, retrieve a prefix of length Sub
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_head_reversed(S, I, O) :-
     brachylog_head(S, O, I).
@@ -1636,18 +1634,20 @@ brachylog_head('last', Input, Output) :-
     ;   reverse(T, Arg)
     ),
     brachylog_head('integer':I, Arg, Output).
-brachylog_head('integer':0, Input, Input).
-brachylog_head('default', Input, Output) :-
-    brachylog_head('integer':1, Input, Output).
-brachylog_head('integer':1, 'string':[H|_], 'string':[H]).
-brachylog_head('integer':1, 'integer':0, 'integer':0).
-brachylog_head('integer':1, 'integer':I, 'integer':J) :-
+brachylog_head('integer':0, _, []).
+brachylog_head('default', 'string':[H|_], 'string':[H]).
+brachylog_head('default', 'integer':0, 'integer':0).
+brachylog_head('default', 'integer':I, 'integer':J) :-
     J #\= 0,
     integer_value('integer':_:[J|_], I).
-brachylog_head('integer':1, 'float':F, 'integer':I) :-
+brachylog_head('default', 'float':F, 'integer':I) :-
     number_codes(F,L),
     brachylog_head_float(L, 'integer':I).
-brachylog_head('integer':1, [H|_], H).
+brachylog_head('default', [H|_], H).
+brachylog_head('integer':I, Input, Output) :-
+    I #> 0,
+    brachylog_length('default', Output, 'integer':I),
+    once(brachylog_concatenate('default', [Output, _], Input)).
 
 brachylog_head_float([H|T], 'integer':I) :-
     (   (   H = 48
@@ -1966,8 +1966,6 @@ brachylog_substring_recur_([_|_], []).
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_TAIL
-   
-   TODO: Sub > 1, retrieve a suffix of length Sub
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_tail_reversed(S, I, O) :-
     brachylog_tail(S, O, I).
@@ -1982,23 +1980,25 @@ brachylog_tail('last', Input, Output) :-
     ;   reverse(T, Arg)
     ),
     brachylog_tail('integer':I, Arg, Output).
-brachylog_tail('integer':0, Input, Input).
-brachylog_tail('default', Input, Output) :-
-    brachylog_tail('integer':1, Input, Output).
-brachylog_tail('integer':1, 'string':L, 'string':[H]) :-
+brachylog_tail('integer':0, _, []).
+brachylog_tail('default', 'string':L, 'string':[H]) :-
     reverse(L, [H|_]).
-brachylog_tail('integer':1, 'integer':0, 'integer':0).
-brachylog_tail('integer':1, 'integer':I, 'integer':Z) :-
+brachylog_tail('default', 'integer':0, 'integer':0).
+brachylog_tail('default', 'integer':I, 'integer':Z) :-
     J #\= 0,
     integer_value('integer':_:[J|T], I),
     reverse([J|T], [Z|_]).
-brachylog_tail('integer':1, 'float':F, 'integer':I) :-
+brachylog_tail('default', 'float':F, 'integer':I) :-
     number_codes(F, L),
     reverse(L, R),
     brachylog_tail_float(R, 'integer':I).
-brachylog_tail('integer':1, L, H) :-
+brachylog_tail('default', L, H) :-
     is_brachylog_list(L),
     reverse(L, [H|_]).
+brachylog_tail('integer':I, Input, Output) :-
+    I #> 0,
+    brachylog_length('default', Output, 'integer':I),
+    once(brachylog_concatenate('default', [_,Output], Input)).
 
 brachylog_tail_float([H|T], 'integer':I) :-
     (   (   H = 48
