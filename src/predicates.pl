@@ -352,27 +352,29 @@ brachylog_reverse('integer':0, List, R) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_call_predicate_reversed(S, I, O) :-
     brachylog_call_predicate(S, O, I).
-brachylog_call_predicate('first', ['integer':I|Input], Output) :- 
+brachylog_call_predicate('first'-GlobalVariables, ['integer':I|Input], Output) :- 
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
-    brachylog_call_predicate('integer':I, Arg, Output).
-brachylog_call_predicate('last', Input, Output) :-
+    brachylog_call_predicate(GlobalVariables, 'integer':I, Arg, Output).
+brachylog_call_predicate('last'-GlobalVariables, Input, Output) :-
     reverse(Input, ['integer':I|T]),
     (   T = [Arg] -> true
     ;   reverse(T, Arg)
     ),
-    brachylog_call_predicate('integer':I, Arg, Output).
-brachylog_call_predicate(CallingPredName, Input, Output) :-
+    brachylog_call_predicate(GlobalVariables, 'integer':I, Arg, Output).
+brachylog_call_predicate(Name-GlobalVariables, Arg, Output) :-
+    brachylog_call_predicate(GlobalVariables, Name, Arg, Output).
+brachylog_call_predicate(GlobalVariables, CallingPredName, Input, Output) :-
     atom(CallingPredName),
-    call(CallingPredName, 'integer':0, Input, Output).
-brachylog_call_predicate('integer':I, Input, Output) :-
+    call(CallingPredName, GlobalVariables, 'integer':0, Input, Output).
+brachylog_call_predicate(GlobalVariables, 'integer':I, Input, Output) :-
     (   I = 0,
         PredName = 'brachylog_main'
     ;   I #> 0,
         atomic_list_concat(['brachylog_predicate_',I], PredName)
     ),
-    call(PredName, 'integer':0, Input, Output).
+    call(PredName, GlobalVariables, 'integer':0, Input, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -408,7 +410,7 @@ brachylog_circular_permute_counterclockwise('integer':1, 'integer':I, 'integer':
     integer_value('integer':Sign:S, J).
 brachylog_circular_permute_counterclockwise('integer':I, Input, Output) :-
     I #> 1,
-    brachylog_meta_iterate('integer':I, brachylog_circular_permute_counterclockwise, 'default', Input, Output).
+    brachylog_meta_iterate(ignore, 'integer':I, brachylog_circular_permute_counterclockwise, 'default', Input, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -447,7 +449,7 @@ brachylog_circular_permute_clockwise('integer':1, 'integer':I, 'integer':J) :-
     integer_value('integer':Sign:S, J).
 brachylog_circular_permute_clockwise('integer':I, Input, Output) :-
     I #> 1,
-    brachylog_meta_iterate('integer':I, brachylog_circular_permute_clockwise, 'default', Input, Output).
+    brachylog_meta_iterate(ignore, 'integer':I, brachylog_circular_permute_clockwise, 'default', Input, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1409,7 +1411,7 @@ brachylog_behead('integer':1, 'float':F,'float':G) :-
 brachylog_behead('integer':1, [_|T],T).
 brachylog_behead('integer':I, Input, Output) :-
     I #> 1,
-    brachylog_meta_iterate('integer':I, brachylog_behead, 'integer':1, Input, Output).
+    brachylog_meta_iterate(ignore, 'integer':I, brachylog_behead, 'integer':1, Input, Output).
 
 brachylog_behead_float([], []).
 brachylog_behead_float([48|T], [48|T2]) :-
@@ -1614,7 +1616,7 @@ brachylog_group('default', Input, Output) :-
 brachylog_group('integer':1, X, [X]).
 brachylog_group('integer':I, Input, Output) :-
     I #> 1,
-    brachylog_meta_iterate('integer':I, brachylog_group, 'integer':1, Input, Output).
+    brachylog_meta_iterate(ignore, 'integer':I, brachylog_group, 'integer':1, Input, Output).
 
     
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1787,7 +1789,7 @@ brachylog_knife('integer':1, 'integer':I, 'integer':J) :-
     brachylog_knife('integer':1, [H|T], [H2|T2]).
 brachylog_knife('integer':I, Input, Output) :-
     I #> 1,
-    brachylog_meta_iterate('integer':I, brachylog_knife, 'integer':1, Input, Output).
+    brachylog_meta_iterate(ignore, 'integer':I, brachylog_knife, 'integer':1, Input, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2169,11 +2171,11 @@ brachylog_zip_(L, I, [Heads|Z]) :-
     brachylog_zip_(Tails, J, Z).
 
 brachylog_zip_no_cycling([H|T], Z) :-
-    brachylog_meta_select('default', brachylog_head, 'default', [H|T], Heads),
+    brachylog_meta_select(ignore, 'default', brachylog_head, 'default', [H|T], Heads),
     (   Heads = [] ->
         Z = []
     ;   Z = [Heads|Z2],
-        brachylog_meta_select('default', brachylog_behead, 'default', [H|T], Tails),
+        brachylog_meta_select(ignore, 'default', brachylog_behead, 'default', [H|T], Tails),
         brachylog_zip_no_cycling(Tails, Z2)
     ).
 
@@ -2312,9 +2314,9 @@ brachylog_elements('default', [], []).
 brachylog_elements('default', [H|T], L) :-
     maplist(brachylog_elements('default'), [H|T], L).
 brachylog_elements('default', 'string':S, L) :-
-    brachylog_meta_find('default', brachylog_in, 'default', 'string':S, L).
+    brachylog_meta_find(ignore, 'default', brachylog_in, 'default', 'string':S, L).
 brachylog_elements('default', 'integer':I, L) :-
-    brachylog_meta_find('default', brachylog_in, 'default', 'integer':I, L).   
+    brachylog_meta_find(ignore, 'default', brachylog_in, 'default', 'integer':I, L).   
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2407,7 +2409,7 @@ brachylog_split_lines('integer':2, 'string':[H|T], ['string':[H|T2]|T3]) :-
     brachylog_split_lines('integer':2, 'string':T, ['string':T2|T3]).
 brachylog_split_lines('integer':3, Input, Output) :-
     brachylog_split_lines('default', Input, L1),
-    brachylog_meta_map('default', brachylog_split_lines, 'integer':1, L1, Output).
+    brachylog_meta_map(ignore, 'default', brachylog_split_lines, 'integer':1, L1, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

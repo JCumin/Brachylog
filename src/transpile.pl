@@ -40,9 +40,12 @@ parse_no_file(Code, Predicates) :-
     fix_predicates(Tokens, FixedPredicates),
     fix_metapredicates(FixedPredicates, FixedMetapredicates),
     fill_implicit_variables(FixedMetapredicates, FilledTokens),
-    fix_lists(FilledTokens, FixedLists),
+    fix_variables_superscripts(FilledTokens, FixedVariables, GlobalVariables),
+    fix_lists(FixedVariables, FixedLists),
     fix_forks(FixedLists, Program),
-    transpile(Program, Predicates),
+    atomic_list_concat(GlobalVariables, ',', G),
+    atomic_list_concat(['[', G, ']'], GlobalVariablesAtom),
+    transpile(Program, Predicates, GlobalVariablesAtom),
     !.
     
     
@@ -58,12 +61,12 @@ parse_argument(Arg, Term) :-
     atom_chars(AtomArg, SplittedArg),
     tokenize(SplittedArg, Token),
     fix_lists(Token, Program),
-    transpile(Program, Parsed),
+    transpile(Program, Parsed, '[]'),
     !,
     reverse(Parsed, [TempMainPredicate|_]),
     nth0(3, TempMainPredicate, Atom),
     atom_concat(',\n    ', AtomT, Atom),
-    atom_concat(ParsedArg, ' = Input', AtomT),
+    atom_concat(ParsedArg, ' = Var_Input_Local', AtomT),
     term_to_atom(Term, ParsedArg)
     ;
     throw('Incorrect variable format.').
@@ -72,14 +75,14 @@ parse_argument(Arg, Term) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    APPEND_TRAILING_OUTPUT
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-append_trailing_output([], ['variable':'Output']).
-append_trailing_output(['control':'\n'|T], ['variable':'Output','control':'\n'|T2]) :-
+append_trailing_output([], ['variable':'Output':'default']).
+append_trailing_output(['control':'\n'|T], ['variable':'Output':'default','control':'\n'|T2]) :-
     append_trailing_output(T, T2).
-append_trailing_output(['control':'}'|T], ['variable':'Output','control':'}'|T2]) :-
+append_trailing_output(['control':'}'|T], ['variable':'Output':'default','control':'}'|T2]) :-
     append_trailing_output(T, T2).
-append_trailing_output(['control':'⟩'|T], ['variable':'Output','control':'⟩'|T2]) :-
+append_trailing_output(['control':'⟩'|T], ['variable':'Output':'default','control':'⟩'|T2]) :-
     append_trailing_output(T, T2).
-append_trailing_output(['control':'|'|T], ['variable':'Output','control':'|'|T2]) :-
+append_trailing_output(['control':'|'|T], ['variable':'Output':'default','control':'|'|T2]) :-
     append_trailing_output(T, T2).
 append_trailing_output([H|T], [H|T2]) :-
     H \= 'control':'\n',
@@ -188,8 +191,34 @@ fill_implicit_variables([Type:A|T], I, [Type:A|T2]) :-
     \+ (Type = 'control', A = '∧', T \= ['variable':_|_]),
     \+ (Type = 'control', A = '∨', T \= ['variable':_|_]),
     fill_implicit_variables(T, I, T2).
-   
-   
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   FIX_VARIABLES_SUPERSCRIPTS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+fix_variables_superscripts(Input, Output, GlobalVariables) :-
+    fix_variables_superscripts_(Input, Output, GlobVars),
+    sort(GlobVars, GlobalVariables).  % Remove duplicates
+
+fix_variables_superscripts_([], [], []).
+fix_variables_superscripts_(['variable':A:Sup|T], ['variable':V|T2], [V|GlobalVariables]) :-
+    atomic_list_concat(['integer', SupAtom], ':', Sup),
+    atom_number(SupAtom, J),
+    atomic_list_concat(['Var_',A,'_',J], V),
+    fix_variables_superscripts_(T, T2, GlobalVariables).
+fix_variables_superscripts_(['variable':A:'default'|T], ['variable':V|T2], GlobalVariables) :-
+    atomic_list_concat(['Var_',A,'_Local'], V),
+    fix_variables_superscripts_(T, T2, GlobalVariables).
+fix_variables_superscripts_(['variable':List|T], ['variable':FixedList|T2], GlobalVariables) :-
+    is_list(List),
+    fix_variables_superscripts_(List, FixedList, Vars),
+    fix_variables_superscripts_(T, T2, GlobalVariables2),
+    append(Vars, GlobalVariables2, GlobalVariables).
+fix_variables_superscripts_([X|T], [X|T2], GlobalVariables) :-
+    fix_variables_superscripts_(T, T2, GlobalVariables).
+
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    FIX_LISTS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -242,7 +271,7 @@ fix_forks([H|T], I, [H|T2]) :-
     dif(H, 'fork':'start'),
     fix_forks(T, I, T2).
 
-    
+  
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    TRANSPILE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -251,17 +280,18 @@ transpile(Program, [[':- style_check(-singleton).'],
                     [':- use_module(predicates).'],
                     [':- use_module(metapredicates).'],
                     [':- use_module(constraint_variables).\n'],
-                    ['brachylog_main(_, Input,Output) :-\n    Name = brachylog_main,\n',
+                    [MainPredHeader,
                     ConstraintVariables,
-                    '    (1=1'|MainPred]|OtherPredicates]) :-
-    constraint_variables(ConstraintVariables),
-    transpile_(Program, 'Input', no, no, 0, 0, [T|OtherPredicates]),
+                    '    (1=1'|MainPred]|OtherPredicates], GlobalVariables) :-
+    atomic_list_concat(['brachylog_main(',GlobalVariables,',_, Var_Input_Local,Var_Output_Local) :-\n    Name = brachylog_main,\n    GlobalVariables = ', GlobalVariables, ',\n'], MainPredHeader),
+    constraint_variables(GlobalVariables, ConstraintVariables),
+    transpile_(Program, 'Var_Input_Local', no, no, 0, 0, [T|OtherPredicates], GlobalVariables),
     reverse(T, [_|RT]),
     reverse(RT,T2),
-    append(T2, ['\n    ),\n    ((Output = integer:_ ; Output = [_|_], forall(member(E, Output), E = integer:_)) -> brachylog_label(default, Output, _) ; true).\n'], MainPred).
+    append(T2, ['\n    ),\n    ((Var_Output_Local = integer:_ ; Var_Output_Local = [_|_], forall(member(E, Var_Output_Local), E = integer:_)) -> brachylog_label(default, Var_Output_Local, _) ; true).\n'], MainPred).
     
-transpile_([], _, _, _, _, _, [['\n    ).\n']]).
-transpile_(['variable':B|T], A, Reverse, Negate, AppendNumber, PredNumber, [[Unification|T2]|OtherPredicates]) :-
+transpile_([], _, _, _, _, _, [['\n    ).\n']], _).
+transpile_(['variable':B|T], A, Reverse, Negate, AppendNumber, PredNumber, [[Unification|T2]|OtherPredicates], GlobalVariables) :-
     A \= 'nothing',
     (   is_list(A),
         brachylog_list_to_atom(A, Var1)
@@ -282,19 +312,19 @@ transpile_(['variable':B|T], A, Reverse, Negate, AppendNumber, PredNumber, [[Uni
     ),
     (   Reverse = no,
         atomic_list_concat([',\n    ',Var2,UnificationAtom,Var1], Unification),
-        transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates])
+        transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables)
     ;   Reverse = yes,
         atomic_list_concat([',\n    ',Var1,UnificationAtom,Var2], Unification),
-        transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates])
+        transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables)
     ).
-transpile_(['variable':B|T], 'nothing', _, _, AppendNumber, PredNumber, [T2|OtherPredicates]) :-
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates]). 
-transpile_(['predicate':P:Sub:Meta:Sup,'variable':B|T], A, Reverse, Negate, AppendNumber, PredNumber, [[Predicate|T2]|OtherPredicates]) :-
+transpile_(['variable':B|T], 'nothing', _, _, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables) :-
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables). 
+transpile_(['predicate':P:Sub:Meta:Sup,'variable':B|T], A, Reverse, Negate, AppendNumber, PredNumber, [[Predicate|T2]|OtherPredicates], GlobalVariables) :-
     A \= 'nothing',
     (   P = 'brachylog_call_predicate',
         (   Sub = 'default' ->
-            RealSub = 'Name'
-        ;   RealSub = Sub
+            RealSub = 'Name-GlobalVariables'
+        ;   atomic_list_concat([Sub,'-','GlobalVariables'], RealSub)
         )
     ;   P \= 'brachylog_call_predicate',
         RealSub = Sub
@@ -320,47 +350,55 @@ transpile_(['predicate':P:Sub:Meta:Sup,'variable':B|T], A, Reverse, Negate, Appe
         PredName = P
     ;   atomic_list_concat([P,'_reversed'], PredName)
     ),
-    (   Meta = no ->
-        atomic_list_concat([',\n    ',NegateAtom,PredName,'(',RealSub,',',Var1,',',Var2,')'], Predicate)
-    ;   atomic_list_concat([',\n    ',NegateAtom,Meta,'(',Sup,',',PredName,',',RealSub,',',Var1,',',Var2,')'], Predicate)
+    (   atomic_list_concat(['brachylog','predicate',_], '_', P)
+    ->  atomic_list_concat([GlobalVariables,','], GlobVars)
+    ;   GlobVars = ''
     ),
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).
-transpile_(['control':'∧'|T], _, _, _, AppendNumber, PredNumber, [T2|OtherPredicates]) :-
-    transpile_(T, 'nothing', no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).
-transpile_(['control':'&'|T], _, _, _, AppendNumber, PredNumber, [T2|OtherPredicates]) :-
-    transpile_(T, 'Input', no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).
-transpile_(['control':'`'|T], B, _, _, AppendNumber, PredNumber, [['\n    *->\n    1=1'|T2]|OtherPredicates]) :-
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).    
-transpile_(['control':'∨'|T], _, _, _, AppendNumber, PredNumber, [['\n    ;\n    1=1'|T2]|OtherPredicates]) :-
-    transpile_(T, 'nothing', no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).
-transpile_(['control':'('|T], B, _, Negate, AppendNumber, PredNumber, [[Parenthesis|T2]|OtherPredicates]) :-
+    (   Meta = no ->
+        atomic_list_concat([',\n    ',NegateAtom,PredName,'(',GlobVars,RealSub,',',Var1,',',Var2,')'], Predicate)
+    ;   (   atomic_list_concat(['brachylog','predicate',_], '_', P)
+        ->  atomic_list_concat([GlobalVariables,','], GlobVarsMeta)
+        ;   GlobVarsMeta = 'ignore,'
+        ),
+        atomic_list_concat([',\n    ',NegateAtom,Meta,'(',GlobVarsMeta,Sup,',',PredName,',',RealSub,',',Var1,',',Var2,')'], Predicate)
+    ),
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
+transpile_(['control':'∧'|T], _, _, _, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables) :-
+    transpile_(T, 'nothing', no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
+transpile_(['control':'&'|T], _, _, _, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables) :-
+    transpile_(T, 'Var_Input_Local', no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
+transpile_(['control':'`'|T], B, _, _, AppendNumber, PredNumber, [['\n    *->\n    1=1'|T2]|OtherPredicates], GlobalVariables) :-
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).    
+transpile_(['control':'∨'|T], _, _, _, AppendNumber, PredNumber, [['\n    ;\n    1=1'|T2]|OtherPredicates], GlobalVariables) :-
+    transpile_(T, 'nothing', no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
+transpile_(['control':'('|T], B, _, Negate, AppendNumber, PredNumber, [[Parenthesis|T2]|OtherPredicates], GlobalVariables) :-
     (   Negate = yes,
         Parenthesis = ',\n    \\+ (\n    1=1'
     ;   Negate = no,
         Parenthesis = ',\n    (\n    1=1'
     ),
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).
-transpile_(['control':')'|T], B, _, _, AppendNumber, PredNumber, [['\n    )'|T2]|OtherPredicates]) :-
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates]). 
-transpile_(['control':'!'|T], B, _, _, AppendNumber, PredNumber, [[',\n    !'|T2]|OtherPredicates]) :-
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates]). 
-transpile_(['control':'⊥'|T], B, _, _, AppendNumber, PredNumber, [[',\n    false'|T2]|OtherPredicates]) :-
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).  
-transpile_(['control':'~'|T], B, Reverse, Negate, AppendNumber, PredNumber, [T2|OtherPredicates]) :-
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
+transpile_(['control':')'|T], B, _, _, AppendNumber, PredNumber, [['\n    )'|T2]|OtherPredicates], GlobalVariables) :-
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables). 
+transpile_(['control':'!'|T], B, _, _, AppendNumber, PredNumber, [[',\n    !'|T2]|OtherPredicates], GlobalVariables) :-
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables). 
+transpile_(['control':'⊥'|T], B, _, _, AppendNumber, PredNumber, [[',\n    false'|T2]|OtherPredicates], GlobalVariables) :-
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).  
+transpile_(['control':'~'|T], B, Reverse, Negate, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables) :-
     (   Reverse = yes,
         NewReverse = no
     ;   Reverse = no,
         NewReverse = yes
     ),
-    transpile_(T, B, NewReverse, Negate, AppendNumber, PredNumber, [T2|OtherPredicates]).   
-transpile_(['control':'¬'|T], B, Reverse, Negate, AppendNumber, PredNumber, [T2|OtherPredicates]) :-
+    transpile_(T, B, NewReverse, Negate, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).   
+transpile_(['control':'¬'|T], B, Reverse, Negate, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables) :-
     (   Negate = yes,
         NewNegate = no
     ;   Negate = no,
         NewNegate = yes
     ),
-    transpile_(T, B, Reverse, NewNegate, AppendNumber, PredNumber, [T2|OtherPredicates]).
-transpile_(['control':'unpair','variable':A|T], B, _, _, AppendNumber, PredNumber, [[Unpair|T2]|OtherPredicates]) :-
+    transpile_(T, B, Reverse, NewNegate, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
+transpile_(['control':'unpair','variable':A|T], B, _, _, AppendNumber, PredNumber, [[Unpair|T2]|OtherPredicates], GlobalVariables) :-
     (   A = TypeA:LA,
         term_to_atom(TypeA:LA, TailElem)
     ;   A = TailElem
@@ -373,14 +411,14 @@ transpile_(['control':'unpair','variable':A|T], B, _, _, AppendNumber, PredNumbe
     atomic_list_concat([',\n    ',
                         Pair,'=[',HeadElem,',',TailElem,']'],Unpair),
     NewAppendNumber is AppendNumber + 1,
-    transpile_(T, HeadElem, no, no, NewAppendNumber, PredNumber, [T2|OtherPredicates]).
-transpile_(['control':';',Type:A|T], B, _, _, AppendNumber, PredNumber, [T2|OtherPredicates]) :-
+    transpile_(T, HeadElem, no, no, NewAppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
+transpile_(['control':';',Type:A|T], B, _, _, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables) :-
     (   Type = 'variable'
     ;   Type = 'predicate'
     ),
     append([B], [A], NewVar),
-    transpile_(T, NewVar, no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).
-transpile_(['control':',','variable':A|T], B, _, _, AppendNumber, PredNumber, [[Append|T2]|OtherPredicates]) :-
+    transpile_(T, NewVar, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
+transpile_(['control':',','variable':A|T], B, _, _, AppendNumber, PredNumber, [[Append|T2]|OtherPredicates], GlobalVariables) :-
     (   is_list(A),
         brachylog_list_to_atom(A, Arg1)
     ;   A = TypeA:LA,
@@ -406,38 +444,58 @@ transpile_(['control':',','variable':A|T], B, _, _, AppendNumber, PredNumber, [[
                         '[[',Arg2,'],[',Arg1,']],',TempVar,'))'
                        ], Append),
     NewAppendNumber is AppendNumber + 1,
-    transpile_(T, TempVar, no, no, NewAppendNumber, PredNumber, [T2|OtherPredicates]).
-transpile_(['control':'\n'|T], _, _, _, AppendNumber, PredNumber, [['\n    ).\n'],[ReversedPred],[PredHead|T2]|OtherPredicates]) :-
+    transpile_(T, TempVar, no, no, NewAppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
+transpile_(['control':'\n'|T], _, _, _, AppendNumber, PredNumber, [['\n    ).\n'],[ReversedPred],[PredHead|T2]|OtherPredicates], GlobalVariables) :-
     J is PredNumber + 1,
-    constraint_variables(ConstraintVariables),
+    constraint_variables(GlobalVariables, ConstraintVariables),
     atomic_list_concat(['brachylog_predicate_',
                         J,
-                        '_reversed(_, Input, Output) :-\n',
+                        '_reversed(',
+                        GlobalVariables,
+                        ',_, Input, Output',
+                        ') :-\n',
                         '    brachylog_predicate_',
                         J,
-                        '(_, Output, Input).\n'], ReversedPred),
+                        '(',
+                        GlobalVariables,
+                        ',_, Output, Input',
+                        ').\n'], ReversedPred),
     atomic_list_concat(['brachylog_predicate_',
                         J,
-                        '(_, Input,Output) :-\n    Name = brachylog_predicate_',
+                        '(',
+                        GlobalVariables,
+                        ',_, ',
+                        'Var_Input_Local',
+                        ',Var_Output_Local',
+                        ') :-\n    Name = brachylog_predicate_',
                         J,
+                        ',\n    GlobalVariables = ',
+                        GlobalVariables,
                         ',\n',
                         ConstraintVariables,
                         '    (1=1'], PredHead),
-    transpile_(T, 'Input', no, no, AppendNumber, J, [T2|OtherPredicates]).
-transpile_(['control':'|'|T], _, _, _, AppendNumber, PredNumber, [['\n    ).\n'],[PredHead|T2]|OtherPredicates]) :-
+    transpile_(T, 'Var_Input_Local', no, no, AppendNumber, J, [T2|OtherPredicates], GlobalVariables).
+transpile_(['control':'|'|T], _, _, _, AppendNumber, PredNumber, [['\n    ).\n'],[PredHead|T2]|OtherPredicates], GlobalVariables) :-
     (   PredNumber = 0,
         PredName = 'brachylog_main'
     ;   PredNumber \= 0,
         atomic_list_concat(['brachylog_predicate_',PredNumber], PredName)
     ),
-    constraint_variables(ConstraintVariables),
+    constraint_variables(GlobalVariables, ConstraintVariables),
     atomic_list_concat([PredName,
-                        '(_, Input,Output) :-\n    Name = ',
+                        '(',
+                        GlobalVariables,
+                        ',_, ',
+                        'Var_Input_Local',
+                        ',Var_Output_Local',
+                        ') :-\n    Name = ',
                         PredName,
+                        ',\n    GlobalVariables = ',
+                        GlobalVariables,
                         ',\n',
                         ConstraintVariables,
                         '    (1=1'], PredHead),
-    transpile_(T, 'Input', no, no, AppendNumber, PredNumber, [T2|OtherPredicates]).
+    transpile_(T, 'Var_Input_Local', no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
     
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -455,12 +513,31 @@ contains_write(Code) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    CONSTRAINT_VARIABLES
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-constraint_variables(ConstraintVariables) :-
-    findall(S, (member(X, ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']),
-                atomic_list_concat(['    constraint',X,'(Constraint',X,'),\n'], S)),
-            Ss
-            ),
-    atomic_list_concat(Ss, ConstraintVariables).
+constraint_variables(GlobalVariables, ConstraintVariables) :-
+    atom_chars(GlobalVariables, [_|Gs]),
+    reverse(Gs, [_|RGs]),
+    reverse(RGs, RRGs),
+    atomic_list_concat(RRGs, GGs),
+    atomic_list_concat(GlobVars, ',', GGs),
+    findall(S, (member(X, GlobVars), 
+                atomic_list_concat(['Var', Name, _], '_', X),
+                atom_chars(Name, CName),
+                reverse(CName, [_,'t','n','i','a','r','t','s','n','o','C']),
+                constraint_variable(X, S)), Ss),
+    atomic_list_concat(Ss, GlobalConstraintVariables),
+    findall(T, (member(X, ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']),
+                atomic_list_concat(['    constraint',X,'(Var_Constraint',X,'_Local','),\n'], T)),
+            Ts
+    ),
+    atomic_list_concat(Ts, LocalConstraintVariables),
+    atomic_list_concat([GlobalConstraintVariables, LocalConstraintVariables], ConstraintVariables).
+
+constraint_variable(X, S) :-
+    atomic_list_concat(['Var', ConstraintName, _], '_', X),
+    atom_chars(ConstraintName, [C|Cs]),
+    downcase_atom(C, CDown),
+    atomic_list_concat([CDown|Cs], PredName),
+    atomic_list_concat(['   ',PredName,'(',X,'),\n'], S).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

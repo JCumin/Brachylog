@@ -25,26 +25,33 @@ ____            ____
 tokenize([], []).
 tokenize([' '|T], T2) :-
     tokenize(T, T2).
-tokenize([Variable|T], ['variable':VariableName|T2]) :-
+tokenize([Variable|T], ['variable':VariableName:Sup|T2]) :-
     is_variable_character(Variable),
     tokenize_variable([Variable|T], Rest, VariableName),
-    tokenize(Rest, T2).
-tokenize([Variable|T], ['variable':RealVariable|T2]) :-
-    (   is_variable_character_dot_above(Variable) -> true
+    tokenize_superscript(Rest, Rest2, Sup),
+    tokenize(Rest2, T2).
+tokenize([Variable|T], ['variable':R|T2]) :-
+    (   is_variable_character_dot_above(Variable)
+    ->  token_variable(Variable, RealVariable),
+        tokenize_superscript(T, Rest, Sup),
+        R = RealVariable:Sup
     ;   is_variable_character_dot_below(Variable)
+    ->  token_variable(Variable, R),
+        Rest = T
     ),
-    token_variable(Variable, RealVariable),
-    tokenize(T, T2).
+    tokenize(Rest, T2).
 tokenize([Variable|T], ['variable':RealVariable|T2]) :-
     is_math_constant_character(Variable),
     token_variable(Variable, RealVariable),
     tokenize(T, T2).
-tokenize([H|T], ['variable':'Input'|T2]) :-
+tokenize([H|T], ['variable':'Input':Sup|T2]) :-
     is_input_character(H),
-    tokenize(T, T2).
-tokenize([H|T], ['variable':'Output'|T2]) :-
+    tokenize_superscript(T, Rest, Sup),
+    tokenize(Rest, T2).
+tokenize([H|T], ['variable':'Output':Sup|T2]) :-
     is_output_character(H),
-    tokenize(T, T2).
+    tokenize_superscript(T, Rest, Sup),
+    tokenize(Rest, T2).
 tokenize([Modifier,Predicate|T], ['predicate':PredName:Sub|T2]) :-
     is_modifier_character(Modifier),
     \+ (is_variable_character(Predicate)),

@@ -73,7 +73,7 @@ run(Input, Output) :-
     ;   true
     ),
     !,
-    call(brachylog_main, _, ParsedInput, ParsedOutput),
+    call(brachylog_main, _, _, ParsedInput, ParsedOutput),
     (   var(Input) ->
         brachylog_prolog_variable(ParsedInput, Input)
     ;   true
@@ -138,7 +138,7 @@ run_from_files_no_file(FilePath, InputPath, OutputPath) :-
         true
     ),
     !,
-    (   call(brachylog_main, _, ParsedInput, ParsedOutput) ->
+    (   call(brachylog_main, _, _, ParsedInput, ParsedOutput) ->
         (   ReportInput = 'yes' ->
             brachylog_prolog_variable(ParsedInput, InputProlog)
         ;   true
