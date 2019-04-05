@@ -1,4 +1,4 @@
-﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -25,7 +25,7 @@ ____            ____
 tokenize([], []).
 tokenize([' '|T], T2) :-
     tokenize(T, T2).
-tokenize([Variable|T], ['variable':VariableName:Sup|T2]) :-
+tokenize([Variable|T], ['variable':VariableName:'sup':Sup|T2]) :-
     is_variable_character(Variable),
     tokenize_variable([Variable|T], Rest, VariableName),
     tokenize_superscript(Rest, Rest2, Sup),
@@ -34,7 +34,7 @@ tokenize([Variable|T], ['variable':R|T2]) :-
     (   is_variable_character_dot_above(Variable)
     ->  token_variable(Variable, RealVariable),
         tokenize_superscript(T, Rest, Sup),
-        R = RealVariable:Sup
+        R = RealVariable:'sup':Sup
     ;   is_variable_character_dot_below(Variable)
     ->  token_variable(Variable, R),
         Rest = T
@@ -44,11 +44,11 @@ tokenize([Variable|T], ['variable':RealVariable|T2]) :-
     is_math_constant_character(Variable),
     token_variable(Variable, RealVariable),
     tokenize(T, T2).
-tokenize([H|T], ['variable':'Input':Sup|T2]) :-
+tokenize([H|T], ['variable':'Input':'sup':Sup|T2]) :-
     is_input_character(H),
     tokenize_superscript(T, Rest, Sup),
     tokenize(Rest, T2).
-tokenize([H|T], ['variable':'Output':Sup|T2]) :-
+tokenize([H|T], ['variable':'Output':'sup':Sup|T2]) :-
     is_output_character(H),
     tokenize_superscript(T, Rest, Sup),
     tokenize(Rest, T2).
