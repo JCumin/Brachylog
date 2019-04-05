@@ -1,4 +1,4 @@
-﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -201,12 +201,12 @@ fix_variables_superscripts(Input, Output, GlobalVariables) :-
     sort(GlobVars, GlobalVariables).  % Remove duplicates
 
 fix_variables_superscripts_([], [], []).
-fix_variables_superscripts_(['variable':A:Sup|T], ['variable':V|T2], [V|GlobalVariables]) :-
-    atomic_list_concat(['integer', SupAtom], ':', Sup),
+fix_variables_superscripts_(['variable':A:'sup':Sup|T], ['variable':V|T2], [V|GlobalVariables]) :-
+    atomic_list_concat(['integer',  SupAtom], ':', Sup),
     atom_number(SupAtom, J),
     atomic_list_concat(['Var_',A,'_',J], V),
     fix_variables_superscripts_(T, T2, GlobalVariables).
-fix_variables_superscripts_(['variable':A:'default'|T], ['variable':V|T2], GlobalVariables) :-
+fix_variables_superscripts_(['variable':A:'sup':'default'|T], ['variable':V|T2], GlobalVariables) :-
     atomic_list_concat(['Var_',A,'_Local'], V),
     fix_variables_superscripts_(T, T2, GlobalVariables).
 fix_variables_superscripts_(['variable':List|T], ['variable':FixedList|T2], GlobalVariables) :-
