@@ -75,14 +75,14 @@ parse_argument(Arg, Term) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    APPEND_TRAILING_OUTPUT
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-append_trailing_output([], ['variable':'Output':'default']).
-append_trailing_output(['control':'\n'|T], ['variable':'Output':'default','control':'\n'|T2]) :-
+append_trailing_output([], ['variable':'Output':'sup':'default']).
+append_trailing_output(['control':'\n'|T], ['variable':'Output':'sup':'default','control':'\n'|T2]) :-
     append_trailing_output(T, T2).
-append_trailing_output(['control':'}'|T], ['variable':'Output':'default','control':'}'|T2]) :-
+append_trailing_output(['control':'}'|T], ['variable':'Output':'sup':'default','control':'}'|T2]) :-
     append_trailing_output(T, T2).
-append_trailing_output(['control':'⟩'|T], ['variable':'Output':'default','control':'⟩'|T2]) :-
+append_trailing_output(['control':'⟩'|T], ['variable':'Output':'sup':'default','control':'⟩'|T2]) :-
     append_trailing_output(T, T2).
-append_trailing_output(['control':'|'|T], ['variable':'Output':'default','control':'|'|T2]) :-
+append_trailing_output(['control':'|'|T], ['variable':'Output':'sup':'default','control':'|'|T2]) :-
     append_trailing_output(T, T2).
 append_trailing_output([H|T], [H|T2]) :-
     H \= 'control':'\n',
