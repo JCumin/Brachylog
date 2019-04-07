@@ -1,4 +1,4 @@
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -60,7 +60,8 @@ parse_argument(Arg, Term) :-
     ),
     atom_chars(AtomArg, SplittedArg),
     tokenize(SplittedArg, Token),
-    fix_lists(Token, Program),
+    fix_lists(Token, FixedLists),
+    fix_variables_superscripts(FixedLists, Program, _),
     transpile(Program, Parsed, '[]'),
     !,
     reverse(Parsed, [TempMainPredicate|_]),
