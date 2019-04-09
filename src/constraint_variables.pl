@@ -95,8 +95,7 @@ constraintL(_) :- % Unused
     true.
 
 
-constraintM(_) :-
-    true.
+constraintM([_,_|_]).
 
 
 constraintN(_) :-
