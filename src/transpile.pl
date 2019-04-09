@@ -325,7 +325,7 @@ transpile_(['predicate':P:Sub:Meta:Sup,'variable':B|T], A, Reverse, Negate, Appe
     (   P = 'brachylog_call_predicate',
         (   Sub = 'default' ->
             RealSub = 'Name-GlobalVariables'
-        ;   atomic_list_concat([Sub,'-','GlobalVariables'], RealSub)
+        ;   atomic_list_concat(['(',Sub,')-','GlobalVariables'], RealSub)
         )
     ;   P \= 'brachylog_call_predicate',
         RealSub = Sub
