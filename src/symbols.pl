@@ -42,13 +42,11 @@ token_predicate('⟧', 'brachylog_range_descending').
 token_predicate('ℕ', 'brachylog_natural_integer').
 token_predicate('ℤ', 'brachylog_integer').
 token_predicate('ℝ', 'brachylog_float').
-token_predicate('∅', 'brachylog_empty').
 token_predicate('≠', 'brachylog_different').
 token_predicate('≡', 'brachylog_identity').
 token_predicate('÷', 'brachylog_integer_division').
 token_predicate('×', 'brachylog_multiply').
 token_predicate('%', 'brachylog_modulo').
-token_predicate('&', '').
 token_predicate('*', 'brachylog_exp').
 token_predicate('+', 'brachylog_plus').
 token_predicate('-', 'brachylog_minus').

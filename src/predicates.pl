@@ -33,7 +33,6 @@ ____            ____
                        brachylog_natural_integer/3,                     brachylog_natural_integer_reversed/3,
                        brachylog_integer/3,                             brachylog_integer_reversed/3,
                        brachylog_float/3,                               brachylog_float_reversed/3,
-                       brachylog_empty/3,                               brachylog_empty_reversed/3,
                        brachylog_different/3,                           brachylog_different_reversed/3,
                        brachylog_identity/3,                            brachylog_identity_reversed/3,
                        brachylog_integer_division/3,                    brachylog_integer_division_reversed/3,
@@ -707,28 +706,6 @@ brachylog_float('last', Input, Output) :-
     brachylog_float('integer':I, Arg, Output).
 brachylog_float('default', 'float':Input, 'float':Input).
 brachylog_float('integer':_, 'integer':Input, 'float':Input).
-
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   BRACHYLOG_EMPTY
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_empty_reversed(S, I, O) :-
-    brachylog_empty(S, O, I).
-brachylog_empty('first', ['integer':I|Input], Output) :- 
-    (   Input = [Arg] -> true
-    ;   Input = Arg
-    ),
-    brachylog_empty('integer':I, Arg, Output).
-brachylog_empty('last', Input, Output) :-
-    reverse(Input, ['integer':I|T]),
-    (   T = [Arg] -> true
-    ;   reverse(T, Arg)
-    ),
-    brachylog_empty('integer':I, Arg, Output).
-brachylog_empty('default', [], _).
-brachylog_empty('default', 'string':[], _).
-brachylog_empty('default', 'integer':0, _).
-brachylog_empty('default', 'float':0.0, _).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

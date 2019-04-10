@@ -42,7 +42,8 @@ parse_no_file(Code, Predicates) :-
     fill_implicit_variables(FixedMetapredicates, FilledTokens),
     fix_variables_superscripts(FilledTokens, FixedVariables, GlobalVariables),
     fix_lists(FixedVariables, FixedLists),
-    fix_forks(FixedLists, Program),
+    fix_forks(FixedLists, FixedForks),
+    fix_arrows(FixedForks, Program),
     atomic_list_concat(GlobalVariables, ',', G),
     atomic_list_concat(['[', G, ']'], GlobalVariablesAtom),
     transpile(Program, Predicates, GlobalVariablesAtom),
@@ -271,6 +272,38 @@ fix_forks(['fork':'start', F1, _, F2, _, F3, Output, 'fork':'end'|T], I, ['contr
 fix_forks([H|T], I, [H|T2]) :-
     dif(H, 'fork':'start'),
     fix_forks(T, I, T2).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   FIX_ARROWS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+fix_arrows([], []).
+fix_arrows(['predicate':P:_:Meta:Sup,'variable':_,'control':'↙','variable':V|T], T2) :- !,
+    (   atom(V) ->
+        V = VA
+    ;   term_to_atom(V, VA)
+    ),
+    fix_arrows(['predicate':P:VA:Meta:Sup|T], T2).
+fix_arrows(['predicate':P:Sub:Meta:_,'variable':_,'control':'↖','variable':V|T], T2) :- !,
+    (   atom(V) ->
+        V = VA
+    ;   term_to_atom(V, VA)
+    ),
+    fix_arrows(['predicate':P:Sub:Meta:VA|T], T2).
+fix_arrows(['predicate':P:_:Meta:Sup,'control':'↙','variable':V|T], T2) :- !,
+    (   atom(V) ->
+        V = VA
+    ;   term_to_atom(V, VA)
+    ),
+    fix_arrows(['predicate':P:VA:Meta:Sup|T], T2).
+fix_arrows(['predicate':P:Sub:Meta:_,'control':'↖','variable':V|T], T2) :- !,
+    (   atom(V) ->
+        V = VA
+    ;   term_to_atom(V, VA)
+    ),
+    fix_arrows(['predicate':P:Sub:Meta:VA|T], T2).
+fix_arrows([H|T], [H|T2]) :-
+    fix_arrows(T, T2).
 
   
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
