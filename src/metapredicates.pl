@@ -21,12 +21,14 @@ ____            ____
                            brachylog_meta_existence/6,
                            brachylog_meta_find/6,
                            brachylog_meta_groupby/6,
+                           brachylog_meta_head/6,
                            brachylog_meta_iterate/6,
                            brachylog_meta_leftfold/6,
                            brachylog_meta_map/6,
                            brachylog_meta_nonexistence/6,
                            brachylog_meta_orderby/6,
                            brachylog_meta_select/6,
+                           brachylog_meta_tail/6,
                            brachylog_meta_unique/6,
                            brachylog_meta_verify/6,
                            brachylog_meta_zip/6
@@ -290,6 +292,31 @@ brachylog_meta_groupby_tail(_:T, T).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_HEAD
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_head(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :-
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_head(GlobalVariables, 'integer':I, P, Sub, Arg, Output).
+brachylog_meta_head(GlobalVariables, 'last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   reverse(T, Arg)
+    ),
+    brachylog_meta_head(GlobalVariables, 'integer':I, P, Sub, Arg, Output).
+brachylog_meta_head(GlobalVariables, 'default', P, Sub, Input, Output) :-
+    brachylog_meta_head(GlobalVariables, 'integer':1, P, Sub, Input, Output).
+brachylog_meta_head(_, 'integer':0, _, _, Input, Input).
+brachylog_meta_head(GlobalVariables, 'integer':I, P, Sub, Input, Output) :-
+    I #> 0,
+    brachylog_head('integer':I, Input, Heads),
+    brachylog_behead('integer':I, Input, Tails),
+    brachylog_meta_map(GlobalVariables, 'default', P, Sub, Heads, NewHeads),
+    brachylog_concatenate('default', [NewHeads,Tails], Output).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_ITERATE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_meta_iterate(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :-
@@ -542,6 +569,31 @@ brachylog_meta_select(GlobalVariables, 'default', P, Sub, [H|T], Output) :-
     ;   Output = T2
     ),
     brachylog_meta_select(GlobalVariables, 'default', P, Sub, T, T2).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_META_TAIL
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_meta_tail(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :-
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_meta_tail(GlobalVariables, 'integer':I, P, Sub, Arg, Output).
+brachylog_meta_tail(GlobalVariables, 'last', P, Sub, Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   reverse(T, Arg)
+    ),
+    brachylog_meta_tail(GlobalVariables, 'integer':I, P, Sub, Arg, Output).
+brachylog_meta_tail(GlobalVariables, 'default', P, Sub, Input, Output) :-
+    brachylog_meta_tail(GlobalVariables, 'integer':1, P, Sub, Input, Output).
+brachylog_meta_tail(_, 'integer':0, _, _, Input, Input).
+brachylog_meta_tail(GlobalVariables, 'integer':I, P, Sub, Input, Output) :-
+    I #> 0,
+    brachylog_tail('integer':I, Input, Tails),
+    brachylog_knife('integer':I, Input, Heads),
+    brachylog_meta_map(GlobalVariables, 'default', P, Sub, Tails, NewTails),
+    brachylog_concatenate('default', [Heads,NewTails], Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
