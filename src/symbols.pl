@@ -198,7 +198,7 @@ token_metapredicate('ᵈ', 'brachylog_meta_declare').
 token_metapredicate('ᵉ', 'brachylog_meta_existence').
 token_metapredicate('ᶠ', 'brachylog_meta_find').
 token_metapredicate('ᵍ', 'brachylog_meta_groupby').
-token_metapredicate('ʰ', '').
+token_metapredicate('ʰ', 'brachylog_meta_head').
 token_metapredicate('ⁱ', 'brachylog_meta_iterate').
 token_metapredicate('ʲ', '').
 token_metapredicate('ᵏ', '').
@@ -209,7 +209,7 @@ token_metapredicate('ᵒ', 'brachylog_meta_orderby').
 token_metapredicate('ᵖ', '').
 token_metapredicate('ʳ', 'brachylog_meta_rightfold').
 token_metapredicate('ˢ', 'brachylog_meta_select').
-token_metapredicate('ᵗ', '').
+token_metapredicate('ᵗ', 'brachylog_meta_tail').
 token_metapredicate('ᵘ', 'brachylog_meta_unique').
 token_metapredicate('ᵛ', 'brachylog_meta_verify').
 token_metapredicate('ʷ', '').
