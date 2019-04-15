@@ -1,4 +1,4 @@
-﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ____            ____
 \   \          /   /
  \   \  ____  /   /
@@ -30,7 +30,6 @@ token_predicate('∋', 'brachylog_in').
 token_predicate('⊆', 'brachylog_superset').
 token_predicate('⊇', 'brachylog_subset').
 token_predicate('↔', 'brachylog_reverse').
-token_predicate('↕', '').
 token_predicate('↰', 'brachylog_call_predicate').
 token_predicate('↺', 'brachylog_circular_permute_counterclockwise').
 token_predicate('↻', 'brachylog_circular_permute_clockwise').
@@ -121,7 +120,7 @@ token_predicate('ṙ', 'brachylog_random_number').
 token_predicate('ṡ', 'brachylog_sign').
 token_predicate('ṫ', 'brachylog_to_string').
 token_predicate('ẇ', '').
-token_predicate('ẋ', '').
+token_predicate('ẋ', 'brachylog_cartesian_product').
 token_predicate('ẏ', '').
 token_predicate('ż', '').
 
