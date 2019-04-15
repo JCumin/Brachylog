@@ -95,6 +95,7 @@ ____            ____
                        brachylog_random_number/3,                       brachylog_random_number_reversed/3,
                        brachylog_sign/3,                                brachylog_sign_reversed/3,
                        brachylog_to_string/3,                           brachylog_to_string_reversed/3,
+                       brachylog_cartesian_product/3,                   brachylog_cartesian_product_reversed/3,    
 
                        %Label                                           % Reversed version
                        brachylog_label/3,                               brachylog_label_reversed/3
@@ -2991,6 +2992,26 @@ brachylog_to_string('default', 'integer':I, 'string':S) :-
 brachylog_to_string('default', 'float':F, 'string':S) :-
     atom_number(A, F),
     atom_chars(A, S).
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   BRACHYLOG_CARTESIAN_PRODUCT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+brachylog_cartesian_product_reversed(S, I, O) :-
+    brachylog_cartesian_product(S, O, I).
+brachylog_cartesian_product('first', ['integer':I|Input], Output) :- 
+    (   Input = [Arg] -> true
+    ;   Input = Arg
+    ),
+    brachylog_cartesian_product('integer':I, Arg, Output).
+brachylog_cartesian_product('last', Input, Output) :-
+    reverse(Input, ['integer':I|T]),
+    (   T = [Arg] -> true
+    ;   reverse(T, Arg)
+    ),
+    brachylog_cartesian_product('integer':I, Arg, Output).
+brachylog_cartesian_product('default', Input, Output) :-
+    findall(L, brachylog_meta_map('ignore', 'default', brachylog_in, 'default', Input, L), Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
