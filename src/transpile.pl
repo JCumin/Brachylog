@@ -187,11 +187,21 @@ fill_implicit_variables(['control':H,Type:B|T], I, ['control':H,'variable':V|T2]
     atom_concat('V', I, V),
     J is I + 1,
     fill_implicit_variables([Type:B|T], J, T2).
+fill_implicit_variables(['control':H,'variable':B,Type:C|T], I, ['control':H,'variable':B,'variable':V|T2]) :-
+    Type \= 'variable',
+    (   H = '↖'
+    ;   H = '↙'
+    ),
+    atom_concat('V', I, V),
+    J is I + 1,
+    fill_implicit_variables([Type:C|T], J, T2).
 fill_implicit_variables([Type:A|T], I, [Type:A|T2]) :-
     Type \= 'predicate',
     \+ (Type = 'control', A = ':', T = ['predicate':_|_]),
     \+ (Type = 'control', A = '∧', T \= ['variable':_|_]),
     \+ (Type = 'control', A = '∨', T \= ['variable':_|_]),
+    \+ (Type = 'control', A = '↖', T \= ['variable':_|_]),
+    \+ (Type = 'control', A = '↙', T \= ['variable':_|_]),
     fill_implicit_variables(T, I, T2).
 
 
