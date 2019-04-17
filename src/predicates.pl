@@ -819,7 +819,7 @@ brachylog_multiply('default', [TypeI:I|T], TypeS:Product) :-
     (   TypeI = 'integer',
         TypeF = 'integer',
         (   var(I) ->
-            I #> 1,
+            I #> 0,
             F #> 0
         ;   true
         ),
