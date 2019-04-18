@@ -332,7 +332,8 @@ brachylog_meta_iterate(GlobalVariables, 'last', P, Sub, Input, Output) :-
     brachylog_meta_iterate(GlobalVariables, 'integer':I, P, Sub, Arg, Output).
 brachylog_meta_iterate(_, 'integer':0, _, _, Input, Input).
 brachylog_meta_iterate(GlobalVariables, 'default', P, Sub, Input, Output) :-
-    brachylog_meta_iterate(GlobalVariables, 'integer':1, P, Sub, Input, Output).
+    I #>= 1,
+    brachylog_meta_iterate(GlobalVariables, 'integer':I, P, Sub, Input, Output).
 brachylog_meta_iterate(GlobalVariables, 'integer':1, P, Sub, Input, Output) :-
     (   GlobalVariables = 'ignore',
         call(P, Sub, Input, Output)
