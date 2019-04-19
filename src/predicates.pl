@@ -2041,12 +2041,10 @@ brachylog_write('integer':0, List, _) :-
     maplist(brachylog_write_try_label, List),
     brachylog_prolog_variable(List, PrologList),
     write(PrologList).
-brachylog_write('integer':2, I, O) :-
-    brachylog_write('integer':0, I, _),
-    I=O.
-brachylog_write('integer':3, I, O) :-
-    brachylog_write('integer':1, I, _),
-    I=O.
+brachylog_write('integer':2, I, I) :-
+    brachylog_write('integer':0, I, _).
+brachylog_write('integer':3, I, I) :-
+    brachylog_write('integer':1, I, _).
 
 brachylog_write_try_label(X) :-
     (   nonvar(X), X = 'float':_ -> true
