@@ -47,8 +47,10 @@ Note that the first two run predicates also exist with either no `Output` argume
 
 ### Contributors
 
-- Julien Cumin - @JCumin
+- Julien Cumin - [@JCumin](https://github.com/JCumin)
 
-- Markus Triska - @triska
+- Markus Triska - [@triska](https://github.com/triska)
 
 - ais523
+
+- [@UnrelatedString](https://github.com/UnrelatedString)
