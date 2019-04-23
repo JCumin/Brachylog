@@ -2547,9 +2547,9 @@ brachylog_writeln('integer':Sub, I, O) :-
     Sub > 3, /* declarative write */
     brachylog_write('integer':Sub, I, O),
     brachylog_write('integer':4, 'string':['\n'], _).
-brachylog_writeln(Sub, I, O) :-
+brachylog_writeln('integer':Sub, I, O) :-
     Sub < 4, /* ...because when the declarative write gets backtracked past, it tries this header. *facepalm* --UnrelatedString */
-    brachylog_write(Sub, I, O),
+    brachylog_write('integer':Sub, I, O),
     brachylog_write('default', 'string':['\n'], _).
 
 

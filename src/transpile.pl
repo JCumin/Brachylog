@@ -348,7 +348,7 @@ transpile(Program, [[':- style_check(-singleton).'],
                 '-> brachylog_label(default, Var_Output_Local, _) ',
                 '; true),\n',
                 'nb_getval(\'declw\', DeclwFinal),\n',
-                'write_canonical(DeclwFinal),',
+                /*'write_canonical(DeclwFinal),',*/
                 'maplist(write, DeclwFinal).'],  /* execute declarative write */
                MainPred).
 
