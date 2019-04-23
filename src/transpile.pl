@@ -1,16 +1,16 @@
-﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+﻿/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ____            ____
 \   \          /   /
  \   \  ____  /   /
   \   \/    \/   /
-   \     /\     /     BRACHYLOG       
+   \     /\     /     BRACHYLOG
     \   /  \   /      A terse declarative logic programming language
-    /   \  /   \    
+    /   \  /   \
    /     \/     \     Written by Julien Cumin - 2017
   /   /\____/\   \    https://github.com/JCumin/Brachylog
  /   /  ___   \   \
 /___/  /__/    \___\
-     
+
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
@@ -32,7 +32,7 @@ parse(Code, TranspiledPath) :-
     open(TranspiledPath, write, File),
     maplist(write_to_file(File), Predicates),
     close(File).
-    
+
 parse_no_file(Code, Predicates) :-
     atom_chars(Code, SplittedCode),
     tokenize(SplittedCode, TokensNoOutputs),
@@ -48,8 +48,8 @@ parse_no_file(Code, Predicates) :-
     atomic_list_concat(['[', G, ']'], GlobalVariablesAtom),
     transpile(Program, Predicates, GlobalVariablesAtom),
     !.
-    
-    
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    PARSE_ARGUMENT
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -100,7 +100,7 @@ append_trailing_output([H|T], [H|T2]) :-
 fix_predicates(Tokens, FixedPredicates) :-
     fix_predicates(Tokens, 1, L),
     append(L, FixedPredicates).
-    
+
 fix_predicates([], _, [[]]).
 fix_predicates(['control':'{'|T], I, [['predicate':PredName:0|Rest], ['control':'\n'|Predicate]|AllOtherPredicates]) :-
     atomic_list_concat(['brachylog_predicate_',I], PredName),
@@ -124,7 +124,7 @@ fix_predicates([Type:A|T], I, [[Type:A|Rest]|OtherPredicates]) :-
     \+ (Type = 'control', A = '⟩'),
     \+ (Type = 'control', A = '\n'),
     fix_predicates(T, I, [Rest|OtherPredicates]).
-    
+
 fix_predicates_([], _, [[]]).
 fix_predicates_(['control':'{'|T], I, [['predicate':PredName:0|Rest], ['control':'\n'|Predicate]|AllOtherPredicates], Z, Remaining) :-
     atomic_list_concat(['brachylog_predicate_',I], PredName),
@@ -160,7 +160,7 @@ fix_metapredicates(['predicate':PredName:Sub|T], ['predicate':PredName:Sub:'no':
 fix_metapredicates([H|T], [H|T2]) :-
     fix_metapredicates(T, T2).
 
-    
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    FILL_IMPLICIT_VARIABLES
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -315,7 +315,7 @@ fix_arrows(['predicate':P:Sub:Meta:_,'control':'↖','variable':V|T], T2) :- !,
 fix_arrows([H|T], [H|T2]) :-
     fix_arrows(T, T2).
 
-  
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    TRANSPILE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -327,13 +327,30 @@ transpile(Program, [[':- style_check(-singleton).'],
                     [MainPredHeader,
                     ConstraintVariables,
                     '    (1=1'|MainPred]|OtherPredicates], GlobalVariables) :-
-    atomic_list_concat(['brachylog_main(',GlobalVariables,',_, Var_Input_Local,Var_Output_Local) :-\n    Name = brachylog_main,\n    GlobalVariables = ', GlobalVariables, ',\n'], MainPredHeader),
+    atomic_list_concat(['brachylog_main(', /* I split this up over several lines so I could feel comfortable going in and adding to it. --UnrelatedString */
+                        GlobalVariables,
+                        ',_, Var_Input_Local,Var_Output_Local) :-\n',
+                        '    Name = brachylog_main,\n',
+                        '    GlobalVariables = ',
+                        GlobalVariables,',\n',
+                        '    nb_setval(\'declw\',[]),\n'], /* Global variables get implicitly initialized to [] by setval, but not by getval? Either way, credit to the amazing ais523 for telling me they even exist. --UnrelatedString */
+                       MainPredHeader),
     constraint_variables(GlobalVariables, ConstraintVariables),
     transpile_(Program, 'Var_Input_Local', no, no, 0, 0, [T|OtherPredicates], GlobalVariables),
     reverse(T, [_|RT]),
-    reverse(RT,T2),
-    append(T2, ['\n    ),\n    ((Var_Output_Local = integer:_ ; Var_Output_Local = [_|_], forall(member(E, Var_Output_Local), E = integer:_)) -> brachylog_label(default, Var_Output_Local, _) ; true).\n'], MainPred).
-    
+    reverse(RT, T2),
+    append(T2, ['\n', /* Split this one up for the same reason --UnrelatedString */
+                '    ),\n',
+                '    (',
+                '(Var_Output_Local = integer:_ ; ',
+                'Var_Output_Local = [_|_], ',
+                'forall(member(E, Var_Output_Local), E = integer:_)) ',
+                '-> brachylog_label(default, Var_Output_Local, _) ',
+                '; true),\n',
+                'nb_getval(\'declw\', DeclwFinal),\n',
+                'maplist(write, DeclwFinal).'],  /* execute declarative write */
+               MainPred).
+
 transpile_([], _, _, _, _, _, [['\n    ).\n']], _).
 transpile_(['variable':B|T], A, Reverse, Negate, AppendNumber, PredNumber, [[Unification|T2]|OtherPredicates], GlobalVariables) :-
     A \= 'nothing',
@@ -362,7 +379,7 @@ transpile_(['variable':B|T], A, Reverse, Negate, AppendNumber, PredNumber, [[Uni
         transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables)
     ).
 transpile_(['variable':B|T], 'nothing', _, _, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables) :-
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables). 
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
 transpile_(['predicate':P:Sub:Meta:Sup,'variable':B|T], A, Reverse, Negate, AppendNumber, PredNumber, [[Predicate|T2]|OtherPredicates], GlobalVariables) :-
     A \= 'nothing',
     (   P = 'brachylog_call_predicate',
@@ -412,7 +429,7 @@ transpile_(['control':'∧'|T], _, _, _, AppendNumber, PredNumber, [T2|OtherPred
 transpile_(['control':'&'|T], _, _, _, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables) :-
     transpile_(T, 'Var_Input_Local', no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
 transpile_(['control':'`'|T], B, _, _, AppendNumber, PredNumber, [['\n    *->\n    1=1'|T2]|OtherPredicates], GlobalVariables) :-
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).    
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
 transpile_(['control':'∨'|T], _, _, _, AppendNumber, PredNumber, [['\n    ;\n    1=1'|T2]|OtherPredicates], GlobalVariables) :-
     transpile_(T, 'nothing', no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
 transpile_(['control':'('|T], B, _, Negate, AppendNumber, PredNumber, [[Parenthesis|T2]|OtherPredicates], GlobalVariables) :-
@@ -423,18 +440,18 @@ transpile_(['control':'('|T], B, _, Negate, AppendNumber, PredNumber, [[Parenthe
     ),
     transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
 transpile_(['control':')'|T], B, _, _, AppendNumber, PredNumber, [['\n    )'|T2]|OtherPredicates], GlobalVariables) :-
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables). 
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
 transpile_(['control':'!'|T], B, _, _, AppendNumber, PredNumber, [[',\n    !'|T2]|OtherPredicates], GlobalVariables) :-
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables). 
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
 transpile_(['control':'⊥'|T], B, _, _, AppendNumber, PredNumber, [[',\n    false'|T2]|OtherPredicates], GlobalVariables) :-
-    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).  
+    transpile_(T, B, no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
 transpile_(['control':'~'|T], B, Reverse, Negate, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables) :-
     (   Reverse = yes,
         NewReverse = no
     ;   Reverse = no,
         NewReverse = yes
     ),
-    transpile_(T, B, NewReverse, Negate, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).   
+    transpile_(T, B, NewReverse, Negate, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
 transpile_(['control':'¬'|T], B, Reverse, Negate, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables) :-
     (   Negate = yes,
         NewNegate = no
@@ -540,7 +557,7 @@ transpile_(['control':'|'|T], _, _, _, AppendNumber, PredNumber, [['\n    ).\n']
                         ConstraintVariables,
                         '    (1=1'], PredHead),
     transpile_(T, 'Var_Input_Local', no, no, AppendNumber, PredNumber, [T2|OtherPredicates], GlobalVariables).
-    
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    CONTAINS_WRITE
@@ -563,7 +580,7 @@ constraint_variables(GlobalVariables, ConstraintVariables) :-
     reverse(RGs, RRGs),
     atomic_list_concat(RRGs, GGs),
     atomic_list_concat(GlobVars, ',', GGs),
-    findall(S, (member(X, GlobVars), 
+    findall(S, (member(X, GlobVars),
                 atomic_list_concat(['Var', Name, _], '_', X),
                 atom_chars(Name, CName),
                 reverse(CName, [_,'t','n','i','a','r','t','s','n','o','C']),
@@ -590,7 +607,7 @@ constraint_variable(X, S) :-
 brachylog_list_to_atom(List, Atom) :-
     brachylog_list_to_atom_(List, T2),
     atomic_list_concat(['[',T2,']'], Atom).
-    
+
 brachylog_list_to_atom_([], '').
 brachylog_list_to_atom_([A], AtomA) :-
     (   is_list(A),
@@ -612,8 +629,8 @@ brachylog_list_to_atom_([A,B|T], Atom) :-
     ),
     brachylog_list_to_atom_([B|T], T2),
     atomic_list_concat([AtomA,',',T2], Atom).
-    
-    
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    WRITE_TO_FILE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
