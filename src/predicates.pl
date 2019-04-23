@@ -1,16 +1,16 @@
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ____            ____
 \   \          /   /
  \   \  ____  /   /
   \   \/    \/   /
-   \     /\     /     BRACHYLOG       
+   \     /\     /     BRACHYLOG
     \   /  \   /      A terse declarative logic programming language
-    /   \  /   \    
+    /   \  /   \
    /     \/     \     Written by Julien Cumin - 2017
   /   /\____/\   \    https://github.com/JCumin/Brachylog
  /   /  ___   \   \
 /___/  /__/    \___\
-     
+
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
@@ -95,12 +95,12 @@ ____            ____
                        brachylog_random_number/3,                       brachylog_random_number_reversed/3,
                        brachylog_sign/3,                                brachylog_sign_reversed/3,
                        brachylog_to_string/3,                           brachylog_to_string_reversed/3,
-                       brachylog_cartesian_product/3,                   brachylog_cartesian_product_reversed/3,    
+                       brachylog_cartesian_product/3,                   brachylog_cartesian_product_reversed/3,
 
                        %Label                                           % Reversed version
                        brachylog_label/3,                               brachylog_label_reversed/3
                       ]).
-                       
+
 :- use_module(library(clpfd)).
 :- use_module(utils).
 
@@ -112,7 +112,7 @@ ____            ____
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_lessequal_reversed(S, I, O) :-
     brachylog_lessequal(S, O, I).
-brachylog_lessequal('first', ['integer':I|Input], Output) :- 
+brachylog_lessequal('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -144,14 +144,14 @@ brachylog_lessequal('integer':1, ['integer':I], ['integer':I]).
 brachylog_lessequal('integer':1, ['integer':I,'integer':J|T], ['integer':I,'integer':J|T]) :-
     I #=< J,
     brachylog_lessequal('integer':1, ['integer':J|T], ['integer':J|T]).
-     
-     
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_GREATEREQUAL
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_greaterequal_reversed(S, I, O) :-
     brachylog_greaterequal(S, O, I).
-brachylog_greaterequal('first', ['integer':I|Input], Output) :- 
+brachylog_greaterequal('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -199,7 +199,7 @@ brachylog_contains(Sub, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_in_reversed(S, I, O) :-
     brachylog_in(S, O, I).
-brachylog_in('first', ['integer':I|Input], Output) :- 
+brachylog_in('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -248,7 +248,7 @@ brachylog_superset(Sub, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_subset_reversed(S, I, O) :-
     brachylog_subset(S, O, I).
-brachylog_subset('first', ['integer':I|Input], Output) :- 
+brachylog_subset('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -309,7 +309,7 @@ brachylog_subset_recur_([_|T], T2) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_reverse_reversed(S, I, O) :-
     brachylog_reverse(S, O, I).
-brachylog_reverse('first', ['integer':I|Input], Output) :- 
+brachylog_reverse('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -352,7 +352,7 @@ brachylog_reverse('integer':0, List, R) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_call_predicate_reversed(S, I, O) :-
     brachylog_call_predicate(S, O, I).
-brachylog_call_predicate('first'-GlobalVariables, ['integer':I|Input], Output) :- 
+brachylog_call_predicate('first'-GlobalVariables, ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -382,7 +382,7 @@ brachylog_call_predicate(GlobalVariables, 'integer':I, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_circular_permute_counterclockwise_reversed(S, I, O) :-
     brachylog_circular_permute_counterclockwise(S, O, I).
-brachylog_circular_permute_counterclockwise('first', ['integer':I|Input], Output) :- 
+brachylog_circular_permute_counterclockwise('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -418,7 +418,7 @@ brachylog_circular_permute_counterclockwise('integer':I, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_circular_permute_clockwise_reversed(S, I, O) :-
     brachylog_circular_permute_clockwise(S, O, I).
-brachylog_circular_permute_clockwise('first', ['integer':I|Input], Output) :- 
+brachylog_circular_permute_clockwise('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -457,7 +457,7 @@ brachylog_circular_permute_clockwise('integer':I, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_root_reversed(S, I, O) :-
     brachylog_root(S, O, I).
-brachylog_root('first', ['integer':I|Input], Output) :- 
+brachylog_root('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -494,7 +494,7 @@ brachylog_root('float':I,'float':E, 'float':R) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_ceil_reversed(S, I, O) :-
     brachylog_ceil(S, O, I).
-brachylog_ceil('first', ['integer':I|Input], Output) :- 
+brachylog_ceil('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -513,14 +513,14 @@ brachylog_ceil('integer':1, 'integer':I, 'integer':I).
 brachylog_ceil('integer':1, 'float':I, 'integer':J) :-
     nonvar(I),
     J is ceil(I).
- 
- 
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_FLOOR
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_floor_reversed(S, I, O) :-
     brachylog_floor(S, O, I).
-brachylog_floor('first', ['integer':I|Input], Output) :- 
+brachylog_floor('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -546,7 +546,7 @@ brachylog_floor('integer':1, 'float':I, 'integer':J) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_range_ascending_reversed(S, I, O) :-
     brachylog_range_ascending(S, O, I).
-brachylog_range_ascending('first', ['integer':I|Input], Output) :- 
+brachylog_range_ascending('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -625,7 +625,7 @@ brachylog_range_ascending_(I, S, ['integer':I|R]) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_range_descending_reversed(S, I, O) :-
     brachylog_range_descending(S, O, I).
-brachylog_range_descending('first', ['integer':I|Input], Output) :- 
+brachylog_range_descending('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -648,7 +648,7 @@ brachylog_range_descending('integer':Sub, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_natural_integer_reversed(S, I, O) :-
     brachylog_natural_integer(S, O, I).
-brachylog_natural_integer('first', ['integer':I|Input], Output) :- 
+brachylog_natural_integer('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -671,7 +671,7 @@ brachylog_natural_integer('integer':I, 'integer':Input, 'integer':Input) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_integer_reversed(S, I, O) :-
     brachylog_integer(S, O, I).
-brachylog_integer('first', ['integer':I|Input], Output) :- 
+brachylog_integer('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -694,7 +694,7 @@ brachylog_integer('integer':I, 'integer':Input, 'integer':Input) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_float_reversed(S, I, O) :-
     brachylog_float(S, O, I).
-brachylog_float('first', ['integer':I|Input], Output) :- 
+brachylog_float('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -714,7 +714,7 @@ brachylog_float('integer':_, 'integer':Input, 'float':Input).
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_different_reversed(S, I, O) :-
     brachylog_different(S, O, I).
-brachylog_different('first', ['integer':I|Input], Output) :- 
+brachylog_different('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -763,7 +763,7 @@ brachylog_identity(_, Input, Input).
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_integer_division_reversed(S, I, O) :-
     brachylog_integer_division(S, O, I).
-brachylog_integer_division('first', ['integer':I|Input], Output) :- 
+brachylog_integer_division('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -805,7 +805,7 @@ brachylog_integer_division('integer':I, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_multiply_reversed(S, I, O) :-
     brachylog_multiply(S, O, I).
-brachylog_multiply('first', ['integer':A,'integer':B], Output) :- 
+brachylog_multiply('first', ['integer':A,'integer':B], Output) :-
     brachylog_multiply('integer':A, 'integer':B, Output).
 brachylog_multiply('last', ['integer':A,'integer':B], Output) :-
     brachylog_multiply('integer':B, 'integer':A, Output).
@@ -848,7 +848,7 @@ brachylog_multiply('default', [TypeI:I|T], TypeS:Product) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_modulo_reversed(S, I, O) :-
     brachylog_modulo(S, O, I).
-brachylog_modulo('first', ['integer':I|Input], Output) :- 
+brachylog_modulo('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -873,7 +873,7 @@ brachylog_modulo('integer':I, 'integer':I1, 'integer':Rem) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_exp_reversed(S, I, O) :-
     brachylog_exp(S, O, I).
-brachylog_exp('first', ['integer':I|Input], Output) :- 
+brachylog_exp('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -977,7 +977,7 @@ brachylog_exp('integer':13, 'float':F, 'float':Exp) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_plus_reversed(S, I, O) :-
     brachylog_plus(S, O, I).
-brachylog_plus('first', ['integer':I|Input], Output) :- 
+brachylog_plus('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1018,14 +1018,14 @@ brachylog_plus('integer':0, [TypeI:I|T], TypeS:Sum) :-
         ),
         Sum is I + F
     ).
- 
- 
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_MINUS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_minus_reversed(S, I, O) :-
     brachylog_minus(S, O, I).
-brachylog_minus('first', ['integer':I|Input], Output) :- 
+brachylog_minus('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1073,7 +1073,7 @@ brachylog_minus('integer':0, [TypeI:I|T], TypeS:Sum) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_divide_reversed(S, I, O) :-
     brachylog_divide(S, O, I).
-brachylog_divide('first', ['integer':I|Input], Output) :- 
+brachylog_divide('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1127,7 +1127,7 @@ brachylog_divide('integer':I, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_less_reversed(S, I, O) :-
     brachylog_less(S, O, I).
-brachylog_less('first', ['integer':I|Input], Output) :- 
+brachylog_less('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1166,7 +1166,7 @@ brachylog_less('integer':1, ['integer':I,'integer':J|T], ['integer':I,'integer':
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_equal_reversed(S, I, O) :-
     brachylog_equal(S, O, I).
-brachylog_equal('first', [I|Input], Output) :- 
+brachylog_equal('first', [I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1196,7 +1196,7 @@ brachylog_equal(Type:I, [Type:I|T], [Type:I|T]) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_greater_reversed(S, I, O) :-
     brachylog_greater(S, O, I).
-brachylog_greater('first', ['integer':I|Input], Output) :- 
+brachylog_greater('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1235,7 +1235,7 @@ brachylog_greater('integer':1, ['integer':J|T], ['integer':J|T]).
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_transpose_reversed(S, I, O) :-
     brachylog_transpose(S, O, I).
-brachylog_transpose('first', ['integer':I|Input], Output) :- 
+brachylog_transpose('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1273,7 +1273,7 @@ brachylog_transpose('integer':0, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_power_reversed(S, I, O) :-
     brachylog_power(S, O, I).
-brachylog_power('first', ['integer':I|Input], Output) :- 
+brachylog_power('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1312,7 +1312,7 @@ brachylog_power('integer':S, 'float':I, 'float':J) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_adfix_reversed(S, I, O) :-
     brachylog_adfix(S, O, I).
-brachylog_adfix('first', ['integer':I|Input], Output) :- 
+brachylog_adfix('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1362,7 +1362,7 @@ brachylog_adfix('integer':1, 'integer':I, 'integer':P) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_behead_reversed(S, I, O) :-
     brachylog_behead(S, O, I).
-brachylog_behead('first', ['integer':I|Input], Output) :- 
+brachylog_behead('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1411,7 +1411,7 @@ brachylog_behead_float_([H|T], [H|T2]) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_concatenate_reversed(S, I, O) :-
     brachylog_concatenate(S, O, I).
-brachylog_concatenate('first', ['integer':I|Input], Output) :- 
+brachylog_concatenate('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1516,7 +1516,7 @@ brachylog_concatenate_([L|T], L2) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_duplicates_reversed(S, I, O) :-
     brachylog_duplicates(S, O, I).
-brachylog_duplicates('first', ['integer':I|Input], Output) :- 
+brachylog_duplicates('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1550,7 +1550,7 @@ brachylog_duplicates('integer':0, L, M) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_factors_reversed(S, I, O) :-
     brachylog_factors(S, O, I).
-brachylog_factors('first', ['integer':I|Input], Output) :- 
+brachylog_factors('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1577,7 +1577,7 @@ brachylog_factors('default', 'integer':N, Z) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_group_reversed(S, I, O) :-
     brachylog_group(S, O, I).
-brachylog_group('first', ['integer':I|Input], Output) :- 
+brachylog_group('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1596,13 +1596,13 @@ brachylog_group('integer':I, Input, Output) :-
     I #> 1,
     brachylog_meta_iterate(ignore, 'integer':I, brachylog_group, 'integer':1, Input, Output).
 
-    
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_HEAD
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_head_reversed(S, I, O) :-
     brachylog_head(S, O, I).
-brachylog_head('first', ['integer':I|Input], Output) :- 
+brachylog_head('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1635,11 +1635,11 @@ brachylog_head_float([H|T], 'integer':I) :-
         (   T = [],
             I = 0
         ;   T \= [],
-            brachylog_head_float(T, 'integer':I)    
+            brachylog_head_float(T, 'integer':I)
         )
     ;   H \= 48,
         H \= 46,
-        number_codes(I, [H])    
+        number_codes(I, [H])
     ).
 
 
@@ -1648,7 +1648,7 @@ brachylog_head_float([H|T], 'integer':I) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_index_reversed(S, I, O) :-
     brachylog_index(S, I, O).
-brachylog_index('first', ['integer':I|Input], Output) :- 
+brachylog_index('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1671,7 +1671,7 @@ brachylog_index('integer':1, Input, [E,'integer':J]) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_juxtapose_reversed(S, I, O) :-
     brachylog_juxtapose(S, O, I).
-brachylog_juxtapose('first', ['integer':I|Input], Output) :- 
+brachylog_juxtapose('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1731,7 +1731,7 @@ brachylog_juxtapose('integer':J, 'integer':I, 'integer':Z) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_knife_reversed(S, I, O) :-
     brachylog_knife(S, O, I).
-brachylog_knife('first', ['integer':I|Input], Output) :- 
+brachylog_knife('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1775,7 +1775,7 @@ brachylog_knife('integer':I, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_length_reversed(S, I, O) :-
     brachylog_length(S, O, I).
-brachylog_length('first', ['integer':I|Input], Output) :- 
+brachylog_length('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1814,14 +1814,14 @@ brachylog_length('default', 'float':F, 'integer':Length) :-
     nonvar(F),
     length(L, Length),
     catch(number_codes(F, L), E, (print_message(error, E), false)).
-  
-  
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_ORDER
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_order_reversed(S, I, O) :-
     brachylog_order(S, O, I).
-brachylog_order('first', ['integer':I|Input], Output) :- 
+brachylog_order('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1863,7 +1863,7 @@ brachylog_order('integer':1, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_permute_reversed(S, I, O) :-
     brachylog_permute(S, O, I).
-brachylog_permute('first', ['integer':I|Input], Output) :- 
+brachylog_permute('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1904,7 +1904,7 @@ brachylog_permute('integer':0, 'float':F, 'float':G) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_substring_reversed(S, I, O) :-
     brachylog_substring(S, O, I).
-brachylog_substring('first', ['integer':I|Input], Output) :- 
+brachylog_substring('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1948,7 +1948,7 @@ brachylog_substring_recur_([_|_], []).
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_tail_reversed(S, I, O) :-
     brachylog_tail(S, O, I).
-brachylog_tail('first', ['integer':I|Input], Output) :- 
+brachylog_tail('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -1986,7 +1986,7 @@ brachylog_tail_float([H|T], 'integer':I) :-
         (   T = [],
             I = 0
         ;   T \= [],
-            brachylog_tail_float(T, 'integer':I)    
+            brachylog_tail_float(T, 'integer':I)
         )
     ;   H \= 48,
         H \= 46,
@@ -1999,7 +1999,7 @@ brachylog_tail_float([H|T], 'integer':I) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_write_reversed(S, I, O) :-
     brachylog_write(S, O, I).
-brachylog_write('first', ['integer':I|Input], Output) :- 
+brachylog_write('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2012,39 +2012,51 @@ brachylog_write('last', Input, Output) :-
     brachylog_write('integer':I, Arg, Output).
 brachylog_write('default', Input, Output) :-
     brachylog_write('integer':0, Input, Output).
-brachylog_write('integer':1, [List,'string':F], _) :-
+brachylog_write('integer':Sub, I, O) :-
+  S is Sub mod 4,
+  brachylog_write_('integer':S, I, O, T),
+  (    Sub < 4, /* imperative write */
+       write(T)
+  ;    b_getval('declw', DOld), /* Is this the wrong way to go about that? --UnrelatedString */
+       append(DOld, [T], DNew), /* declarative write */
+       b_setval('declw', DNew)
+  ).
+
+/* Moved all of the old write code (including my own subscripts 2 and 3) to a new predicate, so I could take out the writing instead of reinventing the wheel with regard to the work that goes into processing the input. --UnrelatedString */
+brachylog_write_('integer':1, [List,'string':F], _, T) :-
     is_brachylog_list(List),
     atomic_list_concat(F, Format),
     maplist(brachylog_write_try_label, List),
     brachylog_prolog_variable(List, PrologList),
-    format(Format, PrologList).
-brachylog_write('integer':1, Args, _) :-
+    format(string(T), Format, PrologList). /* Output formatted text to T as a string --UnrelatedAtom */
+brachylog_write_('integer':1, Args, _, T) :-
     is_brachylog_list(Args),
     reverse(Args, ['string':F|R]),
     reverse(R, S),
     maplist(brachylog_write_try_label, S),
     brachylog_prolog_variable(S, PrologS),
     atomic_list_concat(F, Format),
-    format(Format, PrologS).
-brachylog_write('integer':0, 'string':S, _) :-
+    format(string(T), Format, PrologS). /* Output formatted text to T as a string. --UnrelatedListOfCharCodes */
+brachylog_write_('integer':0, 'string':S, _, X) :-
     nonvar(S),
-    atomic_list_concat(S, X),
-    write(X).
-brachylog_write('integer':0, 'integer':I, _) :-
+    atomic_list_concat(S, X).
+    /*write(X).*/
+brachylog_write_('integer':0, 'integer':I, _, X) :-
     brachylog_label('default', 'integer':I, _),
-    write(I).
-brachylog_write('integer':0, 'float':F, _) :-
-    nonvar(F),
-    write(F).
-brachylog_write('integer':0, List, _) :-
+    I = X. /* I feel like with the labeling I can't safely just put I up there in the header, but really I have no clue. --UnrelatedString */
+    /*write(I).*/
+brachylog_write_('integer':0, 'float':F, _, F) :-
+    nonvar(F).
+    /*write(F).*/
+brachylog_write_('integer':0, List, _, PrologList) :-
     is_brachylog_list(List),
     maplist(brachylog_write_try_label, List),
-    brachylog_prolog_variable(List, PrologList),
-    write(PrologList).
-brachylog_write('integer':2, I, I) :-
-    brachylog_write('integer':0, I, _).
-brachylog_write('integer':3, I, I) :-
-    brachylog_write('integer':1, I, _).
+    brachylog_prolog_variable(List, PrologList).
+    /*write(PrologList).*/
+brachylog_write_('integer':2, I, I, T) :-
+    brachylog_write_('integer':0, I, _, T).
+brachylog_write_('integer':3, I, I, T) :-
+    brachylog_write_('integer':1, I, _, T).
 
 brachylog_write_try_label(X) :-
     (   nonvar(X), X = 'float':_ -> true
@@ -2057,15 +2069,15 @@ brachylog_write_try_label(X) :-
         brachylog_label('default', 'integer':I, _)
     ).
 
-   
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_XTERMINATE
-   
+
    TODO: Use sub to know what to remove instead
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_xterminate_reversed(S, I, O) :-
     brachylog_xterminate(S, O, I).
-brachylog_xterminate('first', ['integer':I|Input], Output) :- 
+brachylog_xterminate('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2093,14 +2105,14 @@ brachylog_xterminate('integer':0, [L,[H|T]], L3) :-
     is_brachylog_list(L),
     delete(L, H, L2),
     brachylog_xterminate('integer':0, [L2,T], L3).
-    
+
 brachylog_xterminate_(X, 'string':S, 'string':T) :-
     brachylog_xterminate_single(X, 'string':S, 'string':T).
 brachylog_xterminate_(_, [], []).
 brachylog_xterminate_(X, [H|T], [H2|T2]) :-
     brachylog_xterminate_single(X, H, H2),
     brachylog_xterminate_(X, T, T2).
-    
+
 brachylog_xterminate_single('string':L, 'string':H, 'string':Z) :-
     (   append([A,L,B], H),
         append(A,B,H2),
@@ -2108,14 +2120,14 @@ brachylog_xterminate_single('string':L, 'string':H, 'string':Z) :-
     ;   \+ append([_,L,_], H),
         Z = H
     ).
-    
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_ZIP
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_zip_reversed(S, I, O) :-
     brachylog_zip(S, O, I).
-brachylog_zip('first', ['integer':I|Input], Output) :- 
+brachylog_zip('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2143,7 +2155,7 @@ brachylog_zip('integer':1, L, Z) :-
     is_brachylog_list(L),
     maplist(brachylog_zip_listify_integer, L, L2),
     brachylog_zip_no_cycling(L2, Z).
-    
+
 brachylog_zip_(_, 0, []).
 brachylog_zip_(L, I, [Heads|Z]) :-
     I #> 0,
@@ -2172,7 +2184,7 @@ brachylog_zip_listify_integer('integer':I, L) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_to_codes_reversed(S, I, O) :-
     brachylog_to_codes(S, O, I).
-brachylog_to_codes('first', ['integer':I|Input], Output) :- 
+brachylog_to_codes('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2200,7 +2212,7 @@ brachylog_to_codes('default', 'string':[H|T], ['integer':I|T2]) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_blocks_reversed(S, I, O) :-
     brachylog_blocks(S, O, I).
-brachylog_blocks('first', ['integer':I|Input], Output) :- 
+brachylog_blocks('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2232,7 +2244,7 @@ brachylog_blocks('default', [H|T], I, [[],[H|T2]|T3]) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_dichotomize_reversed(S, I, O) :-
     brachylog_dichotomize(S, O, I).
-brachylog_dichotomize('first', ['integer':I|Input], Output) :- 
+brachylog_dichotomize('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2281,7 +2293,7 @@ brachylog_dichotomize(L, L2) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_elements_reversed(S, I, O) :-
     brachylog_elements(S, O, I).
-brachylog_elements('first', ['integer':I|Input], Output) :- 
+brachylog_elements('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2298,7 +2310,7 @@ brachylog_elements('default', [H|T], L) :-
 brachylog_elements('default', 'string':S, L) :-
     brachylog_meta_find(ignore, 'default', brachylog_in, 'default', 'string':S, L).
 brachylog_elements('default', 'integer':I, L) :-
-    brachylog_meta_find(ignore, 'default', brachylog_in, 'default', 'integer':I, L).   
+    brachylog_meta_find(ignore, 'default', brachylog_in, 'default', 'integer':I, L).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2306,7 +2318,7 @@ brachylog_elements('default', 'integer':I, L) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_to_number_reversed(S, I, O) :-
     brachylog_to_number(S, O, I).
-brachylog_to_number('first', ['integer':I|Input], Output) :- 
+brachylog_to_number('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2331,7 +2343,7 @@ brachylog_to_number('default', 'string':S, Type:N) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_lowercase_reversed(S, I, O) :-
     brachylog_lowercase(S, O, I).
-brachylog_lowercase('first', ['integer':I|Input], Output) :- 
+brachylog_lowercase('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2351,7 +2363,7 @@ brachylog_lowercase('default', 'string':Ls0, 'string':Ls) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_split_lines_reversed(S, I, O) :-
     brachylog_split_lines(S, O, I).
-brachylog_split_lines('first', ['integer':I|Input], Output) :- 
+brachylog_split_lines('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2399,7 +2411,7 @@ brachylog_split_lines('integer':3, Input, Output) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_occurences_reversed(S, I, O) :-
     brachylog_occurences(S, O, I).
-brachylog_occurences('first', ['integer':I|Input], Output) :- 
+brachylog_occurences('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2438,7 +2450,7 @@ brachylog_occurences_(H, [H2|T], I, [H2|R]) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_random_element_reversed(S, I, O) :-
     brachylog_random_element(S, O, I).
-brachylog_random_element('first', ['integer':I|Input], Output) :- 
+brachylog_random_element('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2469,7 +2481,7 @@ brachylog_random_element('default', 'integer':I, 'integer':R) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_shuffle_reversed(S, I, O) :-
     brachylog_shuffle(S, O, I).
-brachylog_shuffle('first', ['integer':I|Input], Output) :- 
+brachylog_shuffle('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2500,7 +2512,7 @@ brachylog_shuffle('default', 'integer':I, 'integer':J) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_uppercase_reversed(S, I, O) :-
     brachylog_uppercase(S, O, I).
-brachylog_uppercase('first', ['integer':I|Input], Output) :- 
+brachylog_uppercase('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2520,7 +2532,7 @@ brachylog_uppercase('default', 'string':Ls0, 'string':Ls) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_writeln_reversed(S, I, O) :-
     brachylog_writeln(S, O, I).
-brachylog_writeln('first', ['integer':I|Input], Output) :- 
+brachylog_writeln('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2532,12 +2544,12 @@ brachylog_writeln('last', Input, Output) :-
     ),
     brachylog_writeln('integer':I, Arg, Output).
 brachylog_writeln('integer':Sub, I, O) :-
-    Sub > 3, /* declarative write */
     brachylog_write('integer':Sub, I, O),
-    brachylog_write('integer':4, 'string':['\n'], _).
-brachylog_writeln(Sub, I, O) :-
-    brachylog_write(Sub, I, O),
-    brachylog_write('default', 'string':['\n'], _).
+    (    Sub > 3, /* declarative write */
+         brachylog_write('integer':4, 'string':['\n'], _)
+    ;    Sub < 4, /* imperative write, this check _is_ necessary */
+         brachylog_write('default', 'string':['\n'], _)
+    ).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2545,7 +2557,7 @@ brachylog_writeln(Sub, I, O) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_absolute_value_reversed(S, I, O) :-
     brachylog_absolute_value(S, O, I).
-brachylog_absolute_value('first', ['integer':I|Input], Output) :- 
+brachylog_absolute_value('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2568,7 +2580,7 @@ brachylog_absolute_value('default', 'float':I, 'float':J) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_base_reversed(S, I, O) :-
     brachylog_base(S, O, I).
-brachylog_base('first', ['integer':I|Input], Output) :- 
+brachylog_base('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2623,7 +2635,7 @@ order_n_base_ref_acc_digits(>, N, Base, [_|Rs], Ds0, Ds) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_coerce_reversed(S, I, O) :-
     brachylog_coerce(S, O, I).
-brachylog_coerce('first', ['integer':I|Input], Output) :- 
+brachylog_coerce('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2643,12 +2655,12 @@ brachylog_coerce('integer':2, 'string':S, 'string':S).
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_PRIME_DECOMPOSITION
-   
+
    Credits to RosettaCode
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_prime_decomposition_reversed(S, I, O) :-
     brachylog_prime_decomposition(S, O, I).
-brachylog_prime_decomposition('first', ['integer':I|Input], Output) :- 
+brachylog_prime_decomposition('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2665,7 +2677,7 @@ brachylog_prime_decomposition('default', 'integer':N, Z) :-
     ceiled_square_root(N, SN),
     brachylog_prime_decomposition_1(N, SN, 2, [], L),
     brachylog_prime_decomposition_append_integer(L, Z).
- 
+
 brachylog_prime_decomposition_1(1, _, _, L, L) :- !.
 brachylog_prime_decomposition_1(N, SN, D, L, LF) :-
     (   0 #= N mod D ->
@@ -2678,7 +2690,7 @@ brachylog_prime_decomposition_1(N, SN, D, L, LF) :-
         ;   brachylog_prime_decomposition_2(N, SN, D1, L, LF)
         )
     ).
-    
+
 brachylog_prime_decomposition_2(1, _, _, L, L) :- !.
 brachylog_prime_decomposition_2(N, SN, D, L, LF) :-
     (   0 #= N mod D ->
@@ -2702,7 +2714,7 @@ brachylog_prime_decomposition_append_integer([H|T], ['integer':H|T2]) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_factorial_reversed(S, I, O) :-
     brachylog_factorial(S, O, I).
-brachylog_factorial('first', ['integer':I|Input], Output) :- 
+brachylog_factorial('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2751,7 +2763,7 @@ brachylog_factorial_(N, I, N0, F) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_groups_reversed(S, I, O) :-
     brachylog_groups(S, O, I).
-brachylog_groups('first', ['integer':I|Input], Output) :- 
+brachylog_groups('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2777,7 +2789,7 @@ brachylog_groups('integer':I, Input, Output) :-
     maplist(is_brachylog_list, [Input, Output]),
     brachylog_groups(I, [], Input, Output).
 
-brachylog_groups(_, [H|T], [], [RL]) :- 
+brachylog_groups(_, [H|T], [], [RL]) :-
     reverse([H|T], RL).
 brachylog_groups(I, L, Input, [RL|T2]) :-
     length(L, I),
@@ -2798,7 +2810,7 @@ brachylog_groups_ints(I, 'integer':O) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_matrix_reversed(S, I, O) :-
     brachylog_matrix(S, O, I).
-brachylog_matrix('first', ['integer':I|Input], Output) :- 
+brachylog_matrix('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2822,7 +2834,7 @@ brachylog_matrix('integer':L, M, M) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_negate_reversed(S, I, O) :-
     brachylog_negate(S, O, I).
-brachylog_negate('first', ['integer':I|Input], Output) :- 
+brachylog_negate('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2845,7 +2857,7 @@ brachylog_negate('default', 'float':I, 'float':J) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_prime_reversed(S, I, O) :-
     brachylog_prime(S, O, I).
-brachylog_prime('first', ['integer':I|Input], Output) :- 
+brachylog_prime('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2862,7 +2874,7 @@ brachylog_prime('default', 'integer':N, 'integer':N) :-
     clpfd:trigger_once(Prop).
 
 clpfd:run_propagator(prime(N), MState) :-
-    (   nonvar(N) -> 
+    (   nonvar(N) ->
         clpfd:kill(MState),
         check_prime(N)
     ;   clpfd:fd_get(N, ND, NL, NU, NPs),
@@ -2877,7 +2889,7 @@ probably_prime(_).
 :- endif.
 
 check_prime(N) :-
-    (   N = 2 -> 
+    (   N = 2 ->
         true
     ;   N #> 2,
         probably_prime(N),
@@ -2887,7 +2899,7 @@ check_prime(N) :-
 
 check_prime_1(1, _, _, L, L) :- !.
 check_prime_1(N, SN, D, L, LF) :-
-    (   0 #= N mod D -> 
+    (   0 #= N mod D ->
         false
     ;   D1 #= D+1,
         (   D1 #> SN ->
@@ -2912,7 +2924,7 @@ check_prime_2(N, SN, D, L, LF) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_random_number_reversed(S, I, O) :-
     brachylog_random_number(S, O, I).
-brachylog_random_number('first', ['integer':I|Input], Output) :- 
+brachylog_random_number('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -2982,7 +2994,7 @@ brachylog_sign('default', 'float':F, 'integer':S) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_to_string_reversed(S, I, O) :-
     brachylog_to_string(S, O, I).
-brachylog_to_string('first', ['integer':I|Input], Output) :- 
+brachylog_to_string('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -3007,7 +3019,7 @@ brachylog_to_string('default', 'float':F, 'string':S) :-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_cartesian_product_reversed(S, I, O) :-
     brachylog_cartesian_product(S, O, I).
-brachylog_cartesian_product('first', ['integer':I|Input], Output) :- 
+brachylog_cartesian_product('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -3024,13 +3036,13 @@ brachylog_cartesian_product('default', Input, Output) :-
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_LABEL
-   
+
    Credits to Markus Triska
    See: http://codereview.stackexchange.com/questions/129924/clpfd-labeling-on-possibly-infinite-domains/129945#129945
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 brachylog_label_reversed(S, I, O) :-
     brachylog_label(S, O, I).
-brachylog_label('first', ['integer':I|Input], Output) :- 
+brachylog_label('first', ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -3074,7 +3086,7 @@ unsafe_indomain_(n(Low), Sup, X) :-
     unsafe_up_(Sup, Low, X).
 
 infinite_down(sup, X) :-
-    (   X = 0 
+    (   X = 0
     ;   abs(X) #= abs(N),
         positive_integer(N),
         ( X #= N ; X #= -N )
