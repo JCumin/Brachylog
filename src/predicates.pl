@@ -2013,22 +2013,22 @@ brachylog_write('last', Input, Output) :-
 brachylog_write('default', Input, Output) :-
     brachylog_write('integer':0, Input, Output).
 brachylog_write('integer':Sub, I, O) :-
-  S is Sub mod 4,
+  S #= Sub mod 4,
   brachylog_write_('integer':S, I, O, T),
-  (    Sub < 4, /* imperative write */
+  (    Sub #< 4,                         % imperative write
        write(T)
-  ;    b_getval('declw', DOld), /* Is this the wrong way to go about that? --UnrelatedString */
-       append(DOld, [T], DNew), /* declarative write */
+  ;    Sub #>= 4,
+       b_getval('declw', DOld),         % Declarative write
+       append(DOld, [T], DNew),
        b_setval('declw', DNew)
   ).
 
-/* Moved all of the old write code (including my own subscripts 2 and 3) to a new predicate, so I could take out the writing instead of reinventing the wheel with regard to the work that goes into processing the input. --UnrelatedString */
 brachylog_write_('integer':1, [List,'string':F], _, T) :-
     is_brachylog_list(List),
     atomic_list_concat(F, Format),
     maplist(brachylog_write_try_label, List),
     brachylog_prolog_variable(List, PrologList),
-    format(string(T), Format, PrologList). /* Output formatted text to T as a string --UnrelatedAtom */
+    format(string(T), Format, PrologList).    % Output formatted text
 brachylog_write_('integer':1, Args, _, T) :-
     is_brachylog_list(Args),
     reverse(Args, ['string':F|R]),
@@ -2036,23 +2036,18 @@ brachylog_write_('integer':1, Args, _, T) :-
     maplist(brachylog_write_try_label, S),
     brachylog_prolog_variable(S, PrologS),
     atomic_list_concat(F, Format),
-    format(string(T), Format, PrologS). /* Output formatted text to T as a string. --UnrelatedListOfCharCodes */
+    format(string(T), Format, PrologS).    % Output formatted text
 brachylog_write_('integer':0, 'string':S, _, X) :-
     nonvar(S),
     atomic_list_concat(S, X).
-    /*write(X).*/
-brachylog_write_('integer':0, 'integer':I, _, X) :-
-    brachylog_label('default', 'integer':I, _),
-    I = X. /* I feel like with the labeling I can't safely just put I up there in the header, but really I have no clue. --UnrelatedString */
-    /*write(I).*/
+brachylog_write_('integer':0, 'integer':I, _, I) :-
+    brachylog_label('default', 'integer':I, _).
 brachylog_write_('integer':0, 'float':F, _, F) :-
     nonvar(F).
-    /*write(F).*/
 brachylog_write_('integer':0, List, _, PrologList) :-
     is_brachylog_list(List),
     maplist(brachylog_write_try_label, List),
     brachylog_prolog_variable(List, PrologList).
-    /*write(PrologList).*/
 brachylog_write_('integer':2, I, I, T) :-
     brachylog_write_('integer':0, I, _, T).
 brachylog_write_('integer':3, I, I, T) :-
@@ -2545,9 +2540,9 @@ brachylog_writeln('last', Input, Output) :-
     brachylog_writeln('integer':I, Arg, Output).
 brachylog_writeln('integer':Sub, I, O) :-
     brachylog_write('integer':Sub, I, O),
-    (    Sub > 3, /* declarative write */
+    (    Sub #> 3,                                       % declarative write
          brachylog_write('integer':4, 'string':['\n'], _)
-    ;    Sub < 4, /* imperative write, this check _is_ necessary */
+    ;    Sub #< 4,                                       % imperative write
          brachylog_write('default', 'string':['\n'], _)
     ).
 
