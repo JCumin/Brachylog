@@ -2538,6 +2538,8 @@ brachylog_writeln('last', Input, Output) :-
     ;   reverse(T, Arg)
     ),
     brachylog_writeln('integer':I, Arg, Output).
+brachylog_writeln('default', I, O) :-
+    brachylog_writeln('integer':0, I, O).
 brachylog_writeln('integer':Sub, I, O) :-
     brachylog_write('integer':Sub, I, O),
     (    Sub #> 3,                                       % declarative write
