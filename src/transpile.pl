@@ -347,9 +347,9 @@ transpile(Program, [[':- style_check(-singleton).'],
                 'forall(member(E, Var_Output_Local), E = integer:_)) ',
                 '-> brachylog_label(default, Var_Output_Local, _) ',
                 '; true),\n',
-                'nb_getval(\'declw\', DeclwFinal),\n',
+                '    nb_getval(\'declw\', DeclwFinal),\n',
                 /*'write_canonical(DeclwFinal),',*/
-                'maplist(write, DeclwFinal).'],  /* execute declarative write */
+                '    maplist(write, DeclwFinal).'],  /* execute declarative write */
                MainPred).
 
 transpile_([], _, _, _, _, _, [['\n    ).\n']], _).
