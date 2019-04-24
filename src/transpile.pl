@@ -327,19 +327,19 @@ transpile(Program, [[':- style_check(-singleton).'],
                     [MainPredHeader,
                     ConstraintVariables,
                     '    (1=1'|MainPred]|OtherPredicates], GlobalVariables) :-
-    atomic_list_concat(['brachylog_main(', /* I split this up over several lines so I could feel comfortable going in and adding to it. --UnrelatedString */
+    atomic_list_concat(['brachylog_main(',
                         GlobalVariables,
                         ',_, Var_Input_Local,Var_Output_Local) :-\n',
                         '    Name = brachylog_main,\n',
                         '    GlobalVariables = ',
                         GlobalVariables,',\n',
-                        '    nb_setval(\'declw\',[]),\n'], /* Global variables get implicitly initialized to [] by setval, but not by getval? Either way, credit to the amazing ais523 for telling me they even exist. --UnrelatedString */
+                        '    nb_setval(\'declw\',[]),\n'],    /* Initialize declarative write variable
                        MainPredHeader),
     constraint_variables(GlobalVariables, ConstraintVariables),
     transpile_(Program, 'Var_Input_Local', no, no, 0, 0, [T|OtherPredicates], GlobalVariables),
     reverse(T, [_|RT]),
     reverse(RT, T2),
-    append(T2, ['\n', /* Split this one up for the same reason --UnrelatedString */
+    append(T2, ['\n',
                 '    ),\n',
                 '    (',
                 '(Var_Output_Local = integer:_ ; ',
@@ -348,8 +348,7 @@ transpile(Program, [[':- style_check(-singleton).'],
                 '-> brachylog_label(default, Var_Output_Local, _) ',
                 '; true),\n',
                 '    nb_getval(\'declw\', DeclwFinal),\n',
-                /*'write_canonical(DeclwFinal),',*/
-                '    maplist(write, DeclwFinal).'],  /* execute declarative write */
+                '    maplist(write, DeclwFinal).'],    % execute declarative write
                MainPred).
 
 transpile_([], _, _, _, _, _, [['\n    ).\n']], _).
