@@ -333,7 +333,7 @@ transpile(Program, [[':- style_check(-singleton).'],
                         '    Name = brachylog_main,\n',
                         '    GlobalVariables = ',
                         GlobalVariables,',\n',
-                        '    nb_setval(\'declw\',[]),\n'],    /* Initialize declarative write variable
+                        '    nb_setval(\'declw\',[]),\n'],    % Initialize declarative write variable
                        MainPredHeader),
     constraint_variables(GlobalVariables, ConstraintVariables),
     transpile_(Program, 'Var_Input_Local', no, no, 0, 0, [T|OtherPredicates], GlobalVariables),
