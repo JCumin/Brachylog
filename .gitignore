@@ -13,3 +13,4 @@ compiled_brachylog.pl
 *.blg
 *.log
 *.gz
+src/compiled_brachylog_eval.pl
