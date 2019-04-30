@@ -2150,6 +2150,9 @@ brachylog_zip('integer':1, L, Z) :-
     is_brachylog_list(L),
     maplist(brachylog_zip_listify_integer, L, L2),
     brachylog_zip_no_cycling(L2, Z).
+brachylog_zip('integer':2, L, Z) :-
+    maplist(brachylog_length_reversed('default', _), L),    % fails if the lengths aren't all the same
+    brachylog_zip('default', L, Z).
 
 brachylog_zip_(_, 0, []).
 brachylog_zip_(L, I, [Heads|Z]) :-
