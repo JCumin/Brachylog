@@ -1849,14 +1849,23 @@ brachylog_order('integer':0, 'integer':I, 'integer':J) :-
 brachylog_order('integer':0, [], []).
 brachylog_order('integer':0, [H|T], [H2|T2]) :-
     (   nonvar(T),
-        msort([H|T], [H2|T2])
+        brachylog_order_mixed_sort_([H|T], [H2|T2])
     ;   var(T),
-        msort([H2|T2], [H2|T2]),
+        brachylog_order_mixed_sort_([H2|T2], [H2|T2]),
         brachylog_permute('default', [H2|T2], [H|T])
     ).
 brachylog_order('integer':1, Input, Output) :-
     brachylog_order('integer':0, Input, ROutput),
     brachylog_reverse('default', ROutput, Output).
+
+% keysort sorts by the first element of a - pair, disregarding but preserving the second
+brachylog_order_type_pair_(List, List-list) :-
+    is_list(List).
+brachylog_order_type_pair_(Type:Value, Value-Type).
+brachylog_order_mixed_sort_(List, Sorted) :-
+    maplist(brachylog_order_type_pair_, List, IPairs),
+    keysort(IPairs, OPairs), % keysort, like msort, doesn't remove duplicates
+    maplist(brachylog_order_type_pair_, Sorted, OPairs).
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_PERMUTE
