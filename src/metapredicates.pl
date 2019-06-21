@@ -1,16 +1,16 @@
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ____            ____
 \   \          /   /
  \   \  ____  /   /
   \   \/    \/   /
-   \     /\     /     BRACHYLOG       
+   \     /\     /     BRACHYLOG
     \   /  \   /      A terse declarative logic programming language
-    /   \  /   \    
+    /   \  /   \
    /     \/     \     Written by Julien Cumin - 2017
   /   /\____/\   \    https://github.com/JCumin/Brachylog
  /   /  ___   \   \
 /___/  /__/    \___\
-     
+
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
@@ -77,7 +77,7 @@ brachylog_meta_accumulate(GlobalVariables, 'integer':I, P, Sub, Input, Output) :
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_BAGOF
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_meta_bagof(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :- 
+brachylog_meta_bagof(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -104,14 +104,14 @@ brachylog_meta_bagof(GlobalVariables, 'integer':I, P, Sub, Input, Output) :-
             call(P, Sub, Input, X)
         ;   dif(GlobalVariables, 'ignore'),
             call(P, GlobalVariables, Sub, Input, X)
-        ), I), 
+        ), I),
         Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_COUNT
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_meta_count(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :- 
+brachylog_meta_count(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -135,7 +135,7 @@ brachylog_meta_count(GlobalVariables, 'integer':1, P, Sub, Input, Output) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_DECLARE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_meta_declare(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :- 
+brachylog_meta_declare(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -175,7 +175,7 @@ brachylog_meta_declare(GlobalVariables, 'integer':2, P, Sub, [H,T], [H,T]) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_EXISTENCE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_meta_existence(GlobalVariables, 'first', P, Sub, [I|Input], Arg) :- 
+brachylog_meta_existence(GlobalVariables, 'first', P, Sub, [I|Input], Arg) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -203,12 +203,12 @@ brachylog_meta_existence(GlobalVariables, P, Sub, Input, Output) :-
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_FIND
-   
+
    Credits to @false for call_firstf/2 and call_nth/2
    http://stackoverflow.com/a/20866206/2554145
    http://stackoverflow.com/a/11400256/2554145
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_meta_find(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :- 
+brachylog_meta_find(GlobalVariables, 'first', P, Sub, ['integer':I|Input], Output) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -452,7 +452,7 @@ brachylog_meta_map(GlobalVariables, 'integer':I, P, Sub, Input, Output) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_NONEXISTENCE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_meta_nonexistence(GlobalVariables, 'first', P, Sub, [I|Input], Arg) :- 
+brachylog_meta_nonexistence(GlobalVariables, 'first', P, Sub, [I|Input], Arg) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -497,7 +497,7 @@ brachylog_meta_orderby(GlobalVariables, 'integer':0, P, Sub, Input, Output) :-
     ),
     brachylog_meta_map(GlobalVariables, 'default', P, Sub, FixedInput, L),
     brachylog_zip('default', [L,Input], L2),
-    msort(L2, SL2),
+    brachylog_order(integer:0, L2, SL2),
     (   SL2 = [] ->
         Output = []
     ;   brachylog_zip('default', SL2, [_,Output])
@@ -508,8 +508,7 @@ brachylog_meta_orderby(GlobalVariables, 'integer':1, P, Sub, Input, Output) :-
     ),
     brachylog_meta_map(GlobalVariables, 'default', P, Sub, FixedInput, L),
     brachylog_zip('default', [L,Input], L2),
-    msort(L2, RSL2),
-    reverse(RSL2, SL2),
+    brachylog_order(integer:1, L2, SL2),
     (   SL2 = [] ->
         Output = []
     ;   brachylog_zip('default', SL2, [_,Output])
@@ -519,14 +518,13 @@ brachylog_meta_orderby(GlobalVariables, 'integer':2, P, Sub, Input, Output) :-
     ;   brachylog_elements('default', Input, FixedInput)
     ),
     brachylog_meta_map(GlobalVariables, 'default', P, Sub, FixedInput, L),
-    msort(L, Output).
+    brachylog_order(integer:0, L, Output).
 brachylog_meta_orderby(GlobalVariables, 'integer':3, P, Sub, Input, Output) :-
     (   is_brachylog_list(Input) -> FixedInput = Input
     ;   brachylog_elements('default', Input, FixedInput)
     ),
     brachylog_meta_map(GlobalVariables, 'default', P, Sub, FixedInput, L),
-    msort(L, RL),
-    reverse(RL, Output).
+    brachylog_order(integer:1, L, Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -640,7 +638,7 @@ brachylog_meta_unique_(GlobalVariables, Nth, J, P, Sub, Input, A, Output) :-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    BRACHYLOG_META_VERIFY
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-brachylog_meta_verify(GlobalVariables, 'first', P, Sub, [I|Input], Arg) :- 
+brachylog_meta_verify(GlobalVariables, 'first', P, Sub, [I|Input], Arg) :-
     (   Input = [Arg] -> true
     ;   Input = Arg
     ),
@@ -690,4 +688,3 @@ brachylog_meta_zip(GlobalVariables, 'integer':1, P, Sub, Arg, Output) :-
 brachylog_meta_zip(GlobalVariables, 'integer':2, P, Sub, Arg, Output) :-
     brachylog_meta_find(GlobalVariables, 'default', P, Sub, Arg, O),
     brachylog_zip('default', [O,Arg], Output).
-

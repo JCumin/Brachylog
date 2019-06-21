@@ -1859,8 +1859,8 @@ brachylog_order('integer':1, Input, Output) :-
     brachylog_reverse('default', ROutput, Output).
 
 % keysort sorts by the first element of a - pair, disregarding but preserving the second
-brachylog_order_type_pair_(List, List-list) :-
-    is_list(List).
+brachylog_order_type_pair_(List, PairsList-list) :-
+    maplist(brachylog_order_type_pair_, List, PairsList).
 brachylog_order_type_pair_(Type:Value, Value-Type).
 brachylog_order_mixed_sort_(List, Sorted) :-
     maplist(brachylog_order_type_pair_, List, IPairs),
