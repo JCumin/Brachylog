@@ -140,10 +140,10 @@ brachylog_lessequal('integer':0, 'float':I1, 'float':I2) :-
     nonvar(I2),
     I1 =< I2.
 brachylog_lessequal('integer':1, [], []).
-brachylog_lessequal('integer':1, ['integer':I], ['integer':I]).
-brachylog_lessequal('integer':1, ['integer':I,'integer':J|T], ['integer':I,'integer':J|T]) :-
-    I #=< J,
-    brachylog_lessequal('integer':1, ['integer':J|T], ['integer':J|T]).
+brachylog_lessequal('integer':1, [I], [I]).
+brachylog_lessequal('integer':1, [I,J|T], [I,J|T]) :-
+    brachylog_lessequal('integer':0, I, J),
+    brachylog_lessequal('integer':1, [J|T], [J|T]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,10 +179,10 @@ brachylog_greaterequal('integer':0, 'float':I1, 'float':I2) :-
     nonvar(I2),
     I1 >= I2.
 brachylog_greaterequal('integer':1, [], []).
-brachylog_greaterequal('integer':1, ['integer':I], ['integer':I]).
-brachylog_greaterequal('integer':1, ['integer':I,'integer':J|T], ['integer':I,'integer':J|T]) :-
-    I #>= J,
-    brachylog_greaterequal('integer':1, ['integer':J|T], ['integer':J|T]).
+brachylog_greaterequal('integer':1, [I], [I]).
+brachylog_greaterequal('integer':1, [I,J|T], [I,J|T]) :-
+    brachylog_greaterequal('integer':0, I, J),
+    brachylog_greaterequal('integer':1, [J|T], [J|T]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1155,10 +1155,10 @@ brachylog_less('integer':0, 'float':I1, 'float':I2) :-
     nonvar(I2),
     I1 < I2.
 brachylog_less('integer':1, [], []).
-brachylog_less('integer':1, ['integer':I], ['integer':I]).
-brachylog_less('integer':1, ['integer':I,'integer':J|T], ['integer':I,'integer':J|T]) :-
-    I #< J,
-    brachylog_less('integer':1, ['integer':J|T], ['integer':J|T]).
+brachylog_less('integer':1, [I], [I]).
+brachylog_less('integer':1, [I,J|T], [I,J|T]) :-
+    brachylog_less('integer':0, I, J),
+    brachylog_less('integer':1, [J|T], [J|T]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1224,10 +1224,10 @@ brachylog_greater('integer':0, 'float':I1, 'float':I2) :-
     nonvar(I2),
     I1 > I2.
 brachylog_greater('integer':1, [], []).
-brachylog_greater('integer':1, ['integer':I], ['integer':I]).
-brachylog_greater('integer':1, ['integer':I,'integer':J|T], ['integer':I,'integer':J|T]) :-
-    I #> J,
-brachylog_greater('integer':1, ['integer':J|T], ['integer':J|T]).
+brachylog_greater('integer':1, [I], [I]).
+brachylog_greater('integer':1, [I,J|T], [I,J|T]) :-
+    brachylog_greater('integer':0, I, J),
+    brachylog_greater('integer':1, [J|T], [J|T]).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
