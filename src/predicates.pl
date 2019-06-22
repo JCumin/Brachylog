@@ -1119,7 +1119,7 @@ brachylog_divide('integer':1, 'float':I, 'float':J) :-
     J is 1/I.
 brachylog_divide('integer':I, Input, Output) :-
     I #> 1,
-    brachylog_divide('integer':0, [Input,'integer':I], Output).
+    brachylog_divide('default', [Input,'integer':I], Output).
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
