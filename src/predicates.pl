@@ -1181,7 +1181,7 @@ brachylog_equal('default', [], []).
 brachylog_equal('default', [H|T], [H|T]) :-
     maplist(=(H), T).
 brachylog_equal('default', 'string':L, 'string':L) :-
-    brachylog_equal('integer':0, L, L).
+    brachylog_equal('default', L, L).
 brachylog_equal('default', 'integer':0, 'integer':0).
 brachylog_equal('default', 'integer':I, 'integer':I) :-
     H #\= 0,
