@@ -474,8 +474,8 @@ brachylog_root('integer':I,'integer':E, Type:R) :-
     (   E #= R^I ->
         Type = 'integer'
     ;   brachylog_label('default', ['integer':I, 'integer':E], _),
-        R is E^(1/I),
-        Type = 'float'
+        Type = 'float',
+        R is E^(1/I)
     ).
 brachylog_root('integer':I,'float':E, 'float':R) :-
     nonvar(E),
